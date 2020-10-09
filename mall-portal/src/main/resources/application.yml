@@ -19,6 +19,7 @@ secure:
   ignored:
     urls: #安全路径白名单
       - /swagger-ui.html
+      - /doc.html
       - /swagger-resources/**
       - /swagger/**
       - /**/v2/api-docs
@@ -51,3 +52,11 @@ rabbitmq:
     name:
       cancelOrder: cancelOrderQueue
 
+wx:
+  miniapp:
+    configs:
+      - appid: #微信小程序的appid
+        secret: #微信小程序的Secret
+        token: #微信小程序消息服务器配置的token
+        aesKey: #微信小程序消息服务器配置的EncodingAESKey
+        msgDataFormat: JSON

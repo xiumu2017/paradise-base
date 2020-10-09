@@ -38,7 +38,8 @@ public class OmsPromotionServiceImpl implements OmsPromotionService {
             Long productId = entry.getKey();
             PromotionProduct promotionProduct = getPromotionProductById(productId, promotionProductList);
             List<OmsCartItem> itemList = entry.getValue();
-            Integer promotionType = promotionProduct.getPromotionType();
+//            Integer promotionType = promotionProduct.getPromotionType();
+            Integer promotionType = new Random().nextInt(5);
             if (promotionType == 1) {
                 //单品促销
                 for (OmsCartItem item : itemList) {
@@ -52,8 +53,8 @@ public class OmsPromotionServiceImpl implements OmsPromotionService {
                     cartPromotionItem.setPrice(originalPrice);
                     cartPromotionItem.setReduceAmount(originalPrice.subtract(skuStock.getPromotionPrice()));
                     cartPromotionItem.setRealStock(skuStock.getStock()-skuStock.getLockStock());
-                    cartPromotionItem.setIntegration(promotionProduct.getGiftPoint());
-                    cartPromotionItem.setGrowth(promotionProduct.getGiftGrowth());
+//                    cartPromotionItem.setIntegration(promotionProduct.getGiftPoint());
+//                    cartPromotionItem.setGrowth(promotionProduct.getGiftGrowth());
                     cartPromotionItemList.add(cartPromotionItem);
                 }
             } else if (promotionType == 3) {
@@ -72,8 +73,8 @@ public class OmsPromotionServiceImpl implements OmsPromotionService {
                         BigDecimal reduceAmount = originalPrice.subtract(ladder.getDiscount().multiply(originalPrice));
                         cartPromotionItem.setReduceAmount(reduceAmount);
                         cartPromotionItem.setRealStock(skuStock.getStock()-skuStock.getLockStock());
-                        cartPromotionItem.setIntegration(promotionProduct.getGiftPoint());
-                        cartPromotionItem.setGrowth(promotionProduct.getGiftGrowth());
+//                        cartPromotionItem.setIntegration(promotionProduct.getGiftPoint());
+//                        cartPromotionItem.setGrowth(promotionProduct.getGiftGrowth());
                         cartPromotionItemList.add(cartPromotionItem);
                     }
                 }else{
@@ -95,8 +96,8 @@ public class OmsPromotionServiceImpl implements OmsPromotionService {
                         BigDecimal reduceAmount = originalPrice.divide(totalAmount,RoundingMode.HALF_EVEN).multiply(fullReduction.getReducePrice());
                         cartPromotionItem.setReduceAmount(reduceAmount);
                         cartPromotionItem.setRealStock(skuStock.getStock()-skuStock.getLockStock());
-                        cartPromotionItem.setIntegration(promotionProduct.getGiftPoint());
-                        cartPromotionItem.setGrowth(promotionProduct.getGiftGrowth());
+//                        cartPromotionItem.setIntegration(promotionProduct.getGiftPoint());
+//                        cartPromotionItem.setGrowth(promotionProduct.getGiftGrowth());
                         cartPromotionItemList.add(cartPromotionItem);
                     }
                 }else{
@@ -167,8 +168,8 @@ public class OmsPromotionServiceImpl implements OmsPromotionService {
             if(skuStock!=null){
                 cartPromotionItem.setRealStock(skuStock.getStock()-skuStock.getLockStock());
             }
-            cartPromotionItem.setIntegration(promotionProduct.getGiftPoint());
-            cartPromotionItem.setGrowth(promotionProduct.getGiftGrowth());
+//            cartPromotionItem.setIntegration(promotionProduct.getGiftPoint());
+//            cartPromotionItem.setGrowth(promotionProduct.getGiftGrowth());
             cartPromotionItemList.add(cartPromotionItem);
         }
     }

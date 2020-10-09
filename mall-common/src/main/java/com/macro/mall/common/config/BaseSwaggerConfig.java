@@ -15,7 +15,9 @@ import java.util.List;
 
 /**
  * Swagger基础配置
- * Created by macro on 2020/7/16.
+ *
+ * @author macro
+ * @date 2020/7/16
  */
 public abstract class BaseSwaggerConfig {
 
@@ -76,6 +78,7 @@ public abstract class BaseSwaggerConfig {
 
     /**
      * 自定义Swagger配置
+     * @return {@link SwaggerProperties}
      */
     public abstract SwaggerProperties swaggerProperties();
 }

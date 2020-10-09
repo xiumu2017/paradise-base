@@ -5,7 +5,6 @@ import com.macro.mall.model.UmsMemberLevel;
 import com.macro.mall.service.UmsMemberLevelService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -16,14 +15,19 @@ import java.util.List;
 
 /**
  * 会员等级管理Controller
- * Created by macro on 2018/4/26.
+ *
+ * @author macro
+ * @date 2018/4/26
  */
 @Controller
-@Api(tags = "UmsMemberLevelController", description = "会员等级管理")
+@Api(tags = "会员等级管理")
 @RequestMapping("/memberLevel")
 public class UmsMemberLevelController {
-    @Autowired
-    private UmsMemberLevelService memberLevelService;
+    private final UmsMemberLevelService memberLevelService;
+
+    public UmsMemberLevelController(UmsMemberLevelService memberLevelService) {
+        this.memberLevelService = memberLevelService;
+    }
 
     @RequestMapping(value = "/list", method = RequestMethod.GET)
     @ApiOperation("查询所有会员等级")

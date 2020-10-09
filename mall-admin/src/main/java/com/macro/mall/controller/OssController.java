@@ -11,13 +11,17 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import springfox.documentation.annotations.ApiIgnore;
 
 import javax.servlet.http.HttpServletRequest;
 
 /**
  * Oss相关操作接口
- * Created by macro on 2018/4/26.
+ *
+ * @author macro
+ * @date 2018/4/26
  */
+@ApiIgnore
 @Controller
 @Api(tags = "OssController", description = "Oss管理")
 @RequestMapping("/aliyun/oss")

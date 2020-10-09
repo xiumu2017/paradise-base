@@ -1,17 +1,21 @@
 package com.macro.mall.portal.controller;
 
+import cn.binarywang.wx.miniapp.api.WxMaService;
+import cn.binarywang.wx.miniapp.bean.WxMaJscode2SessionResult;
+import cn.binarywang.wx.miniapp.bean.WxMaPhoneNumberInfo;
+import cn.binarywang.wx.miniapp.bean.WxMaUserInfo;
 import com.macro.mall.common.api.CommonResult;
 import com.macro.mall.model.UmsMember;
+import com.macro.mall.portal.config.WxMaConfiguration;
 import com.macro.mall.portal.service.UmsMemberService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.extern.slf4j.Slf4j;
+import me.chanjar.weixin.common.error.WxErrorException;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.security.Principal;
@@ -20,18 +24,97 @@ import java.util.Map;
 
 /**
  * 会员登录注册管理Controller
- * Created by macro on 2018/8/3.
+ *
+ * @author macro
+ * @date 2018/8/3
  */
 @Controller
-@Api(tags = "UmsMemberController", description = "会员登录注册管理")
+@Api(tags = "会员登录注册管理")
 @RequestMapping("/sso")
+@Slf4j
 public class UmsMemberController {
+    private final static String APP_ID = "";
+
     @Value("${jwt.tokenHeader}")
     private String tokenHeader;
     @Value("${jwt.tokenHead}")
     private String tokenHead;
-    @Autowired
-    private UmsMemberService memberService;
+
+    private final UmsMemberService memberService;
+
+    public UmsMemberController(UmsMemberService memberService) {
+        this.memberService = memberService;
+    }
+
+    /**
+     * 登陆接口
+     */
+    @ApiOperation("微信授权登录")
+    @GetMapping("/login")
+    public CommonResult login(String code) {
+        if (StringUtils.isBlank(code)) {
+            return CommonResult.failed("Code 不能为空");
+        }
+
+        final WxMaService wxService = WxMaConfiguration.getMaService(APP_ID);
+
+        try {
+            WxMaJscode2SessionResult session = wxService.getUserService().getSessionInfo(code);
+            log.info(session.getSessionKey());
+            log.info(session.getOpenid());
+            //TODO 可以增加自己的逻辑，关联业务相关数据
+
+//            WxUser wxUser = wxUserService.selectByWxId(session.getOpenid());
+//            if (wxUser == null) {
+//                wxUserService.insert(WxUser.builder().createTime(new Date()).updateTime(new Date())
+//                        .deleted(0).enable(1).wxId(session.getOpenid())
+//                        .build());
+//            }
+
+
+            return CommonResult.success(session);
+        } catch (WxErrorException e) {
+            log.error(e.getMessage(), e);
+            return CommonResult.failed(e.getLocalizedMessage());
+        }
+    }
+
+    /**
+     * <pre>
+     * 获取用户信息接口
+     * </pre>
+     */
+    @ApiOperation("获取用户信息接口")
+    @GetMapping("/info")
+    public CommonResult info(String sessionKey, String signature, String rawData, String encryptedData, String iv) {
+        final WxMaService wxService = WxMaConfiguration.getMaService(APP_ID);
+        // 用户信息校验
+        if (!wxService.getUserService().checkUserInfo(sessionKey, rawData, signature)) {
+            return CommonResult.failed("");
+        }
+        // 解密用户信息
+        WxMaUserInfo userInfo = wxService.getUserService().getUserInfo(sessionKey, encryptedData, iv);
+        return CommonResult.success(userInfo);
+    }
+
+    /**
+     * <pre>
+     * 获取用户绑定手机号信息
+     * </pre>
+     */
+    @ApiOperation("获取用户绑定手机号信息")
+    @GetMapping("/phone")
+    public CommonResult phone(String sessionKey, String signature, String rawData, String encryptedData, String iv) {
+        final WxMaService wxService = WxMaConfiguration.getMaService(APP_ID);
+        // 用户信息校验
+        if (!wxService.getUserService().checkUserInfo(sessionKey, rawData, signature)) {
+            return CommonResult.failed();
+        }
+        // 解密
+        WxMaPhoneNumberInfo phoneNoInfo = wxService.getUserService().getPhoneNoInfo(sessionKey, encryptedData, iv);
+        return CommonResult.success(phoneNoInfo);
+    }
+
 
     @ApiOperation("会员注册")
     @RequestMapping(value = "/register", method = RequestMethod.POST)
@@ -41,7 +124,7 @@ public class UmsMemberController {
                                  @RequestParam String telephone,
                                  @RequestParam String authCode) {
         memberService.register(username, password, telephone, authCode);
-        return CommonResult.success(null,"注册成功");
+        return CommonResult.success(null, "注册成功");
     }
 
     @ApiOperation("会员登录")
@@ -63,7 +146,7 @@ public class UmsMemberController {
     @RequestMapping(value = "/info", method = RequestMethod.GET)
     @ResponseBody
     public CommonResult info(Principal principal) {
-        if(principal==null){
+        if (principal == null) {
             return CommonResult.unauthorized(null);
         }
         UmsMember member = memberService.getCurrentMember();
@@ -75,17 +158,17 @@ public class UmsMemberController {
     @ResponseBody
     public CommonResult getAuthCode(@RequestParam String telephone) {
         String authCode = memberService.generateAuthCode(telephone);
-        return CommonResult.success(authCode,"获取验证码成功");
+        return CommonResult.success(authCode, "获取验证码成功");
     }
 
     @ApiOperation("修改密码")
     @RequestMapping(value = "/updatePassword", method = RequestMethod.POST)
     @ResponseBody
     public CommonResult updatePassword(@RequestParam String telephone,
-                                 @RequestParam String password,
-                                 @RequestParam String authCode) {
-        memberService.updatePassword(telephone,password,authCode);
-        return CommonResult.success(null,"密码修改成功");
+                                       @RequestParam String password,
+                                       @RequestParam String authCode) {
+        memberService.updatePassword(telephone, password, authCode);
+        return CommonResult.success(null, "密码修改成功");
     }
 
 

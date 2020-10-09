@@ -4,40 +4,43 @@ import com.macro.mall.validator.FlagValidator;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
-import java.util.List;
 
 /**
  * 添加更新产品分类的参数
- * Created by macro on 2018/4/26.
+ *
+ * @author macro
+ * @date 2018/4/26
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
 public class PmsProductCategoryParam {
     @ApiModelProperty("父分类的编号")
     private Long parentId;
-    @ApiModelProperty(value = "商品分类名称",required = true)
-    @NotEmpty(message = "商品分类名称不能为空")
+
+    @ApiModelProperty(value = "商品分类名称", required = true)
+    @NotEmpty(message = "服务分类名称不能为空")
+    @Length(max = 10, min = 2, message = "服务分类名称字符长度2-10")
     private String name;
-    @ApiModelProperty("分类单位")
-    private String productUnit;
-    @ApiModelProperty("是否在导航栏显示")
-    @FlagValidator(value = {"0","1"},message = "状态只能为0或1")
-    private Integer navStatus;
+
     @ApiModelProperty("是否进行显示")
-    @FlagValidator(value = {"0","1"},message = "状态只能为0或1")
+    @FlagValidator(value = {"0", "1"}, message = "状态只能为0或1")
     private Integer showStatus;
+
     @ApiModelProperty("排序")
-    @Min(value = 0,message = "排序最小为0")
+    @Min(value = 0, message = "排序最小为0")
     private Integer sort;
-    @ApiModelProperty("图标")
+
+    @ApiModelProperty(value = "图标", hidden = true)
     private String icon;
-    @ApiModelProperty("关键字")
+
+    @ApiModelProperty(value = "关键字", hidden = true)
     private String keywords;
+
     @ApiModelProperty("描述")
     private String description;
-    @ApiModelProperty("产品相关筛选属性集合")
-    private List<Long> productAttributeIdList;
+
 }

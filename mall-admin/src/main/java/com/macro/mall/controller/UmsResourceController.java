@@ -7,7 +7,7 @@ import com.macro.mall.security.component.DynamicSecurityMetadataSource;
 import com.macro.mall.service.UmsResourceService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,17 +15,18 @@ import java.util.List;
 
 /**
  * 后台资源管理Controller
- * Created by macro on 2020/2/4.
+ *
+ * @author macro
+ * @date 2020/2/4
  */
 @Controller
-@Api(tags = "UmsResourceController", description = "后台资源管理")
+@Api(tags = "后台资源管理")
 @RequestMapping("/resource")
+@AllArgsConstructor
 public class UmsResourceController {
 
-    @Autowired
-    private UmsResourceService resourceService;
-    @Autowired
-    private DynamicSecurityMetadataSource dynamicSecurityMetadataSource;
+    private final UmsResourceService resourceService;
+    private final DynamicSecurityMetadataSource dynamicSecurityMetadataSource;
 
     @ApiOperation("添加后台资源")
     @RequestMapping(value = "/create", method = RequestMethod.POST)
@@ -83,7 +84,7 @@ public class UmsResourceController {
                                                       @RequestParam(required = false) String urlKeyword,
                                                       @RequestParam(value = "pageSize", defaultValue = "5") Integer pageSize,
                                                       @RequestParam(value = "pageNum", defaultValue = "1") Integer pageNum) {
-        List<UmsResource> resourceList = resourceService.list(categoryId,nameKeyword, urlKeyword, pageSize, pageNum);
+        List<UmsResource> resourceList = resourceService.list(categoryId, nameKeyword, urlKeyword, pageSize, pageNum);
         return CommonResult.success(CommonPage.restPage(resourceList));
     }
 

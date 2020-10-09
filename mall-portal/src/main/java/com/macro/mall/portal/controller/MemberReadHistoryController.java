@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import springfox.documentation.annotations.ApiIgnore;
 
 import java.util.List;
 
@@ -17,6 +18,7 @@ import java.util.List;
  * 会员商品浏览记录管理Controller
  * Created by macro on 2018/8/3.
  */
+@ApiIgnore
 @Controller
 @Api(tags = "MemberReadHistoryController", description = "会员商品浏览记录管理")
 @RequestMapping("/member/readHistory")

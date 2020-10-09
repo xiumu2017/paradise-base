@@ -9,6 +9,7 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import springfox.documentation.annotations.ApiIgnore;
 
 import java.util.List;
 
@@ -16,6 +17,7 @@ import java.util.List;
  * 首页品牌管理Controller
  * Created by macro on 2018/11/6.
  */
+@ApiIgnore
 @Controller
 @Api(tags = "SmsHomeBrandController", description = "首页品牌管理")
 @RequestMapping("/home/brand")

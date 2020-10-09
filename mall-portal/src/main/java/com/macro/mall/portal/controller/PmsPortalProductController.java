@@ -17,15 +17,20 @@ import java.util.List;
 
 /**
  * 前台商品管理Controller
- * Created by macro on 2020/4/6.
+ *
+ * @author macro
+ * @date 2020/4/6
  */
 @Controller
-@Api(tags = "PmsPortalProductController", description = "前台商品管理")
+@Api(tags = "前台商品管理")
 @RequestMapping("/product")
 public class PmsPortalProductController {
 
-    @Autowired
-    private PmsPortalProductService portalProductService;
+    private final PmsPortalProductService portalProductService;
+
+    public PmsPortalProductController(PmsPortalProductService portalProductService) {
+        this.portalProductService = portalProductService;
+    }
 
     @ApiOperation(value = "综合搜索、筛选、排序")
     @ApiImplicitParam(name = "sort", value = "排序字段:0->按相关度；1->按新品；2->按销量；3->价格从低到高；4->价格从高到低",

@@ -6,7 +6,6 @@ import com.macro.mall.model.SmsCouponHistory;
 import com.macro.mall.service.SmsCouponHistoryService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -17,14 +16,19 @@ import java.util.List;
 
 /**
  * 优惠券领取记录管理Controller
- * Created by macro on 2018/11/6.
+ *
+ * @author macro
+ * @date 2018/11/6
  */
 @Controller
-@Api(tags = "SmsCouponHistoryController", description = "优惠券领取记录管理")
+@Api(tags = "优惠券领取记录管理")
 @RequestMapping("/couponHistory")
 public class SmsCouponHistoryController {
-    @Autowired
-    private SmsCouponHistoryService historyService;
+    private final SmsCouponHistoryService historyService;
+
+    public SmsCouponHistoryController(SmsCouponHistoryService historyService) {
+        this.historyService = historyService;
+    }
 
     @ApiOperation("根据优惠券id，使用状态，订单编号分页获取领取记录")
     @RequestMapping(value = "/list", method = RequestMethod.GET)

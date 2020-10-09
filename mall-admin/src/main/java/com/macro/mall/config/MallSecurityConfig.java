@@ -19,7 +19,9 @@ import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * mall-security模块相关配置
- * Created by macro on 2019/11/9.
+ *
+ * @author macro
+ * @date 2019/11/9
  */
 @Configuration
 @EnableWebSecurity
@@ -31,6 +33,7 @@ public class MallSecurityConfig extends SecurityConfig {
     @Autowired
     private UmsResourceService resourceService;
 
+    @Override
     @Bean
     public UserDetailsService userDetailsService() {
         //获取登录用户信息
@@ -39,16 +42,13 @@ public class MallSecurityConfig extends SecurityConfig {
 
     @Bean
     public DynamicSecurityService dynamicSecurityService() {
-        return new DynamicSecurityService() {
-            @Override
-            public Map<String, ConfigAttribute> loadDataSource() {
-                Map<String, ConfigAttribute> map = new ConcurrentHashMap<>();
-                List<UmsResource> resourceList = resourceService.listAll();
-                for (UmsResource resource : resourceList) {
-                    map.put(resource.getUrl(), new org.springframework.security.access.SecurityConfig(resource.getId() + ":" + resource.getName()));
-                }
-                return map;
+        return () -> {
+            Map<String, ConfigAttribute> map = new ConcurrentHashMap<>();
+            List<UmsResource> resourceList = resourceService.listAll();
+            for (UmsResource resource : resourceList) {
+                map.put(resource.getUrl(), new org.springframework.security.access.SecurityConfig(resource.getId() + ":" + resource.getName()));
             }
+            return map;
         };
     }
 }

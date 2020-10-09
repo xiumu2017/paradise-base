@@ -7,7 +7,6 @@ import com.macro.mall.model.UmsMenu;
 import com.macro.mall.service.UmsMenuService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,15 +14,20 @@ import java.util.List;
 
 /**
  * 后台菜单管理Controller
- * Created by macro on 2020/2/4.
+ *
+ * @author macro
+ * @date 2020/2/4
  */
 @Controller
-@Api(tags = "UmsMenuController", description = "后台菜单管理")
+@Api(tags = "后台菜单管理")
 @RequestMapping("/menu")
 public class UmsMenuController {
 
-    @Autowired
-    private UmsMenuService menuService;
+    private final UmsMenuService menuService;
+
+    public UmsMenuController(UmsMenuService menuService) {
+        this.menuService = menuService;
+    }
 
     @ApiOperation("添加后台菜单")
     @RequestMapping(value = "/create", method = RequestMethod.POST)

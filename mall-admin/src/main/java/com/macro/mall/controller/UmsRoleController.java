@@ -2,11 +2,13 @@ package com.macro.mall.controller;
 
 import com.macro.mall.common.api.CommonPage;
 import com.macro.mall.common.api.CommonResult;
-import com.macro.mall.model.*;
+import com.macro.mall.model.UmsMenu;
+import com.macro.mall.model.UmsPermission;
+import com.macro.mall.model.UmsResource;
+import com.macro.mall.model.UmsRole;
 import com.macro.mall.service.UmsRoleService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,14 +16,19 @@ import java.util.List;
 
 /**
  * 后台用户角色管理
- * Created by macro on 2018/9/30.
+ *
+ * @author macro
+ * @date 2018/9/30
  */
 @Controller
-@Api(tags = "UmsRoleController", description = "后台用户角色管理")
+@Api(tags = "后台用户角色管理")
 @RequestMapping("/role")
 public class UmsRoleController {
-    @Autowired
-    private UmsRoleService roleService;
+    private final UmsRoleService roleService;
+
+    public UmsRoleController(UmsRoleService roleService) {
+        this.roleService = roleService;
+    }
 
     @ApiOperation("添加角色")
     @RequestMapping(value = "/create", method = RequestMethod.POST)

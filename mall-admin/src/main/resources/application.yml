@@ -7,12 +7,14 @@ spring:
     multipart:
       enabled: true #开启文件上传
       max-file-size: 10MB #限制文件上传大小为10M
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
 
 mybatis:
   mapper-locations:
     - classpath:dao/*.xml
     - classpath*:com/**/mapper/*.xml
-
 jwt:
   tokenHeader: Authorization #JWT存储的请求头
   secret: mall-admin-secret #JWT加解密使用的密钥
@@ -31,6 +33,7 @@ secure:
   ignored:
     urls: #安全路径白名单
       - /swagger-ui.html
+      - /doc.html
       - /swagger-resources/**
       - /swagger/**
       - /**/v2/api-docs

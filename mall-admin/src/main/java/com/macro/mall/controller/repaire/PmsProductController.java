@@ -1,4 +1,4 @@
-package com.macro.mall.controller;
+package com.macro.mall.controller.repaire;
 
 import com.macro.mall.common.api.CommonPage;
 import com.macro.mall.common.api.CommonResult;
@@ -9,7 +9,6 @@ import com.macro.mall.model.PmsProduct;
 import com.macro.mall.service.PmsProductService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,14 +16,19 @@ import java.util.List;
 
 /**
  * 商品管理Controller
- * Created by macro on 2018/4/26.
+ *
+ * @author macro
+ * @date 2018/4/26
  */
 @Controller
-@Api(tags = "PmsProductController", description = "商品管理")
+@Api(tags = "商品管理")
 @RequestMapping("/product")
 public class PmsProductController {
-    @Autowired
-    private PmsProductService productService;
+    private final PmsProductService productService;
+
+    public PmsProductController(PmsProductService productService) {
+        this.productService = productService;
+    }
 
     @ApiOperation("创建商品")
     @RequestMapping(value = "/create", method = RequestMethod.POST)
@@ -76,7 +80,7 @@ public class PmsProductController {
         return CommonResult.success(productList);
     }
 
-    @ApiOperation("批量修改审核状态")
+    @ApiOperation(value = "批量修改审核状态", hidden = true)
     @RequestMapping(value = "/update/verifyStatus", method = RequestMethod.POST)
     @ResponseBody
     public CommonResult updateVerifyStatus(@RequestParam("ids") List<Long> ids,
@@ -103,7 +107,7 @@ public class PmsProductController {
         }
     }
 
-    @ApiOperation("批量推荐商品")
+    @ApiOperation(value = "批量推荐商品", hidden = true)
     @RequestMapping(value = "/update/recommendStatus", method = RequestMethod.POST)
     @ResponseBody
     public CommonResult updateRecommendStatus(@RequestParam("ids") List<Long> ids,
@@ -116,7 +120,7 @@ public class PmsProductController {
         }
     }
 
-    @ApiOperation("批量设为新品")
+    @ApiOperation(value = "批量设为新品", hidden = true)
     @RequestMapping(value = "/update/newStatus", method = RequestMethod.POST)
     @ResponseBody
     public CommonResult updateNewStatus(@RequestParam("ids") List<Long> ids,

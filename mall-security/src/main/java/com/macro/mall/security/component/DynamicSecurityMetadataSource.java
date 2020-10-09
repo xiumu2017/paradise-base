@@ -13,7 +13,9 @@ import java.util.*;
 
 /**
  * 动态权限数据源，用于获取动态权限规则
- * Created by macro on 2020/2/7.
+ *
+ * @author macro
+ * @date 2020/2/7
  */
 public class DynamicSecurityMetadataSource implements FilterInvocationSecurityMetadataSource {
 
@@ -33,16 +35,16 @@ public class DynamicSecurityMetadataSource implements FilterInvocationSecurityMe
 
     @Override
     public Collection<ConfigAttribute> getAttributes(Object o) throws IllegalArgumentException {
-        if (configAttributeMap == null) this.loadDataSource();
+        if (configAttributeMap == null) {
+            this.loadDataSource();
+        }
         List<ConfigAttribute>  configAttributes = new ArrayList<>();
         //获取当前访问的路径
         String url = ((FilterInvocation) o).getRequestUrl();
         String path = URLUtil.getPath(url);
         PathMatcher pathMatcher = new AntPathMatcher();
-        Iterator<String> iterator = configAttributeMap.keySet().iterator();
         //获取访问该路径所需资源
-        while (iterator.hasNext()) {
-            String pattern = iterator.next();
+        for (String pattern : configAttributeMap.keySet()) {
             if (pathMatcher.match(pattern, path)) {
                 configAttributes.add(configAttributeMap.get(pattern));
             }

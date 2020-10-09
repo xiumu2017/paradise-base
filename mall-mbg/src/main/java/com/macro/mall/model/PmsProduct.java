@@ -3,21 +3,20 @@ package com.macro.mall.model;
 import io.swagger.annotations.ApiModelProperty;
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.Date;
 
 public class PmsProduct implements Serializable {
+    @ApiModelProperty(value = "自增主键")
     private Long id;
 
-    private Long brandId;
-
+    @ApiModelProperty(value = "商品分类ID")
     private Long productCategoryId;
-
-    private Long feightTemplateId;
 
     private Long productAttributeCategoryId;
 
+    @ApiModelProperty(value = "商品名称")
     private String name;
 
+    @ApiModelProperty(value = "商品小图")
     private String pic;
 
     @ApiModelProperty(value = "货号")
@@ -44,19 +43,11 @@ public class PmsProduct implements Serializable {
     @ApiModelProperty(value = "销量")
     private Integer sale;
 
+    @ApiModelProperty(value = "价格")
     private BigDecimal price;
 
     @ApiModelProperty(value = "促销价格")
     private BigDecimal promotionPrice;
-
-    @ApiModelProperty(value = "赠送的成长值")
-    private Integer giftGrowth;
-
-    @ApiModelProperty(value = "赠送的积分")
-    private Integer giftPoint;
-
-    @ApiModelProperty(value = "限制使用的积分数")
-    private Integer usePointLimit;
 
     @ApiModelProperty(value = "副标题")
     private String subTitle;
@@ -64,61 +55,41 @@ public class PmsProduct implements Serializable {
     @ApiModelProperty(value = "市场价")
     private BigDecimal originalPrice;
 
-    @ApiModelProperty(value = "库存")
-    private Integer stock;
-
-    @ApiModelProperty(value = "库存预警值")
-    private Integer lowStock;
-
     @ApiModelProperty(value = "单位")
     private String unit;
 
-    @ApiModelProperty(value = "商品重量，默认为克")
-    private BigDecimal weight;
-
-    @ApiModelProperty(value = "是否为预告商品：0->不是；1->是")
-    private Integer previewStatus;
-
-    @ApiModelProperty(value = "以逗号分割的产品服务：1->无忧退货；2->快速退款；3->免费包邮")
-    private String serviceIds;
-
+    @ApiModelProperty(value = "搜索关键词")
     private String keywords;
-
-    private String note;
 
     @ApiModelProperty(value = "画册图片，连产品图片限制为5张，以逗号分割")
     private String albumPics;
 
+    @ApiModelProperty(value = "详情页标题")
     private String detailTitle;
-
-    @ApiModelProperty(value = "促销开始时间")
-    private Date promotionStartTime;
-
-    @ApiModelProperty(value = "促销结束时间")
-    private Date promotionEndTime;
-
-    @ApiModelProperty(value = "活动限购数量")
-    private Integer promotionPerLimit;
-
-    @ApiModelProperty(value = "促销类型：0->没有促销使用原价;1->使用促销价；2->使用会员价；3->使用阶梯价格；4->使用满减价格；5->限时购")
-    private Integer promotionType;
-
-    @ApiModelProperty(value = "品牌名称")
-    private String brandName;
 
     @ApiModelProperty(value = "商品分类名称")
     private String productCategoryName;
 
+    @ApiModelProperty(value = "地域ID")
+    private Long regionId;
+
+    @ApiModelProperty(value = "地域名称")
+    private String region;
+
+    @ApiModelProperty(value = "是否询价：0->一口价；1-> 询价")
+    private Integer isBargain;
+
     @ApiModelProperty(value = "商品描述")
     private String description;
 
+    @ApiModelProperty(value = "详情页文本描述")
     private String detailDesc;
 
     @ApiModelProperty(value = "产品详情网页内容")
     private String detailHtml;
 
-    @ApiModelProperty(value = "移动端网页详情")
-    private String detailMobileHtml;
+    @ApiModelProperty(value = "询价商品收费标准")
+    private String chargeStandardJson;
 
     private static final long serialVersionUID = 1L;
 
@@ -130,28 +101,12 @@ public class PmsProduct implements Serializable {
         this.id = id;
     }
 
-    public Long getBrandId() {
-        return brandId;
-    }
-
-    public void setBrandId(Long brandId) {
-        this.brandId = brandId;
-    }
-
     public Long getProductCategoryId() {
         return productCategoryId;
     }
 
     public void setProductCategoryId(Long productCategoryId) {
         this.productCategoryId = productCategoryId;
-    }
-
-    public Long getFeightTemplateId() {
-        return feightTemplateId;
-    }
-
-    public void setFeightTemplateId(Long feightTemplateId) {
-        this.feightTemplateId = feightTemplateId;
     }
 
     public Long getProductAttributeCategoryId() {
@@ -258,30 +213,6 @@ public class PmsProduct implements Serializable {
         this.promotionPrice = promotionPrice;
     }
 
-    public Integer getGiftGrowth() {
-        return giftGrowth;
-    }
-
-    public void setGiftGrowth(Integer giftGrowth) {
-        this.giftGrowth = giftGrowth;
-    }
-
-    public Integer getGiftPoint() {
-        return giftPoint;
-    }
-
-    public void setGiftPoint(Integer giftPoint) {
-        this.giftPoint = giftPoint;
-    }
-
-    public Integer getUsePointLimit() {
-        return usePointLimit;
-    }
-
-    public void setUsePointLimit(Integer usePointLimit) {
-        this.usePointLimit = usePointLimit;
-    }
-
     public String getSubTitle() {
         return subTitle;
     }
@@ -298,22 +229,6 @@ public class PmsProduct implements Serializable {
         this.originalPrice = originalPrice;
     }
 
-    public Integer getStock() {
-        return stock;
-    }
-
-    public void setStock(Integer stock) {
-        this.stock = stock;
-    }
-
-    public Integer getLowStock() {
-        return lowStock;
-    }
-
-    public void setLowStock(Integer lowStock) {
-        this.lowStock = lowStock;
-    }
-
     public String getUnit() {
         return unit;
     }
@@ -322,44 +237,12 @@ public class PmsProduct implements Serializable {
         this.unit = unit;
     }
 
-    public BigDecimal getWeight() {
-        return weight;
-    }
-
-    public void setWeight(BigDecimal weight) {
-        this.weight = weight;
-    }
-
-    public Integer getPreviewStatus() {
-        return previewStatus;
-    }
-
-    public void setPreviewStatus(Integer previewStatus) {
-        this.previewStatus = previewStatus;
-    }
-
-    public String getServiceIds() {
-        return serviceIds;
-    }
-
-    public void setServiceIds(String serviceIds) {
-        this.serviceIds = serviceIds;
-    }
-
     public String getKeywords() {
         return keywords;
     }
 
     public void setKeywords(String keywords) {
         this.keywords = keywords;
-    }
-
-    public String getNote() {
-        return note;
-    }
-
-    public void setNote(String note) {
-        this.note = note;
     }
 
     public String getAlbumPics() {
@@ -378,52 +261,36 @@ public class PmsProduct implements Serializable {
         this.detailTitle = detailTitle;
     }
 
-    public Date getPromotionStartTime() {
-        return promotionStartTime;
-    }
-
-    public void setPromotionStartTime(Date promotionStartTime) {
-        this.promotionStartTime = promotionStartTime;
-    }
-
-    public Date getPromotionEndTime() {
-        return promotionEndTime;
-    }
-
-    public void setPromotionEndTime(Date promotionEndTime) {
-        this.promotionEndTime = promotionEndTime;
-    }
-
-    public Integer getPromotionPerLimit() {
-        return promotionPerLimit;
-    }
-
-    public void setPromotionPerLimit(Integer promotionPerLimit) {
-        this.promotionPerLimit = promotionPerLimit;
-    }
-
-    public Integer getPromotionType() {
-        return promotionType;
-    }
-
-    public void setPromotionType(Integer promotionType) {
-        this.promotionType = promotionType;
-    }
-
-    public String getBrandName() {
-        return brandName;
-    }
-
-    public void setBrandName(String brandName) {
-        this.brandName = brandName;
-    }
-
     public String getProductCategoryName() {
         return productCategoryName;
     }
 
     public void setProductCategoryName(String productCategoryName) {
         this.productCategoryName = productCategoryName;
+    }
+
+    public Long getRegionId() {
+        return regionId;
+    }
+
+    public void setRegionId(Long regionId) {
+        this.regionId = regionId;
+    }
+
+    public String getRegion() {
+        return region;
+    }
+
+    public void setRegion(String region) {
+        this.region = region;
+    }
+
+    public Integer getIsBargain() {
+        return isBargain;
+    }
+
+    public void setIsBargain(Integer isBargain) {
+        this.isBargain = isBargain;
     }
 
     public String getDescription() {
@@ -450,12 +317,12 @@ public class PmsProduct implements Serializable {
         this.detailHtml = detailHtml;
     }
 
-    public String getDetailMobileHtml() {
-        return detailMobileHtml;
+    public String getChargeStandardJson() {
+        return chargeStandardJson;
     }
 
-    public void setDetailMobileHtml(String detailMobileHtml) {
-        this.detailMobileHtml = detailMobileHtml;
+    public void setChargeStandardJson(String chargeStandardJson) {
+        this.chargeStandardJson = chargeStandardJson;
     }
 
     @Override
@@ -465,9 +332,7 @@ public class PmsProduct implements Serializable {
         sb.append(" [");
         sb.append("Hash = ").append(hashCode());
         sb.append(", id=").append(id);
-        sb.append(", brandId=").append(brandId);
         sb.append(", productCategoryId=").append(productCategoryId);
-        sb.append(", feightTemplateId=").append(feightTemplateId);
         sb.append(", productAttributeCategoryId=").append(productAttributeCategoryId);
         sb.append(", name=").append(name);
         sb.append(", pic=").append(pic);
@@ -481,31 +346,20 @@ public class PmsProduct implements Serializable {
         sb.append(", sale=").append(sale);
         sb.append(", price=").append(price);
         sb.append(", promotionPrice=").append(promotionPrice);
-        sb.append(", giftGrowth=").append(giftGrowth);
-        sb.append(", giftPoint=").append(giftPoint);
-        sb.append(", usePointLimit=").append(usePointLimit);
         sb.append(", subTitle=").append(subTitle);
         sb.append(", originalPrice=").append(originalPrice);
-        sb.append(", stock=").append(stock);
-        sb.append(", lowStock=").append(lowStock);
         sb.append(", unit=").append(unit);
-        sb.append(", weight=").append(weight);
-        sb.append(", previewStatus=").append(previewStatus);
-        sb.append(", serviceIds=").append(serviceIds);
         sb.append(", keywords=").append(keywords);
-        sb.append(", note=").append(note);
         sb.append(", albumPics=").append(albumPics);
         sb.append(", detailTitle=").append(detailTitle);
-        sb.append(", promotionStartTime=").append(promotionStartTime);
-        sb.append(", promotionEndTime=").append(promotionEndTime);
-        sb.append(", promotionPerLimit=").append(promotionPerLimit);
-        sb.append(", promotionType=").append(promotionType);
-        sb.append(", brandName=").append(brandName);
         sb.append(", productCategoryName=").append(productCategoryName);
+        sb.append(", regionId=").append(regionId);
+        sb.append(", region=").append(region);
+        sb.append(", isBargain=").append(isBargain);
         sb.append(", description=").append(description);
         sb.append(", detailDesc=").append(detailDesc);
         sb.append(", detailHtml=").append(detailHtml);
-        sb.append(", detailMobileHtml=").append(detailMobileHtml);
+        sb.append(", chargeStandardJson=").append(chargeStandardJson);
         sb.append(", serialVersionUID=").append(serialVersionUID);
         sb.append("]");
         return sb.toString();

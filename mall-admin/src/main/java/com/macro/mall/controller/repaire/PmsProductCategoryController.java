@@ -1,4 +1,4 @@
-package com.macro.mall.controller;
+package com.macro.mall.controller.repaire;
 
 import com.macro.mall.common.api.CommonPage;
 import com.macro.mall.common.api.CommonResult;
@@ -8,28 +8,34 @@ import com.macro.mall.model.PmsProductCategory;
 import com.macro.mall.service.PmsProductCategoryService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import springfox.documentation.annotations.ApiIgnore;
 
 import java.util.List;
 
 /**
  * 商品分类模块Controller
- * Created by macro on 2018/4/26.
+ *
+ * @author macro
+ * @date 2018/4/26
  */
 @Controller
-@Api(tags = "PmsProductCategoryController", description = "商品分类管理")
+@Api(tags = "商品分类管理")
 @RequestMapping("/productCategory")
+@Validated
 public class PmsProductCategoryController {
-    @Autowired
-    private PmsProductCategoryService productCategoryService;
+    private final PmsProductCategoryService productCategoryService;
+
+    public PmsProductCategoryController(PmsProductCategoryService productCategoryService) {
+        this.productCategoryService = productCategoryService;
+    }
 
     @ApiOperation("添加产品分类")
     @RequestMapping(value = "/create", method = RequestMethod.POST)
     @ResponseBody
-    public CommonResult create(@Validated @RequestBody PmsProductCategoryParam productCategoryParam) {
+    public CommonResult create(@RequestBody @Validated PmsProductCategoryParam productCategoryParam) {
         int count = productCategoryService.create(productCategoryParam);
         if (count > 0) {
             return CommonResult.success(count);
@@ -42,8 +48,7 @@ public class PmsProductCategoryController {
     @RequestMapping(value = "/update/{id}", method = RequestMethod.POST)
     @ResponseBody
     public CommonResult update(@PathVariable Long id,
-                         @Validated
-                         @RequestBody PmsProductCategoryParam productCategoryParam) {
+                               @Validated @RequestBody PmsProductCategoryParam productCategoryParam) {
         int count = productCategoryService.update(id, productCategoryParam);
         if (count > 0) {
             return CommonResult.success(count);
@@ -52,13 +57,24 @@ public class PmsProductCategoryController {
         }
     }
 
-    @ApiOperation("分页查询商品分类")
+    @ApiOperation(value = "分页查询商品分类", hidden = true)
     @RequestMapping(value = "/list/{parentId}", method = RequestMethod.GET)
     @ResponseBody
     public CommonResult<CommonPage<PmsProductCategory>> getList(@PathVariable Long parentId,
                                                                 @RequestParam(value = "pageSize", defaultValue = "5") Integer pageSize,
                                                                 @RequestParam(value = "pageNum", defaultValue = "1") Integer pageNum) {
         List<PmsProductCategory> productCategoryList = productCategoryService.getList(parentId, pageSize, pageNum);
+        return CommonResult.success(CommonPage.restPage(productCategoryList));
+    }
+
+    @ApiOperation("分页查询商品分类")
+    @RequestMapping(value = "/page", method = RequestMethod.GET)
+    @ResponseBody
+    public CommonResult<CommonPage<PmsProductCategoryWithChildrenItem>> page(@RequestParam(required = false) Long parentId,
+                                                                             @RequestParam(required = false) String keywords,
+                                                                             @RequestParam(value = "pageSize", defaultValue = "5") Integer pageSize,
+                                                                             @RequestParam(value = "pageNum", defaultValue = "1") Integer pageNum) {
+        List<PmsProductCategoryWithChildrenItem> productCategoryList = productCategoryService.select4Page(parentId, pageSize, pageNum, keywords);
         return CommonResult.success(CommonPage.restPage(productCategoryList));
     }
 
@@ -82,6 +98,7 @@ public class PmsProductCategoryController {
         }
     }
 
+    @ApiIgnore
     @ApiOperation("修改导航栏显示状态")
     @RequestMapping(value = "/update/navStatus", method = RequestMethod.POST)
     @ResponseBody
@@ -94,6 +111,7 @@ public class PmsProductCategoryController {
         }
     }
 
+    @ApiIgnore
     @ApiOperation("修改显示状态")
     @RequestMapping(value = "/update/showStatus", method = RequestMethod.POST)
     @ResponseBody
