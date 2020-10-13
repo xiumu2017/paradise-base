@@ -9,7 +9,6 @@ import com.macro.mall.portal.service.PmsPortalProductService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -38,12 +37,11 @@ public class PmsPortalProductController {
     @RequestMapping(value = "/search", method = RequestMethod.GET)
     @ResponseBody
     public CommonResult<CommonPage<PmsProduct>> search(@RequestParam(required = false) String keyword,
-                                                       @RequestParam(required = false) Long brandId,
                                                        @RequestParam(required = false) Long productCategoryId,
                                                        @RequestParam(required = false, defaultValue = "0") Integer pageNum,
                                                        @RequestParam(required = false, defaultValue = "5") Integer pageSize,
                                                        @RequestParam(required = false, defaultValue = "0") Integer sort) {
-        List<PmsProduct> productList = portalProductService.search(keyword, brandId, productCategoryId, pageNum, pageSize, sort);
+        List<PmsProduct> productList = portalProductService.search(keyword, productCategoryId, pageNum, pageSize, sort);
         return CommonResult.success(CommonPage.restPage(productList));
     }
 

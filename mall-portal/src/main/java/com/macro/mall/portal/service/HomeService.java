@@ -3,6 +3,7 @@ package com.macro.mall.portal.service;
 import com.macro.mall.model.CmsSubject;
 import com.macro.mall.model.PmsProduct;
 import com.macro.mall.model.PmsProductCategory;
+import com.macro.mall.model.YxxHomeBanner;
 import com.macro.mall.portal.domain.HomeContentResult;
 
 import java.util.List;
@@ -12,6 +13,13 @@ import java.util.List;
  * Created by macro on 2019/1/28.
  */
 public interface HomeService {
+    /**
+     * 查询首页 轮播图
+     *
+     * @param regionId 区域ID
+     * @return 轮播图列表
+     */
+    List<YxxHomeBanner> homeBannerList(Long regionId);
 
     /**
      * 获取首页内容
@@ -25,12 +33,14 @@ public interface HomeService {
 
     /**
      * 获取商品分类
+     *
      * @param parentId 0:获取一级分类；其他：获取指定二级分类
      */
     List<PmsProductCategory> getProductCateList(Long parentId);
 
     /**
      * 根据专题分类分页获取专题
+     *
      * @param cateId 专题分类id
      */
     List<CmsSubject> getSubjectList(Long cateId, Integer pageSize, Integer pageNum);

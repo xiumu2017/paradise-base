@@ -48,7 +48,7 @@
     </select>
 
     <update id="updateSkuStock">
-        UPDATE pms_sku_stock
+        UPDATE pms_product_sku
         SET
             stock = CASE id
             <foreach collection="itemList" item="item">
@@ -75,7 +75,7 @@
         </foreach>
     </update>
     <update id="releaseSkuStockLock">
-        UPDATE pms_sku_stock
+        UPDATE pms_product_sku
         SET
         lock_stock = CASE id
         <foreach collection="itemList" item="item">

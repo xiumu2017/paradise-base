@@ -1,9 +1,7 @@
 package com.macro.mall.dto;
 
-import com.macro.mall.model.CmsSubjectProductRelation;
 import com.macro.mall.model.PmsProduct;
-import com.macro.mall.model.PmsProductAttributeValue;
-import com.macro.mall.model.PmsSkuStock;
+import com.macro.mall.model.PmsProductSku;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -28,8 +26,11 @@ public class PmsProductParam extends PmsProduct {
 //    @ApiModelProperty("商品会员价格设置")
 //    private List<PmsMemberPrice> memberPriceList;
 
-    @ApiModelProperty("商品的sku库存信息")
-    private List<PmsSkuStock> skuStockList;
+//    @ApiModelProperty("商品的sku库存信息")
+//    private List<PmsSkuStock> skuStockList;
+
+    @ApiModelProperty("商品的SKU规格信息")
+    private List<PmsProductSku> productSkuList;
 
 //    @ApiModelProperty("商品参数及自定义规格属性")
 //    private List<PmsProductAttributeValue> productAttributeValueList;

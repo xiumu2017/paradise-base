@@ -36,7 +36,7 @@
         FROM
             pms_product p
             LEFT JOIN pms_product_attribute pa ON p.product_attribute_category_id = pa.product_attribute_category_id
-            LEFT JOIN pms_sku_stock ps ON p.id=ps.product_id
+            LEFT JOIN pms_product_sku ps ON p.id=ps.product_id
         WHERE
             p.id = #{id}
             AND pa.type = 0
@@ -63,7 +63,7 @@
             full_re.reduce_price full_reduce_price
         FROM
             pms_product p
-            LEFT JOIN pms_sku_stock sku ON p.id = sku.product_id
+            LEFT JOIN pms_product_sku sku ON p.id = sku.product_id
             LEFT JOIN pms_product_ladder ladder ON p.id = ladder.product_id
             LEFT JOIN pms_product_full_reduction full_re ON p.id = full_re.product_id
         WHERE

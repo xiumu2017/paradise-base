@@ -1,6 +1,8 @@
 package com.macro.mall.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.annotations.ApiModelProperty;
+
 import java.io.Serializable;
 import java.math.BigDecimal;
 
@@ -11,6 +13,8 @@ public class PmsProduct implements Serializable {
     @ApiModelProperty(value = "商品分类ID")
     private Long productCategoryId;
 
+    @JsonIgnore
+    @ApiModelProperty(value = "商品分类ID",hidden = true)
     private Long productAttributeCategoryId;
 
     @ApiModelProperty(value = "商品名称")
@@ -28,12 +32,15 @@ public class PmsProduct implements Serializable {
     @ApiModelProperty(value = "上架状态：0->下架；1->上架")
     private Integer publishStatus;
 
+    @JsonIgnore
     @ApiModelProperty(value = "新品状态:0->不是新品；1->新品")
     private Integer newStatus;
 
+    @JsonIgnore
     @ApiModelProperty(value = "推荐状态；0->不推荐；1->推荐")
     private Integer recommandStatus;
 
+    @JsonIgnore
     @ApiModelProperty(value = "审核状态：0->未审核；1->审核通过")
     private Integer verifyStatus;
 
@@ -46,12 +53,14 @@ public class PmsProduct implements Serializable {
     @ApiModelProperty(value = "价格")
     private BigDecimal price;
 
+    @JsonIgnore
     @ApiModelProperty(value = "促销价格")
     private BigDecimal promotionPrice;
 
     @ApiModelProperty(value = "副标题")
     private String subTitle;
 
+    @JsonIgnore
     @ApiModelProperty(value = "市场价")
     private BigDecimal originalPrice;
 

@@ -9,6 +9,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import springfox.documentation.annotations.ApiIgnore;
 
 import java.util.List;
 
@@ -18,6 +19,7 @@ import java.util.List;
  * @author macro
  * @date 2018/10/11
  */
+@ApiIgnore
 @Controller
 @Api(tags = "订单管理")
 @RequestMapping("/order")

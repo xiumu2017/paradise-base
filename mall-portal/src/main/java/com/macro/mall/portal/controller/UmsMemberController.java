@@ -5,9 +5,9 @@ import cn.binarywang.wx.miniapp.bean.WxMaJscode2SessionResult;
 import cn.binarywang.wx.miniapp.bean.WxMaPhoneNumberInfo;
 import cn.binarywang.wx.miniapp.bean.WxMaUserInfo;
 import com.macro.mall.common.api.CommonResult;
-import com.macro.mall.model.UmsMember;
+import com.macro.mall.model.YxxMember;
 import com.macro.mall.portal.config.WxMaConfiguration;
-import com.macro.mall.portal.service.UmsMemberService;
+import com.macro.mall.portal.service.impl.YxxMemberService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -40,9 +40,9 @@ public class UmsMemberController {
     @Value("${jwt.tokenHead}")
     private String tokenHead;
 
-    private final UmsMemberService memberService;
+    private final YxxMemberService memberService;
 
-    public UmsMemberController(UmsMemberService memberService) {
+    public UmsMemberController(YxxMemberService memberService) {
         this.memberService = memberService;
     }
 
@@ -149,7 +149,18 @@ public class UmsMemberController {
         if (principal == null) {
             return CommonResult.unauthorized(null);
         }
-        UmsMember member = memberService.getCurrentMember();
+        YxxMember member = memberService.getCurrentMember();
+        return CommonResult.success(member);
+    }
+
+    @ApiOperation("切换站点区域")
+    @PostMapping("/region/switch")
+    public CommonResult changeRegion(Principal principal, Long regionId) {
+        if (principal == null) {
+            return CommonResult.unauthorized(null);
+        }
+        YxxMember member = memberService.getCurrentMember();
+        member.setRegionId(regionId);
         return CommonResult.success(member);
     }
 

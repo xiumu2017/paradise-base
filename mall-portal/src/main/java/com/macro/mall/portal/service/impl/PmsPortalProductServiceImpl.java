@@ -18,7 +18,9 @@ import java.util.stream.Collectors;
 
 /**
  * 前台订单管理Service实现类
- * Created by macro on 2020/4/6.
+ *
+ * @author macro
+ * @date 2020/4/6
  */
 @Service
 public class PmsPortalProductServiceImpl implements PmsPortalProductService {
@@ -27,31 +29,22 @@ public class PmsPortalProductServiceImpl implements PmsPortalProductService {
     @Autowired
     private PmsProductCategoryMapper productCategoryMapper;
     @Autowired
-    private PmsBrandMapper brandMapper;
-    @Autowired
     private PmsProductAttributeMapper productAttributeMapper;
     @Autowired
     private PmsProductAttributeValueMapper productAttributeValueMapper;
     @Autowired
     private PmsSkuStockMapper skuStockMapper;
     @Autowired
-    private PmsProductLadderMapper productLadderMapper;
-    @Autowired
-    private PmsProductFullReductionMapper productFullReductionMapper;
-    @Autowired
     private PortalProductDao portalProductDao;
 
     @Override
-    public List<PmsProduct> search(String keyword, Long brandId, Long productCategoryId, Integer pageNum, Integer pageSize, Integer sort) {
+    public List<PmsProduct> search(String keyword, Long productCategoryId, Integer pageNum, Integer pageSize, Integer sort) {
         PageHelper.startPage(pageNum, pageSize);
         PmsProductExample example = new PmsProductExample();
         PmsProductExample.Criteria criteria = example.createCriteria();
         criteria.andDeleteStatusEqualTo(0);
         if (StrUtil.isNotEmpty(keyword)) {
             criteria.andNameLike("%" + keyword + "%");
-        }
-        if (brandId != null) {
-//            criteria.andBrandIdEqualTo(brandId);
         }
         if (productCategoryId != null) {
             criteria.andProductCategoryIdEqualTo(productCategoryId);
@@ -73,10 +66,9 @@ public class PmsPortalProductServiceImpl implements PmsPortalProductService {
     public List<PmsProductCategoryNode> categoryTreeList() {
         PmsProductCategoryExample example = new PmsProductCategoryExample();
         List<PmsProductCategory> allList = productCategoryMapper.selectByExample(example);
-        List<PmsProductCategoryNode> result = allList.stream()
+        return allList.stream()
                 .filter(item -> item.getParentId().equals(0L))
                 .map(item -> covert(item, allList)).collect(Collectors.toList());
-        return result;
     }
 
     @Override
@@ -85,16 +77,13 @@ public class PmsPortalProductServiceImpl implements PmsPortalProductService {
         //获取商品信息
         PmsProduct product = productMapper.selectByPrimaryKey(id);
         result.setProduct(product);
-        //获取品牌信息
-//        PmsBrand brand = brandMapper.selectByPrimaryKey(product.getBrandId());
-//        result.setBrand(brand);
         //获取商品属性信息
         PmsProductAttributeExample attributeExample = new PmsProductAttributeExample();
         attributeExample.createCriteria().andProductAttributeCategoryIdEqualTo(product.getProductAttributeCategoryId());
         List<PmsProductAttribute> productAttributeList = productAttributeMapper.selectByExample(attributeExample);
         result.setProductAttributeList(productAttributeList);
         //获取商品属性值信息
-        if(CollUtil.isNotEmpty(productAttributeList)){
+        if (CollUtil.isNotEmpty(productAttributeList)) {
             List<Long> attributeIds = productAttributeList.stream().map(PmsProductAttribute::getId).collect(Collectors.toList());
             PmsProductAttributeValueExample attributeValueExample = new PmsProductAttributeValueExample();
             attributeValueExample.createCriteria().andProductIdEqualTo(product.getId())
@@ -107,22 +96,8 @@ public class PmsPortalProductServiceImpl implements PmsPortalProductService {
         skuExample.createCriteria().andProductIdEqualTo(product.getId());
         List<PmsSkuStock> skuStockList = skuStockMapper.selectByExample(skuExample);
         result.setSkuStockList(skuStockList);
-        //商品阶梯价格设置
-//        if(product.getPromotionType()==3){
-//            PmsProductLadderExample ladderExample = new PmsProductLadderExample();
-//            ladderExample.createCriteria().andProductIdEqualTo(product.getId());
-//            List<PmsProductLadder> productLadderList = productLadderMapper.selectByExample(ladderExample);
-//            result.setProductLadderList(productLadderList);
-//        }
-        //商品满减价格设置
-//        if(product.getPromotionType()==4){
-//            PmsProductFullReductionExample fullReductionExample = new PmsProductFullReductionExample();
-//            fullReductionExample.createCriteria().andProductIdEqualTo(product.getId());
-//            List<PmsProductFullReduction> productFullReductionList = productFullReductionMapper.selectByExample(fullReductionExample);
-//            result.setProductFullReductionList(productFullReductionList);
-//        }
         //商品可用优惠券
-        result.setCouponList(portalProductDao.getAvailableCouponList(product.getId(),product.getProductCategoryId()));
+        result.setCouponList(portalProductDao.getAvailableCouponList(product.getId(), product.getProductCategoryId()));
         return result;
     }
 

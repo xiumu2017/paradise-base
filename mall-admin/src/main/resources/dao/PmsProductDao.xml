@@ -31,7 +31,7 @@
         LEFT JOIN pms_product_ladder l ON p.id = l.product_id
         LEFT JOIN pms_product_full_reduction pf ON pf.product_id=p.id
         LEFT JOIN pms_member_price m ON m.product_id = p.id
-        LEFT JOIN pms_sku_stock s ON s.product_id = p.id
+        LEFT JOIN pms_product_sku s ON s.product_id = p.id
         LEFT JOIN pms_product_attribute_value a ON a.product_id=p.id
         WHERE p.id=#{id};
     </select>

@@ -1,38 +1,40 @@
 package com.macro.mall.portal.domain;
 
-import com.macro.mall.model.UmsMember;
+import com.macro.mall.model.YxxMember;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 
 /**
  * 会员详情封装
- * Created by macro on 2018/8/3.
+ *
+ * @author macro
+ * @date 2018/8/3
  */
 public class MemberDetails implements UserDetails {
-    private UmsMember umsMember;
+    private YxxMember yxxMember;
 
-    public MemberDetails(UmsMember umsMember) {
-        this.umsMember = umsMember;
+    public MemberDetails(YxxMember yxxMember) {
+        this.yxxMember = yxxMember;
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         //返回当前用户的权限
-        return Arrays.asList(new SimpleGrantedAuthority("TEST"));
+        return Collections.singletonList(new SimpleGrantedAuthority("TEST"));
     }
 
     @Override
     public String getPassword() {
-        return umsMember.getPassword();
+        return yxxMember.getPassword();
     }
 
     @Override
     public String getUsername() {
-        return umsMember.getUsername();
+        return yxxMember.getUsername();
     }
 
     @Override
@@ -52,10 +54,10 @@ public class MemberDetails implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return umsMember.getStatus()==1;
+        return yxxMember.getEnable() == 1;
     }
 
-    public UmsMember getUmsMember() {
-        return umsMember;
+    public YxxMember getYxxMember() {
+        return yxxMember;
     }
 }
