@@ -21,7 +21,7 @@ import java.util.List;
  * @date 2018/9/30
  */
 @Controller
-@Api(tags = "后台用户角色管理")
+@Api(tags = "8.8 后台用户角色管理")
 @RequestMapping("/role")
 public class UmsRoleController {
     private final UmsRoleService roleService;

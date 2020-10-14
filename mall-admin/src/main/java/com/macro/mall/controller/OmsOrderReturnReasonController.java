@@ -15,9 +15,11 @@ import java.util.List;
 
 /**
  * 退货原因管理Controller
- * Created by macro on 2018/10/17.
+ *
+ * @author macro
+ * @date 2018/10/17
  */
-@ApiIgnore
+@ApiIgnore("订单取消或许会用到")
 @Controller
 @Api(tags = "OmsOrderReturnReasonController", description = "退货原因管理")
 @RequestMapping("/returnReason")

@@ -19,7 +19,7 @@ import java.util.List;
 /**
  * @author Paradise
  */
-@Api(tags = "系统管理-基本信息")
+@Api(tags = "8.1 系统管理-基本信息")
 @RestController
 @RequestMapping("/yxx/system-config")
 public class YxxSystemConfigController {
@@ -115,7 +115,7 @@ public class YxxSystemConfigController {
     }
 
     @ApiOperation("公共费用-删除")
-    @PostMapping("/qa/del/{id}")
+    @PostMapping("/cost/del/{id}")
     public CommonResult deleteCost(@PathVariable Long id) {
         int x = costMapper.deleteByPrimaryKey(id);
         if (x == 1) {
@@ -125,8 +125,8 @@ public class YxxSystemConfigController {
     }
 
     @ApiOperation("公共费用-新增")
-    @PostMapping("/qa/create")
-    public CommonResult createQa(@RequestBody YxxHomeCost cost) {
+    @PostMapping("/cost/create")
+    public CommonResult createCost(@RequestBody YxxHomeCost cost) {
         int x = costMapper.insertSelective(cost);
         if (x == 1) {
             return CommonResult.success(cost);

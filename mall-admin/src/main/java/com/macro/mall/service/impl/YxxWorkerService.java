@@ -3,11 +3,13 @@ package com.macro.mall.service.impl;
 import com.github.pagehelper.PageHelper;
 import com.macro.mall.example.YxxWorkerExample;
 import com.macro.mall.mapper.YxxWorkerMapper;
+import com.macro.mall.model.YxxOrder;
 import com.macro.mall.model.YxxWorker;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author Paradise
@@ -66,4 +68,15 @@ public class YxxWorkerService {
         yxxWorkerMapper.updateByPrimaryKeySelective(worker);
         return worker;
     }
+
+    public List<YxxWorker> getAvailableWorkerList(YxxOrder order) {
+        // 关联技能 查询
+        List<YxxWorker> workers = yxxWorkerMapper.selectByExample(
+                new YxxWorkerExample().createCriteria().andEnableEqualTo(1).andRegionIdEqualTo(order.getRegionId()).example()
+        );
+        // 查询策略权重规则 并计算得分 排序
+        return workers.stream().sorted().collect(Collectors.toList());
+    }
+
+
 }

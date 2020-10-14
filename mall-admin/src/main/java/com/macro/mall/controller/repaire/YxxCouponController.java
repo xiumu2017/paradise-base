@@ -1,4 +1,4 @@
-package com.macro.mall.controller;
+package com.macro.mall.controller.repaire;
 
 import com.macro.mall.common.api.CommonPage;
 import com.macro.mall.common.api.CommonResult;
@@ -18,13 +18,13 @@ import java.util.List;
  * @author macro
  * @date 2018/8/28
  */
-@Controller
-@Api(tags = "优惠券管理")
+@RestController
+@Api(tags = "6.0 优惠券管理")
 @RequestMapping("/coupon")
-public class SmsCouponController {
+public class YxxCouponController {
     private final SmsCouponService couponService;
 
-    public SmsCouponController(SmsCouponService couponService) {
+    public YxxCouponController(SmsCouponService couponService) {
         this.couponService = couponService;
     }
 

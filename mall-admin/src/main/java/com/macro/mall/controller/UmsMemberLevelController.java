@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import springfox.documentation.annotations.ApiIgnore;
 
 import java.util.List;
 
@@ -19,6 +20,7 @@ import java.util.List;
  * @author macro
  * @date 2018/4/26
  */
+@ApiIgnore
 @Controller
 @Api(tags = "会员等级管理")
 @RequestMapping("/memberLevel")

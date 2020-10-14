@@ -1,12 +1,14 @@
 package com.macro.mall.service.impl;
 
 import com.github.pagehelper.PageHelper;
+import com.macro.mall.common.exception.Asserts;
 import com.macro.mall.example.YxxProductChargeStandardExample;
 import com.macro.mall.mapper.YxxProductChargeStandardMapper;
 import com.macro.mall.model.YxxProductChargeStandard;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -21,6 +23,11 @@ public class PmsProductChargeStandardService {
     }
 
     public YxxProductChargeStandard create(YxxProductChargeStandard chargeStandard) {
+        long count = chargeStandardMapper.countByExample(new YxxProductChargeStandardExample().createCriteria()
+                .andNameEqualTo(chargeStandard.getName()).andDeletedEqualTo(0).example());
+        Asserts.pvIsTrue(count < 1, "收费标准名称已存在");
+        chargeStandard.setCreateTime(new Date());
+        chargeStandard.setDeleted(0);
         chargeStandardMapper.insert(chargeStandard);
         return chargeStandard;
     }

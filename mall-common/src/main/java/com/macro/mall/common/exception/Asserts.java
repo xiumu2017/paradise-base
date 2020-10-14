@@ -4,7 +4,9 @@ import com.macro.mall.common.api.IErrorCode;
 
 /**
  * 断言处理类，用于抛出各种API异常
- * Created by macro on 2020/2/27.
+ *
+ * @author macro
+ * @date 2020/2/27
  */
 public class Asserts {
     public static void fail(String message) {
@@ -13,5 +15,17 @@ public class Asserts {
 
     public static void fail(IErrorCode errorCode) {
         throw new ApiException(errorCode);
+    }
+
+    /**
+     * 判断校验结果，并抛出指定异常
+     *
+     * @param flag 参数校验结果
+     * @param msg  返回前台的message
+     */
+    public static void pvIsTrue(boolean flag, String msg) {
+        if (!flag) {
+            throw new ParamValidateFailException(msg);
+        }
     }
 }

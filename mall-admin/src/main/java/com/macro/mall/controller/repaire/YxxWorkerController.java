@@ -11,9 +11,9 @@ import org.springframework.web.bind.annotation.*;
 /**
  * @author Paradise
  */
-@Api(tags = "垚修修维修工管理")
+@Api(tags = "4.2 垚修修维修工管理")
 @RestController
-@RequestMapping("/yxx/member")
+@RequestMapping("/yxx/worker")
 public class YxxWorkerController {
     private final YxxWorkerService yxxWorkerService;
 

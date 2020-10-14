@@ -14,14 +14,14 @@ import java.util.List;
 /**
  * @author Paradise
  */
-@Api(tags = "收费标准管理")
+@Api(tags = "1.3 收费标准管理")
 @Slf4j
 @RestController
-@RequestMapping("/chargeStandard")
-public class PmsProductChargeStandardController {
+@RequestMapping("/charge-standard")
+public class YxxProductChargeStandardController {
     private final PmsProductChargeStandardService chargeStandardService;
 
-    public PmsProductChargeStandardController(PmsProductChargeStandardService chargeStandardService) {
+    public YxxProductChargeStandardController(PmsProductChargeStandardService chargeStandardService) {
         this.chargeStandardService = chargeStandardService;
     }
 
@@ -49,7 +49,9 @@ public class PmsProductChargeStandardController {
 
     @ApiOperation("分页查询")
     @GetMapping("/page")
-    public CommonResult<CommonPage<YxxProductChargeStandard>> page(String name, Integer enable, Integer pageNum, Integer pageSize) {
+    public CommonResult<CommonPage<YxxProductChargeStandard>> page(String name, Integer enable,
+                                                                   @RequestParam Integer pageNum,
+                                                                   @RequestParam Integer pageSize) {
         List<YxxProductChargeStandard> list = chargeStandardService.page(name, pageNum, pageSize, enable);
         return CommonResult.success(CommonPage.restPage(list));
     }

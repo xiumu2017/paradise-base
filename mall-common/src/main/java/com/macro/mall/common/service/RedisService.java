@@ -179,4 +179,14 @@ public interface RedisService {
      * 从List结构中移除属性
      */
     Long lRemove(String key, long count, Object value);
+
+    Long lRemove(String key, long index);
+
+    /**
+     * 列表右侧出队
+     *
+     * @param key redis key
+     * @return value
+     */
+    Object lrPop(String key);
 }

@@ -12,11 +12,13 @@ import springfox.documentation.annotations.ApiIgnore;
 
 /**
  * 订单设置Controller
- * Created by macro on 2018/10/16.
+ *
+ * @author macro
+ * @date 2018/10/16
  */
-@ApiIgnore
+@ApiIgnore("订单设置-超时时间配置-是否自动取消等")
 @Controller
-@Api(tags = "OmsOrderSettingController", description = "订单设置管理")
+@Api(tags = "订单设置管理")
 @RequestMapping("/orderSetting")
 public class OmsOrderSettingController {
     @Autowired
@@ -34,8 +36,8 @@ public class OmsOrderSettingController {
     @RequestMapping(value = "/update/{id}", method = RequestMethod.POST)
     @ResponseBody
     public CommonResult update(@PathVariable Long id, @RequestBody OmsOrderSetting orderSetting) {
-        int count = orderSettingService.update(id,orderSetting);
-        if(count>0){
+        int count = orderSettingService.update(id, orderSetting);
+        if (count > 0) {
             return CommonResult.success(count);
         }
         return CommonResult.failed();

@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 /**
  * @author Paradise
  */
-@Api(tags = "垚修修会员管理")
+@Api(tags = "4.1 垚修修会员管理")
 @RestController
 @RequestMapping("/yxx/member")
 public class YxxMemberController {
@@ -29,9 +29,9 @@ public class YxxMemberController {
     }
 
     @ApiOperation("根据父级ID-分页查询")
-    @GetMapping("/page/{parentId}")
-    public CommonResult<CommonPage<YxxMember>> page(@RequestParam Integer pageNum, @RequestParam Integer pageSize,
-                                                    @PathVariable Long parentId) {
+    @GetMapping("/child-page/{parentId}")
+    public CommonResult<CommonPage<YxxMember>> pageByParentId(@RequestParam Integer pageNum, @RequestParam Integer pageSize,
+                                                              @PathVariable Long parentId) {
         return CommonResult.success(CommonPage.restPage(yxxMemberService.listByParentId(pageNum, pageSize, parentId)));
     }
 

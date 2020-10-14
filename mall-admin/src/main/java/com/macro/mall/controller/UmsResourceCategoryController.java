@@ -7,6 +7,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import springfox.documentation.annotations.ApiIgnore;
 
 import java.util.List;
 
@@ -16,6 +17,7 @@ import java.util.List;
  * @author macro
  * @date 2020/2/5
  */
+@ApiIgnore
 @Controller
 @Api(tags = "后台资源分类管理")
 @RequestMapping("/resourceCategory")

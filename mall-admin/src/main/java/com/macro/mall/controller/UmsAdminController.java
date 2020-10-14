@@ -31,7 +31,7 @@ import java.util.stream.Collectors;
  * @date 2018/4/26
  */
 @Controller
-@Api(tags = "后台用户管理")
+@Api(tags = "8.5 后台用户管理")
 @RequestMapping("/admin")
 public class UmsAdminController {
     @Value("${jwt.tokenHeader}")

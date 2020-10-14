@@ -10,6 +10,7 @@ import io.swagger.annotations.ApiOperation;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import springfox.documentation.annotations.ApiIgnore;
 
 import java.util.List;
 
@@ -19,6 +20,7 @@ import java.util.List;
  * @author macro
  * @date 2020/2/4
  */
+@ApiIgnore
 @Controller
 @Api(tags = "后台资源管理")
 @RequestMapping("/resource")

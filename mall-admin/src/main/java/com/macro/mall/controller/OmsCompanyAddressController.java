@@ -5,10 +5,10 @@ import com.macro.mall.model.OmsCompanyAddress;
 import com.macro.mall.service.OmsCompanyAddressService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
+import springfox.documentation.annotations.ApiIgnore;
 
 import java.util.List;
 
@@ -18,8 +18,9 @@ import java.util.List;
  * @author macro
  * @date 2018/10/18
  */
-@Controller
+@ApiIgnore("待定-或许需要呢？")
 @Api(tags = "收货地址管理")
+@RestController
 @RequestMapping("/companyAddress")
 public class OmsCompanyAddressController {
     private final OmsCompanyAddressService companyAddressService;
@@ -30,7 +31,6 @@ public class OmsCompanyAddressController {
 
     @ApiOperation("获取所有收货地址")
     @RequestMapping(value = "/list", method = RequestMethod.GET)
-    @ResponseBody
     public CommonResult<List<OmsCompanyAddress>> list() {
         List<OmsCompanyAddress> companyAddressList = companyAddressService.list();
         return CommonResult.success(companyAddressList);
