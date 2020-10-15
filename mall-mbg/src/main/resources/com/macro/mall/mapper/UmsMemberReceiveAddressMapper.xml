@@ -81,7 +81,7 @@
       distinct
     </if>
     <include refid="Base_Column_List" />
-    from ums_member_receive_address
+    from yxx_member_address
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
@@ -92,15 +92,15 @@
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
-    from ums_member_receive_address
+    from yxx_member_address
     where id = #{id,jdbcType=BIGINT}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
-    delete from ums_member_receive_address
+    delete from yxx_member_address
     where id = #{id,jdbcType=BIGINT}
   </delete>
   <delete id="deleteByExample" parameterType="com.macro.mall.model.UmsMemberReceiveAddressExample">
-    delete from ums_member_receive_address
+    delete from yxx_member_address
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
@@ -109,7 +109,7 @@
     <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
       SELECT LAST_INSERT_ID()
     </selectKey>
-    insert into ums_member_receive_address (member_id, name, phone_number, 
+    insert into yxx_member_address (member_id, name, phone_number,
       default_status, post_code, province, 
       city, region, detail_address
       )
@@ -122,7 +122,7 @@
     <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
       SELECT LAST_INSERT_ID()
     </selectKey>
-    insert into ums_member_receive_address
+    insert into yxx_member_address
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="memberId != null">
         member_id,
@@ -183,13 +183,13 @@
     </trim>
   </insert>
   <select id="countByExample" parameterType="com.macro.mall.model.UmsMemberReceiveAddressExample" resultType="java.lang.Long">
-    select count(*) from ums_member_receive_address
+    select count(*) from yxx_member_address
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </select>
   <update id="updateByExampleSelective" parameterType="map">
-    update ums_member_receive_address
+    update yxx_member_address
     <set>
       <if test="record.id != null">
         id = #{record.id,jdbcType=BIGINT},
@@ -227,7 +227,7 @@
     </if>
   </update>
   <update id="updateByExample" parameterType="map">
-    update ums_member_receive_address
+    update yxx_member_address
     set id = #{record.id,jdbcType=BIGINT},
       member_id = #{record.memberId,jdbcType=BIGINT},
       name = #{record.name,jdbcType=VARCHAR},
@@ -243,7 +243,7 @@
     </if>
   </update>
   <update id="updateByPrimaryKeySelective" parameterType="com.macro.mall.model.UmsMemberReceiveAddress">
-    update ums_member_receive_address
+    update yxx_member_address
     <set>
       <if test="memberId != null">
         member_id = #{memberId,jdbcType=BIGINT},
@@ -276,7 +276,7 @@
     where id = #{id,jdbcType=BIGINT}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.macro.mall.model.UmsMemberReceiveAddress">
-    update ums_member_receive_address
+    update yxx_member_address
     set member_id = #{memberId,jdbcType=BIGINT},
       name = #{name,jdbcType=VARCHAR},
       phone_number = #{phoneNumber,jdbcType=VARCHAR},

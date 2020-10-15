@@ -100,7 +100,7 @@
         <javaClientGenerator type="XMLMAPPER" targetPackage="com.macro.mall.mapper"
                              targetProject="mall-mbg\src\main\java"/>
         <!--生成全部表tableName设为%-->
-        <table tableName="yxx_%">
+        <table tableName="yxx_member_address">
             <generatedKey column="id" sqlStatement="MySql" identity="true"/>
         </table>
     </context>

@@ -307,6 +307,24 @@ public class UmsAdminServiceImpl implements UmsAdminService {
     }
 
     @Override
+    public int resetPassword(String username) {
+        if(StrUtil.isEmpty(username)){
+            return -1;
+        }
+        UmsAdminExample example = new UmsAdminExample();
+        example.createCriteria().andUsernameEqualTo(username);
+        List<UmsAdmin> adminList = adminMapper.selectByExample(example);
+        if(CollUtil.isEmpty(adminList)){
+            return -2;
+        }
+        UmsAdmin umsAdmin = adminList.get(0);
+        umsAdmin.setPassword(passwordEncoder.encode("123456"));
+        adminMapper.updateByPrimaryKey(umsAdmin);
+        adminCacheService.delAdmin(umsAdmin.getId());
+        return 1;
+    }
+
+    @Override
     public UserDetails loadUserByUsername(String username){
         //获取用户信息
         UmsAdmin admin = getAdminByUsername(username);

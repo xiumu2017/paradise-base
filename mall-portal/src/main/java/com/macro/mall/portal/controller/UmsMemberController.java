@@ -85,8 +85,8 @@ public class UmsMemberController {
      * </pre>
      */
     @ApiOperation("获取用户信息接口")
-    @GetMapping("/info")
-    public CommonResult info(String sessionKey, String signature, String rawData, String encryptedData, String iv) {
+    @GetMapping("/wx-info")
+    public CommonResult wxInfo(String sessionKey, String signature, String rawData, String encryptedData, String iv) {
         final WxMaService wxService = WxMaConfiguration.getMaService(APP_ID);
         // 用户信息校验
         if (!wxService.getUserService().checkUserInfo(sessionKey, rawData, signature)) {

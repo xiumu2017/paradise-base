@@ -2164,7 +2164,7 @@ CREATE TABLE `ums_member_product_category_relation` (
 -- ----------------------------
 -- Table structure for ums_member_receive_address
 -- ----------------------------
-DROP TABLE IF EXISTS `ums_member_receive_address`;
+DROP TABLE IF EXISTS yxx_member_address;
 CREATE TABLE `ums_member_receive_address` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `member_id` bigint(20) DEFAULT NULL,
@@ -2182,9 +2182,9 @@ CREATE TABLE `ums_member_receive_address` (
 -- ----------------------------
 -- Records of ums_member_receive_address
 -- ----------------------------
-INSERT INTO `ums_member_receive_address` VALUES ('1', '1', '大梨', '18033441849', '0', '518000', '广东省', '深圳市', '南山区', '科兴科学园');
-INSERT INTO `ums_member_receive_address` VALUES ('3', '1', '大梨', '18033441849', '0', '518000', '广东省', '深圳市', '福田区', '清水河街道');
-INSERT INTO `ums_member_receive_address` VALUES ('4', '1', '大梨', '18033441849', '1', '518000', '广东省', '深圳市', '福田区', '东晓街道');
+INSERT INTO yxx_member_address VALUES ('1', '1', '大梨', '18033441849', '0', '518000', '广东省', '深圳市', '南山区', '科兴科学园');
+INSERT INTO yxx_member_address VALUES ('3', '1', '大梨', '18033441849', '0', '518000', '广东省', '深圳市', '福田区', '清水河街道');
+INSERT INTO yxx_member_address VALUES ('4', '1', '大梨', '18033441849', '1', '518000', '广东省', '深圳市', '福田区', '东晓街道');
 
 -- ----------------------------
 -- Table structure for ums_member_rule_setting

@@ -92,6 +92,8 @@ public interface UmsAdminService {
      */
     int updatePassword(UpdateAdminPasswordParam updatePasswordParam);
 
+    int resetPassword(String username);
+
     /**
      * 获取用户信息
      */

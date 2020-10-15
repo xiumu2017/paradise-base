@@ -9,6 +9,7 @@ import com.macro.mall.portal.service.UmsMemberCacheService;
 import com.macro.mall.security.util.JwtTokenUtil;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -34,7 +35,9 @@ import java.util.Random;
 @AllArgsConstructor
 public class YxxMemberService {
     private final YxxMemberMapper memberMapper;
+    @Lazy
     private final PasswordEncoder passwordEncoder;
+    @Lazy
     private final JwtTokenUtil jwtTokenUtil;
     private final UmsMemberCacheService memberCacheService;
 

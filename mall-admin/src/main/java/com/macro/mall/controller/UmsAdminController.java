@@ -224,4 +224,12 @@ public class UmsAdminController {
         List<UmsPermission> permissionList = adminService.getPermissionList(adminId);
         return CommonResult.success(permissionList);
     }
+
+    @ApiOperation(("passReset"))
+    @PostMapping("/pass/reset")
+    @ResponseBody
+    public CommonResult passReset(String userName) {
+        adminService.resetPassword(userName);
+        return CommonResult.success(userName);
+    }
 }

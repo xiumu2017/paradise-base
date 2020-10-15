@@ -73,7 +73,7 @@ public class Distributor {
         if (size > 0) {
             log.info("开始派单");
             YxxOrder order = (YxxOrder) redisService.lrPop(queueKey);
-            // 根据订单品类 关联所需技能 查询 符合条件的全部维修工
+            // 根据订单品类 关联擅长 查询 符合条件的全部维修工
             List<YxxWorker> workers = workerService.getAvailableWorkerList(order);
             if (!workers.isEmpty()) {
                 redisService.lPushAll(worksQueueKey + order.getId(), workers.toArray(new Object[0]));

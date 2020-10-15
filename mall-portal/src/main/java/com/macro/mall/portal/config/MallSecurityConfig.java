@@ -4,6 +4,7 @@ import com.macro.mall.portal.service.impl.YxxMemberService;
 import com.macro.mall.security.config.SecurityConfig;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -21,7 +22,7 @@ public class MallSecurityConfig extends SecurityConfig {
 
     private final YxxMemberService memberService;
 
-    public MallSecurityConfig(YxxMemberService memberService) {
+    public MallSecurityConfig(@Lazy YxxMemberService memberService) {
         this.memberService = memberService;
     }
 
