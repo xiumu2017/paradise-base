@@ -1,6 +1,6 @@
 package com.macro.mall.portal.domain;
 
-import com.macro.mall.model.YxxMember;
+import com.macro.mall.model.YxxWorker;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -14,11 +14,11 @@ import java.util.Collections;
  * @author macro
  * @date 2018/8/3
  */
-public class MemberDetails implements UserDetails {
-    private YxxMember yxxMember;
+public class WorkerDetails implements UserDetails {
+    private YxxWorker yxxWorker;
 
-    public MemberDetails(YxxMember yxxMember) {
-        this.yxxMember = yxxMember;
+    public WorkerDetails(YxxWorker yxxWorker) {
+        this.yxxWorker = yxxWorker;
     }
 
     @Override
@@ -29,12 +29,12 @@ public class MemberDetails implements UserDetails {
 
     @Override
     public String getPassword() {
-        return yxxMember.getPassword();
+        return yxxWorker.getPassword();
     }
 
     @Override
     public String getUsername() {
-        return yxxMember.getUsername();
+        return yxxWorker.getUsername();
     }
 
     @Override
@@ -54,10 +54,10 @@ public class MemberDetails implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return yxxMember.getEnable() == 1;
+        return yxxWorker.getEnable() == 1;
     }
 
-    public YxxMember getYxxMember() {
-        return yxxMember;
+    public YxxWorker getYxxWorker() {
+        return yxxWorker;
     }
 }

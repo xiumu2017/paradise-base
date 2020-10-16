@@ -2,9 +2,8 @@ package com.macro.mall.mapper;
 
 import com.macro.mall.example.YxxWorkerLevelExample;
 import com.macro.mall.model.YxxWorkerLevel;
-import org.apache.ibatis.annotations.Param;
-
 import java.util.List;
+import org.apache.ibatis.annotations.Param;
 
 public interface YxxWorkerLevelMapper {
     long countByExample(YxxWorkerLevelExample example);
@@ -36,4 +35,8 @@ public interface YxxWorkerLevelMapper {
     int updateByPrimaryKeySelective(@Param("record") YxxWorkerLevel record, @Param("selective") YxxWorkerLevel.Column ... selective);
 
     int updateByPrimaryKey(YxxWorkerLevel record);
+
+    int batchInsert(@Param("list") List<YxxWorkerLevel> list);
+
+    int batchInsertSelective(@Param("list") List<YxxWorkerLevel> list, @Param("selective") YxxWorkerLevel.Column ... selective);
 }

@@ -25,29 +25,9 @@
             <groupId>com.macro.mall</groupId>
             <artifactId>mall-security</artifactId>
         </dependency>
-        <dependency>
-            <groupId>com.aliyun.oss</groupId>
-            <artifactId>aliyun-sdk-oss</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>io.minio</groupId>
-            <artifactId>minio</artifactId>
-        </dependency>
     </dependencies>
     <build>
         <plugins>
-<!--            <plugin>-->
-<!--                <groupId>org.apache.maven.plugins</groupId>-->
-<!--                <artifactId>maven-jar-plugin</artifactId>-->
-<!--                <configuration>-->
-<!--                    <archive>-->
-<!--                        <manifest>-->
-<!--                            <addClasspath>true</addClasspath>-->
-<!--                            <classpathPrefix>lib/</classpathPrefix>-->
-<!--                        </manifest>-->
-<!--                    </archive>-->
-<!--                </configuration>-->
-<!--            </plugin>-->
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
@@ -56,8 +36,16 @@
                     <layout>ZIP</layout>
                     <includes>
                         <include>
-                            <groupId>nothing</groupId>
-                            <artifactId>nothing</artifactId>
+                            <groupId>com.macro.mall</groupId>
+                            <artifactId>mall-mbg</artifactId>
+                        </include>
+                        <include>
+                            <groupId>com.macro.mall</groupId>
+                            <artifactId>mall-security</artifactId>
+                        </include>
+                        <include>
+                            <groupId>com.macro.mall</groupId>
+                            <artifactId>mall-common</artifactId>
                         </include>
                     </includes>
                 </configuration>
@@ -81,6 +69,7 @@
                         </goals>
                         <configuration>
                             <outputDirectory>${project.build.directory}/lib</outputDirectory>
+                            <excludeGroupIds>com.macro.mall</excludeGroupIds>
                         </configuration>
                     </execution>
                 </executions>

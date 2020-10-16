@@ -10,7 +10,9 @@
     <result column="phone" jdbcType="VARCHAR" property="phone" />
     <result column="enable" jdbcType="INTEGER" property="enable" />
     <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="contract_address" jdbcType="VARCHAR" property="contractAddress" />
     <result column="level_id" jdbcType="INTEGER" property="levelId" />
+    <result column="address" jdbcType="VARCHAR" property="address" />
     <result column="location" jdbcType="VARCHAR" property="location" />
     <result column="service_score" jdbcType="INTEGER" property="serviceScore" />
     <result column="icon" jdbcType="VARCHAR" property="icon" />
@@ -83,9 +85,9 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, username, real_name, sex, `password`, phone, `enable`, `status`, level_id, `location`, 
-    service_score, icon, birthday, region_id, region, zone_id, wx_open_id, wx_union_id, 
-    parent_id, invitation_code, create_time
+    id, username, real_name, sex, `password`, phone, `enable`, `status`, contract_address, 
+    level_id, address, `location`, service_score, icon, birthday, region_id, region, 
+    zone_id, wx_open_id, wx_union_id, parent_id, invitation_code, create_time
   </sql>
   <select id="selectByExample" parameterType="com.macro.mall.example.YxxWorkerExample" resultMap="BaseResultMap">
     select
@@ -161,18 +163,20 @@
     </selectKey>
     insert into yxx_worker (username, real_name, sex, 
       `password`, phone, `enable`, 
-      `status`, level_id, `location`, 
-      service_score, icon, birthday, 
-      region_id, region, zone_id, 
-      wx_open_id, wx_union_id, parent_id, 
-      invitation_code, create_time)
+      `status`, contract_address, level_id, 
+      address, `location`, service_score, 
+      icon, birthday, region_id, 
+      region, zone_id, wx_open_id, 
+      wx_union_id, parent_id, invitation_code, 
+      create_time)
     values (#{username,jdbcType=VARCHAR}, #{realName,jdbcType=VARCHAR}, #{sex,jdbcType=INTEGER}, 
       #{password,jdbcType=VARCHAR}, #{phone,jdbcType=VARCHAR}, #{enable,jdbcType=INTEGER}, 
-      #{status,jdbcType=INTEGER}, #{levelId,jdbcType=INTEGER}, #{location,jdbcType=VARCHAR}, 
-      #{serviceScore,jdbcType=INTEGER}, #{icon,jdbcType=VARCHAR}, #{birthday,jdbcType=DATE}, 
-      #{regionId,jdbcType=BIGINT}, #{region,jdbcType=VARCHAR}, #{zoneId,jdbcType=BIGINT}, 
-      #{wxOpenId,jdbcType=VARCHAR}, #{wxUnionId,jdbcType=VARCHAR}, #{parentId,jdbcType=BIGINT}, 
-      #{invitationCode,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP})
+      #{status,jdbcType=INTEGER}, #{contractAddress,jdbcType=VARCHAR}, #{levelId,jdbcType=INTEGER}, 
+      #{address,jdbcType=VARCHAR}, #{location,jdbcType=VARCHAR}, #{serviceScore,jdbcType=INTEGER}, 
+      #{icon,jdbcType=VARCHAR}, #{birthday,jdbcType=DATE}, #{regionId,jdbcType=BIGINT}, 
+      #{region,jdbcType=VARCHAR}, #{zoneId,jdbcType=BIGINT}, #{wxOpenId,jdbcType=VARCHAR}, 
+      #{wxUnionId,jdbcType=VARCHAR}, #{parentId,jdbcType=BIGINT}, #{invitationCode,jdbcType=VARCHAR}, 
+      #{createTime,jdbcType=TIMESTAMP})
   </insert>
   <insert id="insertSelective" parameterType="map">
     <selectKey keyProperty="record.id" order="AFTER" resultType="java.lang.Long">
@@ -208,8 +212,14 @@
           <if test="record.status != null">
             `status`,
           </if>
+          <if test="record.contractAddress != null">
+            contract_address,
+          </if>
           <if test="record.levelId != null">
             level_id,
+          </if>
+          <if test="record.address != null">
+            address,
           </if>
           <if test="record.location != null">
             `location`,
@@ -281,8 +291,14 @@
           <if test="record.status != null">
             #{record.status,jdbcType=INTEGER},
           </if>
+          <if test="record.contractAddress != null">
+            #{record.contractAddress,jdbcType=VARCHAR},
+          </if>
           <if test="record.levelId != null">
             #{record.levelId,jdbcType=INTEGER},
+          </if>
+          <if test="record.address != null">
+            #{record.address,jdbcType=VARCHAR},
           </if>
           <if test="record.location != null">
             #{record.location,jdbcType=VARCHAR},
@@ -365,8 +381,14 @@
           <if test="record.status != null">
             `status` = #{record.status,jdbcType=INTEGER},
           </if>
+          <if test="record.contractAddress != null">
+            contract_address = #{record.contractAddress,jdbcType=VARCHAR},
+          </if>
           <if test="record.levelId != null">
             level_id = #{record.levelId,jdbcType=INTEGER},
+          </if>
+          <if test="record.address != null">
+            address = #{record.address,jdbcType=VARCHAR},
           </if>
           <if test="record.location != null">
             `location` = #{record.location,jdbcType=VARCHAR},
@@ -421,7 +443,9 @@
       phone = #{record.phone,jdbcType=VARCHAR},
       `enable` = #{record.enable,jdbcType=INTEGER},
       `status` = #{record.status,jdbcType=INTEGER},
+      contract_address = #{record.contractAddress,jdbcType=VARCHAR},
       level_id = #{record.levelId,jdbcType=INTEGER},
+      address = #{record.address,jdbcType=VARCHAR},
       `location` = #{record.location,jdbcType=VARCHAR},
       service_score = #{record.serviceScore,jdbcType=INTEGER},
       icon = #{record.icon,jdbcType=VARCHAR},
@@ -470,8 +494,14 @@
           <if test="record.status != null">
             `status` = #{record.status,jdbcType=INTEGER},
           </if>
+          <if test="record.contractAddress != null">
+            contract_address = #{record.contractAddress,jdbcType=VARCHAR},
+          </if>
           <if test="record.levelId != null">
             level_id = #{record.levelId,jdbcType=INTEGER},
+          </if>
+          <if test="record.address != null">
+            address = #{record.address,jdbcType=VARCHAR},
           </if>
           <if test="record.location != null">
             `location` = #{record.location,jdbcType=VARCHAR},
@@ -523,7 +553,9 @@
       phone = #{phone,jdbcType=VARCHAR},
       `enable` = #{enable,jdbcType=INTEGER},
       `status` = #{status,jdbcType=INTEGER},
+      contract_address = #{contractAddress,jdbcType=VARCHAR},
       level_id = #{levelId,jdbcType=INTEGER},
+      address = #{address,jdbcType=VARCHAR},
       `location` = #{location,jdbcType=VARCHAR},
       service_score = #{serviceScore,jdbcType=INTEGER},
       icon = #{icon,jdbcType=VARCHAR},
@@ -571,4 +603,101 @@
     </if>
     limit 1
   </select>
+  <insert id="batchInsert" keyColumn="id" keyProperty="id" parameterType="map" useGeneratedKeys="true">
+    insert into yxx_worker
+    (username, real_name, sex, `password`, phone, `enable`, `status`, contract_address, 
+      level_id, address, `location`, service_score, icon, birthday, region_id, region, 
+      zone_id, wx_open_id, wx_union_id, parent_id, invitation_code, create_time)
+    values
+    <foreach collection="list" item="item" separator=",">
+      (#{item.username,jdbcType=VARCHAR}, #{item.realName,jdbcType=VARCHAR}, #{item.sex,jdbcType=INTEGER}, 
+        #{item.password,jdbcType=VARCHAR}, #{item.phone,jdbcType=VARCHAR}, #{item.enable,jdbcType=INTEGER}, 
+        #{item.status,jdbcType=INTEGER}, #{item.contractAddress,jdbcType=VARCHAR}, #{item.levelId,jdbcType=INTEGER}, 
+        #{item.address,jdbcType=VARCHAR}, #{item.location,jdbcType=VARCHAR}, #{item.serviceScore,jdbcType=INTEGER}, 
+        #{item.icon,jdbcType=VARCHAR}, #{item.birthday,jdbcType=DATE}, #{item.regionId,jdbcType=BIGINT}, 
+        #{item.region,jdbcType=VARCHAR}, #{item.zoneId,jdbcType=BIGINT}, #{item.wxOpenId,jdbcType=VARCHAR}, 
+        #{item.wxUnionId,jdbcType=VARCHAR}, #{item.parentId,jdbcType=BIGINT}, #{item.invitationCode,jdbcType=VARCHAR}, 
+        #{item.createTime,jdbcType=TIMESTAMP})
+    </foreach>
+  </insert>
+  <insert id="batchInsertSelective" keyColumn="id" keyProperty="list.id" parameterType="map" useGeneratedKeys="true">
+    insert into yxx_worker (
+    <foreach collection="selective" item="column" separator=",">
+      ${column.escapedColumnName}
+    </foreach>
+    )
+    values
+    <foreach collection="list" item="item" separator=",">
+      (
+      <foreach collection="selective" item="column" separator=",">
+        <if test="'username'.toString() == column.value">
+          #{item.username,jdbcType=VARCHAR}
+        </if>
+        <if test="'real_name'.toString() == column.value">
+          #{item.realName,jdbcType=VARCHAR}
+        </if>
+        <if test="'sex'.toString() == column.value">
+          #{item.sex,jdbcType=INTEGER}
+        </if>
+        <if test="'password'.toString() == column.value">
+          #{item.password,jdbcType=VARCHAR}
+        </if>
+        <if test="'phone'.toString() == column.value">
+          #{item.phone,jdbcType=VARCHAR}
+        </if>
+        <if test="'enable'.toString() == column.value">
+          #{item.enable,jdbcType=INTEGER}
+        </if>
+        <if test="'status'.toString() == column.value">
+          #{item.status,jdbcType=INTEGER}
+        </if>
+        <if test="'contract_address'.toString() == column.value">
+          #{item.contractAddress,jdbcType=VARCHAR}
+        </if>
+        <if test="'level_id'.toString() == column.value">
+          #{item.levelId,jdbcType=INTEGER}
+        </if>
+        <if test="'address'.toString() == column.value">
+          #{item.address,jdbcType=VARCHAR}
+        </if>
+        <if test="'location'.toString() == column.value">
+          #{item.location,jdbcType=VARCHAR}
+        </if>
+        <if test="'service_score'.toString() == column.value">
+          #{item.serviceScore,jdbcType=INTEGER}
+        </if>
+        <if test="'icon'.toString() == column.value">
+          #{item.icon,jdbcType=VARCHAR}
+        </if>
+        <if test="'birthday'.toString() == column.value">
+          #{item.birthday,jdbcType=DATE}
+        </if>
+        <if test="'region_id'.toString() == column.value">
+          #{item.regionId,jdbcType=BIGINT}
+        </if>
+        <if test="'region'.toString() == column.value">
+          #{item.region,jdbcType=VARCHAR}
+        </if>
+        <if test="'zone_id'.toString() == column.value">
+          #{item.zoneId,jdbcType=BIGINT}
+        </if>
+        <if test="'wx_open_id'.toString() == column.value">
+          #{item.wxOpenId,jdbcType=VARCHAR}
+        </if>
+        <if test="'wx_union_id'.toString() == column.value">
+          #{item.wxUnionId,jdbcType=VARCHAR}
+        </if>
+        <if test="'parent_id'.toString() == column.value">
+          #{item.parentId,jdbcType=BIGINT}
+        </if>
+        <if test="'invitation_code'.toString() == column.value">
+          #{item.invitationCode,jdbcType=VARCHAR}
+        </if>
+        <if test="'create_time'.toString() == column.value">
+          #{item.createTime,jdbcType=TIMESTAMP}
+        </if>
+      </foreach>
+      )
+    </foreach>
+  </insert>
 </mapper>

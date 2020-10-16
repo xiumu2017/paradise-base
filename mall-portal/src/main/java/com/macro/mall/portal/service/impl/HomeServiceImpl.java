@@ -2,6 +2,7 @@ package com.macro.mall.portal.service.impl;
 
 import com.github.pagehelper.PageHelper;
 import com.macro.mall.example.YxxHomeBannerExample;
+import com.macro.mall.example.YxxRegionExample;
 import com.macro.mall.mapper.*;
 import com.macro.mall.model.*;
 import com.macro.mall.portal.dao.HomeDao;
@@ -39,9 +40,11 @@ public class HomeServiceImpl implements HomeService {
     private CmsSubjectMapper subjectMapper;
 
     private final YxxHomeBannerMapper homeBannerMapper;
+    private final YxxRegionMapper regionMapper;
 
-    public HomeServiceImpl(YxxHomeBannerMapper homeBannerMapper) {
+    public HomeServiceImpl(YxxHomeBannerMapper homeBannerMapper, YxxRegionMapper regionMapper) {
         this.homeBannerMapper = homeBannerMapper;
+        this.regionMapper = regionMapper;
     }
 
     @Override
@@ -112,6 +115,11 @@ public class HomeServiceImpl implements HomeService {
     public List<PmsProduct> newProductList(Integer pageNum, Integer pageSize) {
         int offset = pageSize * (pageNum - 1);
         return homeDao.getNewProductList(offset, pageSize);
+    }
+
+    @Override
+    public List<YxxRegion> getRegionList() {
+        return regionMapper.selectByExample(new YxxRegionExample());
     }
 
     private HomeFlashPromotion getHomeFlashPromotion() {

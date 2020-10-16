@@ -3,7 +3,7 @@ package com.macro.mall.portal.controller;
 import com.macro.mall.common.api.CommonPage;
 import com.macro.mall.common.api.CommonResult;
 import com.macro.mall.model.PmsProduct;
-import com.macro.mall.portal.domain.PmsPortalProductDetail;
+import com.macro.mall.portal.domain.PmsProductDetail;
 import com.macro.mall.portal.domain.PmsProductCategoryNode;
 import com.macro.mall.portal.service.PmsPortalProductService;
 import io.swagger.annotations.Api;
@@ -14,12 +14,12 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 /**
- * 前台服务品类Controller
+ * 前台服务品类Controller - 免登陆获取
  *
  * @author macro
  * @date 2020/4/6
  */
-@Api(tags = "服务品类管理")
+@Api(tags = "3.服务品类相关")
 @RestController
 @RequestMapping("/product")
 public class PmsPortalProductController {
@@ -50,10 +50,10 @@ public class PmsPortalProductController {
         return CommonResult.success(list);
     }
 
-    @ApiOperation("获取前台商品详情")
+    @ApiOperation("获取服务品类详情")
     @RequestMapping(value = "/detail/{id}", method = RequestMethod.GET)
-    public CommonResult<PmsPortalProductDetail> detail(@PathVariable Long id) {
-        PmsPortalProductDetail productDetail = portalProductService.detail(id);
+    public CommonResult<PmsProductDetail> detail(@PathVariable Long id) {
+        PmsProductDetail productDetail = portalProductService.detail(id);
         return CommonResult.success(productDetail);
     }
 }

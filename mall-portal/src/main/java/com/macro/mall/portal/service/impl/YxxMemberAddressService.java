@@ -6,6 +6,7 @@ import com.macro.mall.model.YxxMember;
 import com.macro.mall.model.YxxMemberAddress;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -27,6 +28,7 @@ public class YxxMemberAddressService {
     public int add(YxxMemberAddress address) {
         YxxMember currentMember = memberService.getCurrentMember();
         address.setMemberId(currentMember.getId());
+        address.setCreateTime(new Date());
         return addressMapper.insert(address);
     }
 

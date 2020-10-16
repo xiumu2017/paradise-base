@@ -2,82 +2,61 @@ package com.macro.mall.model;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-
 /**
- * 垚修修用户服务地址表
+ * 垚修修维修工证书表
  *
  * @author Paradise
  */
-@ApiModel(value = "垚修修用户服务地址")
+@ApiModel(value="垚修修维修工证书")
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class YxxMemberAddress implements Serializable {
-    @ApiModelProperty(value = "自增主键", hidden = true)
+public class YxxWorkerCertificate implements Serializable {
+    @ApiModelProperty(value="自增主键")
     private Long id;
 
-    @ApiModelProperty(value = "用户ID", hidden = true)
-    private Long memberId;
+    @ApiModelProperty(value="维修工ID")
+    private Long workerId;
 
-    @ApiModelProperty(value = "收货人名称")
+    @ApiModelProperty(value="证书名称")
     private String name;
 
-    @ApiModelProperty(value = "手机号码")
-    private String phoneNumber;
+    @ApiModelProperty(value="证书颁发日期")
+    private Date issueDate;
 
-    @ApiModelProperty(value = "是否为默认")
-    private Integer defaultStatus;
+    @ApiModelProperty(value="证书有效期")
+    private Date expireDate;
 
-    @ApiModelProperty(value = "邮政编码", hidden = true)
-    private String postCode;
+    @ApiModelProperty(value="备注信息")
+    private String remark;
 
-    @ApiModelProperty(value = "省份/直辖市", hidden = true)
-    private String province;
-
-    @ApiModelProperty(value = "城市", hidden = true)
-    private String city;
-
-    @ApiModelProperty(value = "区", hidden = true)
-    private String region;
-
-    @ApiModelProperty(value = "详细地址(街道)")
-    private String detailAddress;
-
-    @ApiModelProperty(value = "坐标")
-    private String location;
-
-    @ApiModelProperty(value = "创建时间", hidden = true)
+    @ApiModelProperty(value="创建时间")
     private Date createTime;
 
-    @ApiModelProperty(value = "更新时间")
-    private Date updateTime;
+    @ApiModelProperty(value="证书图片")
+    private String pic;
 
     private static final long serialVersionUID = 1L;
 
     public enum Column {
         id("id", "id", "BIGINT", false),
-        memberId("member_id", "memberId", "BIGINT", false),
+        workerId("worker_id", "workerId", "BIGINT", false),
         name("name", "name", "VARCHAR", true),
-        phoneNumber("phone_number", "phoneNumber", "VARCHAR", false),
-        defaultStatus("default_status", "defaultStatus", "INTEGER", false),
-        postCode("post_code", "postCode", "VARCHAR", false),
-        province("province", "province", "VARCHAR", false),
-        city("city", "city", "VARCHAR", false),
-        region("region", "region", "VARCHAR", false),
-        detailAddress("detail_address", "detailAddress", "VARCHAR", false),
-        location("location", "location", "VARCHAR", true),
+        issueDate("issue_date", "issueDate", "TIMESTAMP", false),
+        expireDate("expire_date", "expireDate", "TIMESTAMP", false),
+        remark("remark", "remark", "VARCHAR", false),
         createTime("create_time", "createTime", "TIMESTAMP", false),
-        updateTime("update_time", "updateTime", "TIMESTAMP", false);
+        pic("pic", "pic", "LONGVARCHAR", false);
 
         private static final String BEGINNING_DELIMITER = "`";
 
@@ -122,7 +101,7 @@ public class YxxMemberAddress implements Serializable {
             return this.getEscapedColumnName() + " ASC";
         }
 
-        public static Column[] excludes(Column... excludes) {
+        public static Column[] excludes(Column ... excludes) {
             ArrayList<Column> columns = new ArrayList<>(Arrays.asList(Column.values()));
             if (excludes != null && excludes.length > 0) {
                 columns.removeAll(new ArrayList<>(Arrays.asList(excludes)));

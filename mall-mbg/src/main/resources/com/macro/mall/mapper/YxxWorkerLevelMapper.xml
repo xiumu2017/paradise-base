@@ -494,4 +494,78 @@
     </if>
     limit 1
   </select>
+  <insert id="batchInsert" keyColumn="id" keyProperty="id" parameterType="map" useGeneratedKeys="true">
+    insert into yxx_worker_level
+    (`name`, `enable`, price_month, price_monthly, price_year, deleted, order_assign_amount, 
+      order_distribute_amount, order_rush_amount, cut_discount, remark, create_time, 
+      update_time, create_by, update_by)
+    values
+    <foreach collection="list" item="item" separator=",">
+      (#{item.name,jdbcType=VARCHAR}, #{item.enable,jdbcType=INTEGER}, #{item.priceMonth,jdbcType=DECIMAL}, 
+        #{item.priceMonthly,jdbcType=DECIMAL}, #{item.priceYear,jdbcType=DECIMAL}, #{item.deleted,jdbcType=INTEGER}, 
+        #{item.orderAssignAmount,jdbcType=INTEGER}, #{item.orderDistributeAmount,jdbcType=INTEGER}, 
+        #{item.orderRushAmount,jdbcType=INTEGER}, #{item.cutDiscount,jdbcType=DECIMAL}, 
+        #{item.remark,jdbcType=VARCHAR}, #{item.createTime,jdbcType=TIMESTAMP}, #{item.updateTime,jdbcType=TIMESTAMP}, 
+        #{item.createBy,jdbcType=BIGINT}, #{item.updateBy,jdbcType=BIGINT})
+    </foreach>
+  </insert>
+  <insert id="batchInsertSelective" keyColumn="id" keyProperty="list.id" parameterType="map" useGeneratedKeys="true">
+    insert into yxx_worker_level (
+    <foreach collection="selective" item="column" separator=",">
+      ${column.escapedColumnName}
+    </foreach>
+    )
+    values
+    <foreach collection="list" item="item" separator=",">
+      (
+      <foreach collection="selective" item="column" separator=",">
+        <if test="'name'.toString() == column.value">
+          #{item.name,jdbcType=VARCHAR}
+        </if>
+        <if test="'enable'.toString() == column.value">
+          #{item.enable,jdbcType=INTEGER}
+        </if>
+        <if test="'price_month'.toString() == column.value">
+          #{item.priceMonth,jdbcType=DECIMAL}
+        </if>
+        <if test="'price_monthly'.toString() == column.value">
+          #{item.priceMonthly,jdbcType=DECIMAL}
+        </if>
+        <if test="'price_year'.toString() == column.value">
+          #{item.priceYear,jdbcType=DECIMAL}
+        </if>
+        <if test="'deleted'.toString() == column.value">
+          #{item.deleted,jdbcType=INTEGER}
+        </if>
+        <if test="'order_assign_amount'.toString() == column.value">
+          #{item.orderAssignAmount,jdbcType=INTEGER}
+        </if>
+        <if test="'order_distribute_amount'.toString() == column.value">
+          #{item.orderDistributeAmount,jdbcType=INTEGER}
+        </if>
+        <if test="'order_rush_amount'.toString() == column.value">
+          #{item.orderRushAmount,jdbcType=INTEGER}
+        </if>
+        <if test="'cut_discount'.toString() == column.value">
+          #{item.cutDiscount,jdbcType=DECIMAL}
+        </if>
+        <if test="'remark'.toString() == column.value">
+          #{item.remark,jdbcType=VARCHAR}
+        </if>
+        <if test="'create_time'.toString() == column.value">
+          #{item.createTime,jdbcType=TIMESTAMP}
+        </if>
+        <if test="'update_time'.toString() == column.value">
+          #{item.updateTime,jdbcType=TIMESTAMP}
+        </if>
+        <if test="'create_by'.toString() == column.value">
+          #{item.createBy,jdbcType=BIGINT}
+        </if>
+        <if test="'update_by'.toString() == column.value">
+          #{item.updateBy,jdbcType=BIGINT}
+        </if>
+      </foreach>
+      )
+    </foreach>
+  </insert>
 </mapper>

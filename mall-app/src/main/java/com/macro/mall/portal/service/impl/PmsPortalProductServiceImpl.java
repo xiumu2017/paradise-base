@@ -1,16 +1,17 @@
 package com.macro.mall.portal.service.impl;
 
-import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
 import com.github.pagehelper.PageHelper;
-import com.macro.mall.mapper.*;
+import com.macro.mall.mapper.PmsProductCategoryMapper;
+import com.macro.mall.mapper.PmsProductMapper;
+import com.macro.mall.mapper.PmsSkuStockMapper;
 import com.macro.mall.model.*;
 import com.macro.mall.portal.dao.PortalProductDao;
 import com.macro.mall.portal.domain.PmsPortalProductDetail;
 import com.macro.mall.portal.domain.PmsProductCategoryNode;
 import com.macro.mall.portal.service.PmsPortalProductService;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -23,22 +24,15 @@ import java.util.stream.Collectors;
  * @date 2020/4/6
  */
 @Service
+@AllArgsConstructor
 public class PmsPortalProductServiceImpl implements PmsPortalProductService {
-    @Autowired
-    private PmsProductMapper productMapper;
-    @Autowired
-    private PmsProductCategoryMapper productCategoryMapper;
-    @Autowired
-    private PmsProductAttributeMapper productAttributeMapper;
-    @Autowired
-    private PmsProductAttributeValueMapper productAttributeValueMapper;
-    @Autowired
-    private PmsSkuStockMapper skuStockMapper;
-    @Autowired
-    private PortalProductDao portalProductDao;
+    private final PmsProductMapper productMapper;
+    private final PmsProductCategoryMapper productCategoryMapper;
+    private final PmsSkuStockMapper skuStockMapper;
+    private final PortalProductDao portalProductDao;
 
     @Override
-    public List<PmsProduct> search(String keyword, Long productCategoryId, Integer pageNum, Integer pageSize, Integer sort) {
+    public List<PmsProduct> search(String keyword, Long productCategoryId, Integer pageNum, Integer pageSize) {
         PageHelper.startPage(pageNum, pageSize);
         PmsProductExample example = new PmsProductExample();
         PmsProductExample.Criteria criteria = example.createCriteria();
@@ -48,16 +42,6 @@ public class PmsPortalProductServiceImpl implements PmsPortalProductService {
         }
         if (productCategoryId != null) {
             criteria.andProductCategoryIdEqualTo(productCategoryId);
-        }
-        //1->按新品；2->按销量；3->价格从低到高；4->价格从高到低
-        if (sort == 1) {
-            example.setOrderByClause("id desc");
-        } else if (sort == 2) {
-            example.setOrderByClause("sale desc");
-        } else if (sort == 3) {
-            example.setOrderByClause("price asc");
-        } else if (sort == 4) {
-            example.setOrderByClause("price desc");
         }
         return productMapper.selectByExample(example);
     }
@@ -77,20 +61,6 @@ public class PmsPortalProductServiceImpl implements PmsPortalProductService {
         //获取商品信息
         PmsProduct product = productMapper.selectByPrimaryKey(id);
         result.setProduct(product);
-        //获取商品属性信息
-        PmsProductAttributeExample attributeExample = new PmsProductAttributeExample();
-        attributeExample.createCriteria().andProductAttributeCategoryIdEqualTo(product.getProductAttributeCategoryId());
-        List<PmsProductAttribute> productAttributeList = productAttributeMapper.selectByExample(attributeExample);
-        result.setProductAttributeList(productAttributeList);
-        //获取商品属性值信息
-        if (CollUtil.isNotEmpty(productAttributeList)) {
-            List<Long> attributeIds = productAttributeList.stream().map(PmsProductAttribute::getId).collect(Collectors.toList());
-            PmsProductAttributeValueExample attributeValueExample = new PmsProductAttributeValueExample();
-            attributeValueExample.createCriteria().andProductIdEqualTo(product.getId())
-                    .andProductAttributeIdIn(attributeIds);
-            List<PmsProductAttributeValue> productAttributeValueList = productAttributeValueMapper.selectByExample(attributeValueExample);
-            result.setProductAttributeValueList(productAttributeValueList);
-        }
         //获取商品SKU库存信息
         PmsSkuStockExample skuExample = new PmsSkuStockExample();
         skuExample.createCriteria().andProductIdEqualTo(product.getId());

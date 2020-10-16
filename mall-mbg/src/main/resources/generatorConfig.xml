@@ -18,7 +18,7 @@
         <!-- 为模型生成序列化方法-->
         <plugin type="org.mybatis.generator.plugins.SerializablePlugin"/>
         <!-- 为生成的Java模型创建一个toString方法 -->
-<!--        <plugin type="org.mybatis.generator.plugins.ToStringPlugin"/>-->
+        <!--        <plugin type="org.mybatis.generator.plugins.ToStringPlugin"/>-->
         <!--生成mapper.xml时覆盖原文件-->
         <plugin type="org.mybatis.generator.plugins.UnmergeableXmlMappersPlugin"/>
         <!-- 查询单条数据插件 -->
@@ -27,6 +27,14 @@
         <plugin type="com.itfsw.mybatis.generator.plugins.ExampleEnhancedPlugin">
             <!-- 是否支持已经过时的andIf方法（推荐使用when代替），默认支持 -->
             <property name="enableAndIf" value="true"/>
+        </plugin>
+        <!-- 批量插入插件 -->
+        <plugin type="com.itfsw.mybatis.generator.plugins.BatchInsertPlugin">
+            <!--
+            开启后可以实现官方插件根据属性是否为空决定是否插入该字段功能
+            ！需开启allowMultiQueries=true多条sql提交操作，所以不建议使用！插件默认不开启
+            -->
+            <property name="allowMultiQueries" value="false"/>
         </plugin>
         <!-- 数据Model属性对应Column获取插件 -->
         <plugin type="com.itfsw.mybatis.generator.plugins.ModelColumnPlugin"/>
@@ -100,7 +108,7 @@
         <javaClientGenerator type="XMLMAPPER" targetPackage="com.macro.mall.mapper"
                              targetProject="mall-mbg\src\main\java"/>
         <!--生成全部表tableName设为%-->
-        <table tableName="yxx_member_address">
+        <table tableName="yxx_worker">
             <generatedKey column="id" sqlStatement="MySql" identity="true"/>
         </table>
     </context>

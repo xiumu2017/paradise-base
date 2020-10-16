@@ -3,14 +3,11 @@ package com.macro.mall.portal.controller;
 import com.macro.mall.common.api.CommonPage;
 import com.macro.mall.common.api.CommonResult;
 import com.macro.mall.portal.domain.OmsOrderDetail;
-import com.macro.mall.portal.domain.YxxOrderParam;
 import com.macro.mall.portal.service.impl.YxxOrderService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Map;
 
 /**
  * 订单管理Controller
@@ -19,7 +16,7 @@ import java.util.Map;
  * @date 2018/8/30
  */
 @RestController
-@Api(tags = "订单管理")
+@Api(tags = "【未完成】2.订单相关")
 @RequestMapping("/order")
 public class YxxOrderController {
     private final YxxOrderService yxxOrderService;
@@ -45,13 +42,13 @@ public class YxxOrderController {
         OmsOrderDetail orderDetail = yxxOrderService.detail(orderId);
         return CommonResult.success(orderDetail);
     }
-
-    @ApiOperation("创建新订单")
-    @RequestMapping(value = "/create", method = RequestMethod.POST)
-    public CommonResult generateOrder(@RequestBody YxxOrderParam orderParam) {
-        Map<String, Object> result = yxxOrderService.generateOrder(orderParam);
-        return CommonResult.success(result, "下单成功");
-    }
+//
+//    @ApiOperation("创建新订单")
+//    @RequestMapping(value = "/create", method = RequestMethod.POST)
+//    public CommonResult generateOrder(@RequestBody YxxOrderParam orderParam) {
+//        Map<String, Object> result = yxxOrderService.generateOrder(orderParam);
+//        return CommonResult.success(result, "下单成功");
+//    }
 
     // 派单
     // 待派单 队列 ：单号、品类、坐标

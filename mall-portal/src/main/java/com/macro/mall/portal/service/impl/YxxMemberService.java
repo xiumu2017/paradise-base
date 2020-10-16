@@ -1,6 +1,10 @@
 package com.macro.mall.portal.service.impl;
 
+import cn.binarywang.wx.miniapp.bean.WxMaJscode2SessionResult;
+import cn.binarywang.wx.miniapp.bean.WxMaPhoneNumberInfo;
+import cn.binarywang.wx.miniapp.bean.WxMaUserInfo;
 import com.macro.mall.common.exception.Asserts;
+import com.macro.mall.common.utils.GeneratorUtil;
 import com.macro.mall.example.YxxMemberExample;
 import com.macro.mall.mapper.YxxMemberMapper;
 import com.macro.mall.model.YxxMember;
@@ -41,16 +45,14 @@ public class YxxMemberService {
     private final JwtTokenUtil jwtTokenUtil;
     private final UmsMemberCacheService memberCacheService;
 
-    public YxxMember getByUsername(String username) {
-        YxxMember member;
+    private YxxMember getByUsername(String username) {
         YxxMemberExample example = new YxxMemberExample();
         example.createCriteria().andUsernameEqualTo(username);
-        List<YxxMember> memberList = memberMapper.selectByExample(example);
-        if (!CollectionUtils.isEmpty(memberList)) {
-            member = memberList.get(0);
-            return member;
-        }
-        return null;
+        return memberMapper.selectOneByExample(example);
+    }
+
+    private YxxMember getByWxOpenId(String openId) {
+        return memberMapper.selectOneByExample(new YxxMemberExample().createCriteria().andWxOpenIdEqualTo(openId).example());
     }
 
     public YxxMember getById(Long id) {
@@ -132,6 +134,14 @@ public class YxxMemberService {
         throw new UsernameNotFoundException("用户名或密码错误");
     }
 
+    public UserDetails loadUserByOpenId(String openId) {
+        YxxMember member = getByWxOpenId(openId);
+        if (member != null) {
+            return new MemberDetails(member);
+        }
+        throw new UsernameNotFoundException("用户名或密码错误");
+    }
+
     public String login(String username, String password) {
         String token = null;
         //密码需要客户端加密后传递
@@ -168,4 +178,59 @@ public class YxxMemberService {
         return authCode.equals(realAuthCode);
     }
 
+    public String login(WxMaJscode2SessionResult session) {
+        String token = null;
+        // 判断用户是否存在
+        YxxMember member = this.getByWxOpenId(session.getOpenid());
+        if (member == null) {
+            memberMapper.insert(YxxMember.builder()
+                    .wxOpenId(session.getOpenid()).wxUnionId(session.getUnionid())
+                    .enable(1).createTime(new Date())
+                    .build());
+            // 生成邀请码
+            this.invitationCodeGenerator(session.getOpenid());
+        }
+        try {
+            UserDetails userDetails = loadUserByOpenId(session.getOpenid());
+            UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+            token = jwtTokenUtil.generateToken(userDetails);
+        } catch (AuthenticationException e) {
+            log.warn("登录异常:{}", e.getMessage());
+        }
+        return token;
+    }
+
+    private void invitationCodeGenerator(String openId) {
+        YxxMember member = this.getByWxOpenId(openId);
+        member.setInvitationCode(GeneratorUtil.generatePromotionCode(member.getId()));
+        memberMapper.updateByPrimaryKeySelective(member, YxxMember.Column.invitationCode);
+    }
+
+    public void updateWxInfo(WxMaUserInfo userInfo) {
+        log.info(userInfo.toString());
+        YxxMember member = this.getByWxOpenId(userInfo.getOpenId());
+        if (member != null) {
+            member.setIcon(userInfo.getAvatarUrl());
+            log.info(userInfo.getGender());
+            member.setUsername(userInfo.getNickName());
+//            member.setSex(userInfo.getGender());
+            memberMapper.updateByPrimaryKeySelective(member, YxxMember.Column.icon, YxxMember.Column.username);
+        }
+    }
+
+    public void updateWxPhoneInfo(WxMaPhoneNumberInfo phoneNoInfo) {
+        log.info(phoneNoInfo.toString());
+        YxxMember member = this.getCurrentMember();
+        if (member != null) {
+            member.setPhone(phoneNoInfo.getPurePhoneNumber());
+            memberMapper.updateByPrimaryKeySelective(member, YxxMember.Column.phone);
+        }
+    }
+
+    public void updateRegion(Long regionId) {
+        YxxMember member = this.getCurrentMember();
+        member.setRegionId(regionId);
+        memberMapper.updateByPrimaryKeySelective(member, YxxMember.Column.regionId);
+    }
 }

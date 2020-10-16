@@ -2,9 +2,8 @@ package com.macro.mall.mapper;
 
 import com.macro.mall.example.YxxWorkerExample;
 import com.macro.mall.model.YxxWorker;
-import org.apache.ibatis.annotations.Param;
-
 import java.util.List;
+import org.apache.ibatis.annotations.Param;
 
 public interface YxxWorkerMapper {
     long countByExample(YxxWorkerExample example);
@@ -36,4 +35,8 @@ public interface YxxWorkerMapper {
     int updateByPrimaryKeySelective(@Param("record") YxxWorker record, @Param("selective") YxxWorker.Column ... selective);
 
     int updateByPrimaryKey(YxxWorker record);
+
+    int batchInsert(@Param("list") List<YxxWorker> list);
+
+    int batchInsertSelective(@Param("list") List<YxxWorker> list, @Param("selective") YxxWorker.Column ... selective);
 }

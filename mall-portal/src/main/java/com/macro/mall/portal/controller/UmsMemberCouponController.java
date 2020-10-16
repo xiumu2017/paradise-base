@@ -20,7 +20,7 @@ import java.util.List;
  * @date 2018/8/29
  */
 
-@Api(tags = "用户优惠券管理")
+@Api(tags = "【未完成】5.2.用户优惠券管理")
 @RestController
 @RequestMapping("/member/coupon")
 @AllArgsConstructor

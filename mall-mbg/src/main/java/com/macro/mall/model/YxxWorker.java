@@ -2,15 +2,14 @@ package com.macro.mall.model;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * 垚修修维修工信息表
@@ -47,10 +46,16 @@ public class YxxWorker implements Serializable {
     @ApiModelProperty(value="状态：接单中、休息中、工作中")
     private Integer status;
 
+    @ApiModelProperty(value="联系地址")
+    private String contractAddress;
+
     @ApiModelProperty(value="等级")
     private Integer levelId;
 
-    @ApiModelProperty(value="实时位置")
+    @ApiModelProperty(value="服务地址")
+    private String address;
+
+    @ApiModelProperty(value="位置坐标")
     private String location;
 
     @ApiModelProperty(value="服务分")
@@ -97,7 +102,9 @@ public class YxxWorker implements Serializable {
         phone("phone", "phone", "VARCHAR", false),
         enable("enable", "enable", "INTEGER", true),
         status("status", "status", "INTEGER", true),
+        contractAddress("contract_address", "contractAddress", "VARCHAR", false),
         levelId("level_id", "levelId", "INTEGER", false),
+        address("address", "address", "VARCHAR", false),
         location("location", "location", "VARCHAR", true),
         serviceScore("service_score", "serviceScore", "INTEGER", false),
         icon("icon", "icon", "VARCHAR", false),

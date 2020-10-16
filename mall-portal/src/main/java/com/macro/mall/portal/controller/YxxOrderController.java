@@ -19,7 +19,7 @@ import java.util.Map;
  * @date 2018/8/30
  */
 @RestController
-@Api(tags = "订单管理")
+@Api(tags = "4.订单管理")
 @RequestMapping("/order")
 public class YxxOrderController {
     private final YxxOrderService yxxOrderService;
@@ -29,8 +29,7 @@ public class YxxOrderController {
     }
 
     @ApiOperation("按状态分页获取用户订单列表")
-    @ApiImplicitParam(name = "status", value = "订单状态：-1->全部；0->待付款；1->待发货；2->已发货；3->已完成；4->已关闭",
-            defaultValue = "-1", allowableValues = "-1,0,1,2,3,4", paramType = "query", dataType = "int")
+    @ApiImplicitParam(name = "status", value = "订单状态：参见数据字典", paramType = "query", dataType = "int")
     @RequestMapping(value = "/list", method = RequestMethod.GET)
     public CommonResult<CommonPage<OmsOrderDetail>> list(@RequestParam Integer status,
                                                          @RequestParam(required = false, defaultValue = "1") Integer pageNum,

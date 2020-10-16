@@ -4,7 +4,7 @@ import com.macro.mall.common.exception.Asserts;
 import com.macro.mall.example.YxxMemberExample;
 import com.macro.mall.mapper.YxxMemberMapper;
 import com.macro.mall.model.YxxMember;
-import com.macro.mall.portal.domain.MemberDetails;
+import com.macro.mall.portal.domain.WorkerDetails;
 import com.macro.mall.portal.service.UmsMemberCacheService;
 import com.macro.mall.security.util.JwtTokenUtil;
 import lombok.AllArgsConstructor;
@@ -102,49 +102,6 @@ public class YxxMemberService {
         memberMapper.updateByPrimaryKeySelective(umsMember);
     }
 
-    public YxxMember getCurrentMember() {
-        SecurityContext ctx = SecurityContextHolder.getContext();
-        Authentication auth = ctx.getAuthentication();
-        MemberDetails memberDetails = (MemberDetails) auth.getPrincipal();
-        return memberDetails.getYxxMember();
-    }
-
-    /**
-     * 切换区域
-     *
-     * @param regionId 区域ID
-     * @return 更新结果
-     */
-    public int changeRegion(Long regionId) {
-        YxxMember member = getCurrentMember();
-        member.setRegionId(regionId);
-        return memberMapper.updateByPrimaryKeySelective(member);
-    }
-
-    public UserDetails loadUserByUsername(String username) {
-        YxxMember member = getByUsername(username);
-        if (member != null) {
-            return new MemberDetails(member);
-        }
-        throw new UsernameNotFoundException("用户名或密码错误");
-    }
-
-    public String login(String username, String password) {
-        String token = null;
-        //密码需要客户端加密后传递
-        try {
-            UserDetails userDetails = loadUserByUsername(username);
-            if (!passwordEncoder.matches(password, userDetails.getPassword())) {
-                throw new BadCredentialsException("密码不正确");
-            }
-            UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-            SecurityContextHolder.getContext().setAuthentication(authentication);
-            token = jwtTokenUtil.generateToken(userDetails);
-        } catch (AuthenticationException e) {
-            log.warn("登录异常:{}", e.getMessage());
-        }
-        return token;
-    }
 
     public String refreshToken(String token) {
         return jwtTokenUtil.refreshHeadToken(token);

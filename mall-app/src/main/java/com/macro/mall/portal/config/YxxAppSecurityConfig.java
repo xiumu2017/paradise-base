@@ -1,6 +1,6 @@
 package com.macro.mall.portal.config;
 
-import com.macro.mall.portal.service.impl.YxxMemberService;
+import com.macro.mall.portal.service.impl.YxxWorkerService;
 import com.macro.mall.security.config.SecurityConfig;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -20,9 +20,9 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class YxxAppSecurityConfig extends SecurityConfig {
 
-    private final YxxMemberService memberService;
+    private final YxxWorkerService memberService;
 
-    public YxxAppSecurityConfig(@Lazy YxxMemberService memberService) {
+    public YxxAppSecurityConfig(@Lazy YxxWorkerService memberService) {
         this.memberService = memberService;
     }
 

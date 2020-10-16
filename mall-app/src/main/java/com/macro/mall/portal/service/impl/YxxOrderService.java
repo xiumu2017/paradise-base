@@ -3,21 +3,14 @@ package com.macro.mall.portal.service.impl;
 import com.macro.mall.common.api.CommonPage;
 import com.macro.mall.common.service.RedisService;
 import com.macro.mall.enums.OrderStatus;
-import com.macro.mall.example.YxxOrderExample;
 import com.macro.mall.mapper.YxxMemberMapper;
 import com.macro.mall.mapper.YxxOrderMapper;
 import com.macro.mall.mapper.YxxOrderStatusRecordMapper;
-import com.macro.mall.model.YxxMember;
 import com.macro.mall.model.YxxOrder;
 import com.macro.mall.model.YxxOrderStatusRecord;
 import com.macro.mall.portal.domain.OmsOrderDetail;
-import com.macro.mall.portal.domain.YxxOrderParam;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Map;
 
 /**
  * @author Paradise
@@ -33,66 +26,19 @@ public class YxxOrderService {
 
     private final YxxOrderMapper yxxOrderMapper;
     private final YxxMemberService memberService;
+    private final YxxWorkerService workerService;
     private final YxxMemberMapper memberMapper;
     private final YxxOrderStatusRecordMapper orderStatusRecordMapper;
 
     public YxxOrderService(RedisService redisService, YxxOrderMapper yxxOrderMapper,
                            YxxMemberService memberService,
-                           YxxMemberMapper memberMapper, YxxOrderStatusRecordMapper orderStatusRecordMapper) {
+                           YxxWorkerService workerService, YxxMemberMapper memberMapper, YxxOrderStatusRecordMapper orderStatusRecordMapper) {
         this.redisService = redisService;
         this.yxxOrderMapper = yxxOrderMapper;
         this.memberService = memberService;
+        this.workerService = workerService;
         this.memberMapper = memberMapper;
         this.orderStatusRecordMapper = orderStatusRecordMapper;
-    }
-
-    /**
-     * 小程序下单
-     *
-     * @param orderParam 参数
-     * @return 返回结果
-     */
-    public Map<String, Object> generateOrder(YxxOrderParam orderParam) {
-        YxxMember member = memberService.getCurrentMember();
-        long count = yxxOrderMapper.countByExample(new YxxOrderExample().createCriteria()
-                .andMemberIdEqualTo(member.getId()).example());
-        if (count < 1L) {
-            // 第一次 下单 -> 保存更新用户信息 ，地址信息
-            member.setPhone(orderParam.getTelephone());
-            member.setAddress(orderParam.getAddress());
-            member.setSex(orderParam.getSex());
-            // 部分更新
-            memberMapper.updateByPrimaryKeySelective(member, YxxMember.Column.phone, YxxMember.Column.address, YxxMember.Column.sex);
-        }
-        // 保存订单信息
-        YxxOrder order = orderParam.toOrder();
-        order.setOrderSn(generateOrderSn(order));
-        order.setMemberId(member.getId());
-        order.setMemberName(member.getRealName());
-        order.setOrderStatus(OrderStatus.CREATED.val());
-        yxxOrderMapper.insertSelective(order);
-        return null;
-    }
-
-    /**
-     * 生成18位订单编号:8位日期 + 2位平台号码 + 2位支付方式 + 6位以上自增id
-     */
-    private String generateOrderSn(YxxOrder order) {
-        StringBuilder sb = new StringBuilder();
-        String date = new SimpleDateFormat("yyyyMMdd").format(new Date());
-        String key = REDIS_DATABASE + ":" + REDIS_KEY_ORDER_ID + date;
-        Long increment = redisService.incr(key, 1);
-        sb.append(date);
-        sb.append(String.format("%02d", order.getIsBargain()));
-        sb.append(String.format("%02d", order.getIsTransfer()));
-        String incrementStr = increment.toString();
-        int length = 6;
-        if (incrementStr.length() <= length) {
-            sb.append(String.format("%06d", increment));
-        } else {
-            sb.append(incrementStr);
-        }
-        return sb.toString();
     }
 
     public Integer paySuccess(Long orderId) {

@@ -1,7 +1,7 @@
 package com.macro.mall.portal.service;
 
 import com.macro.mall.model.PmsProduct;
-import com.macro.mall.portal.domain.PmsPortalProductDetail;
+import com.macro.mall.portal.domain.PmsProductDetail;
 import com.macro.mall.portal.domain.PmsProductCategoryNode;
 
 import java.util.List;
@@ -24,5 +24,5 @@ public interface PmsPortalProductService {
     /**
      * 获取前台商品详情
      */
-    PmsPortalProductDetail detail(Long id);
+    PmsProductDetail detail(Long id);
 }

@@ -17,11 +17,11 @@ import java.util.List;
  */
 @Getter
 @Setter
-public class PmsPortalProductDetail {
-    @ApiModelProperty("商品信息")
+public class PmsProductDetail {
+    @ApiModelProperty("品类信息")
     private PmsProduct product;
-    @ApiModelProperty("商品的sku库存信息")
+    @ApiModelProperty("规格信息")
     private List<PmsSkuStock> skuStockList;
-    @ApiModelProperty("商品可用优惠券")
+    @ApiModelProperty("可用优惠券")
     private List<SmsCoupon> couponList;
 }

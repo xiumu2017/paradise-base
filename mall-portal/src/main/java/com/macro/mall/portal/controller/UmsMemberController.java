@@ -14,8 +14,8 @@ import lombok.extern.slf4j.Slf4j;
 import me.chanjar.weixin.common.error.WxErrorException;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import springfox.documentation.annotations.ApiIgnore;
 
 import javax.servlet.http.HttpServletRequest;
 import java.security.Principal;
@@ -28,12 +28,12 @@ import java.util.Map;
  * @author macro
  * @date 2018/8/3
  */
-@Controller
-@Api(tags = "会员登录注册管理")
-@RequestMapping("/sso")
 @Slf4j
+@Api(tags = "1. 登录注册相关")
+@RestController
+@RequestMapping("/sso")
 public class UmsMemberController {
-    private final static String APP_ID = "";
+    private final static String APP_ID = "wx46c42dac91f7fd92";
 
     @Value("${jwt.tokenHeader}")
     private String tokenHeader;
@@ -55,28 +55,37 @@ public class UmsMemberController {
         if (StringUtils.isBlank(code)) {
             return CommonResult.failed("Code 不能为空");
         }
-
         final WxMaService wxService = WxMaConfiguration.getMaService(APP_ID);
-
         try {
             WxMaJscode2SessionResult session = wxService.getUserService().getSessionInfo(code);
             log.info(session.getSessionKey());
             log.info(session.getOpenid());
-            //TODO 可以增加自己的逻辑，关联业务相关数据
-
-//            WxUser wxUser = wxUserService.selectByWxId(session.getOpenid());
-//            if (wxUser == null) {
-//                wxUserService.insert(WxUser.builder().createTime(new Date()).updateTime(new Date())
-//                        .deleted(0).enable(1).wxId(session.getOpenid())
-//                        .build());
-//            }
-
-
-            return CommonResult.success(session);
+            String token = memberService.login(session);
+            Map<String, Object> tokenMap = new HashMap<>(4);
+            tokenMap.put("token", token);
+            tokenMap.put("tokenHead", tokenHead);
+            tokenMap.put("wxSession", session);
+            return CommonResult.success(tokenMap);
         } catch (WxErrorException e) {
             log.error(e.getMessage(), e);
             return CommonResult.failed(e.getLocalizedMessage());
         }
+    }
+
+
+    @ApiIgnore
+    @ApiOperation("会员登录")
+    @RequestMapping(value = "/login", method = RequestMethod.POST)
+    public CommonResult login(@RequestParam String username,
+                              @RequestParam String password) {
+        String token = memberService.login(username, password);
+        if (token == null) {
+            return CommonResult.validateFailed("用户名或密码错误");
+        }
+        Map<String, String> tokenMap = new HashMap<>(2);
+        tokenMap.put("token", token);
+        tokenMap.put("tokenHead", tokenHead);
+        return CommonResult.success(tokenMap);
     }
 
     /**
@@ -94,6 +103,7 @@ public class UmsMemberController {
         }
         // 解密用户信息
         WxMaUserInfo userInfo = wxService.getUserService().getUserInfo(sessionKey, encryptedData, iv);
+        memberService.updateWxInfo(userInfo);
         return CommonResult.success(userInfo);
     }
 
@@ -112,10 +122,11 @@ public class UmsMemberController {
         }
         // 解密
         WxMaPhoneNumberInfo phoneNoInfo = wxService.getUserService().getPhoneNoInfo(sessionKey, encryptedData, iv);
+        memberService.updateWxPhoneInfo(phoneNoInfo);
         return CommonResult.success(phoneNoInfo);
     }
 
-
+    @ApiIgnore
     @ApiOperation("会员注册")
     @RequestMapping(value = "/register", method = RequestMethod.POST)
     @ResponseBody
@@ -127,22 +138,7 @@ public class UmsMemberController {
         return CommonResult.success(null, "注册成功");
     }
 
-    @ApiOperation("会员登录")
-    @RequestMapping(value = "/login", method = RequestMethod.POST)
-    @ResponseBody
-    public CommonResult login(@RequestParam String username,
-                              @RequestParam String password) {
-        String token = memberService.login(username, password);
-        if (token == null) {
-            return CommonResult.validateFailed("用户名或密码错误");
-        }
-        Map<String, String> tokenMap = new HashMap<>();
-        tokenMap.put("token", token);
-        tokenMap.put("tokenHead", tokenHead);
-        return CommonResult.success(tokenMap);
-    }
-
-    @ApiOperation("获取会员信息")
+    @ApiOperation("个人中心-获取用户信息")
     @RequestMapping(value = "/info", method = RequestMethod.GET)
     @ResponseBody
     public CommonResult info(Principal principal) {
@@ -159,11 +155,11 @@ public class UmsMemberController {
         if (principal == null) {
             return CommonResult.unauthorized(null);
         }
-        YxxMember member = memberService.getCurrentMember();
-        member.setRegionId(regionId);
-        return CommonResult.success(member);
+        memberService.updateRegion(regionId);
+        return CommonResult.success("");
     }
 
+    @ApiIgnore
     @ApiOperation("获取验证码")
     @RequestMapping(value = "/getAuthCode", method = RequestMethod.GET)
     @ResponseBody
@@ -172,6 +168,7 @@ public class UmsMemberController {
         return CommonResult.success(authCode, "获取验证码成功");
     }
 
+    @ApiIgnore
     @ApiOperation("修改密码")
     @RequestMapping(value = "/updatePassword", method = RequestMethod.POST)
     @ResponseBody
@@ -182,10 +179,9 @@ public class UmsMemberController {
         return CommonResult.success(null, "密码修改成功");
     }
 
-
+    @ApiIgnore
     @ApiOperation(value = "刷新token")
     @RequestMapping(value = "/refreshToken", method = RequestMethod.GET)
-    @ResponseBody
     public CommonResult refreshToken(HttpServletRequest request) {
         String token = request.getHeader(tokenHeader);
         String refreshToken = memberService.refreshToken(token);

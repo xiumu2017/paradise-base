@@ -1,7 +1,6 @@
 package com.macro.mall.example;
 
 import com.macro.mall.model.YxxWorker;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
@@ -932,6 +931,106 @@ public class YxxWorkerExample {
             return (Criteria) this;
         }
 
+        public Criteria andContractAddressIsNull() {
+            addCriterion("contract_address is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andContractAddressIsNotNull() {
+            addCriterion("contract_address is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andContractAddressEqualTo(String value) {
+            addCriterion("contract_address =", value, "contractAddress");
+            return (Criteria) this;
+        }
+
+        public Criteria andContractAddressEqualToColumn(YxxWorker.Column column) {
+            addCriterion(new StringBuilder("contract_address = ").append(column.getEscapedColumnName()).toString());
+            return (Criteria) this;
+        }
+
+        public Criteria andContractAddressNotEqualTo(String value) {
+            addCriterion("contract_address <>", value, "contractAddress");
+            return (Criteria) this;
+        }
+
+        public Criteria andContractAddressNotEqualToColumn(YxxWorker.Column column) {
+            addCriterion(new StringBuilder("contract_address <> ").append(column.getEscapedColumnName()).toString());
+            return (Criteria) this;
+        }
+
+        public Criteria andContractAddressGreaterThan(String value) {
+            addCriterion("contract_address >", value, "contractAddress");
+            return (Criteria) this;
+        }
+
+        public Criteria andContractAddressGreaterThanColumn(YxxWorker.Column column) {
+            addCriterion(new StringBuilder("contract_address > ").append(column.getEscapedColumnName()).toString());
+            return (Criteria) this;
+        }
+
+        public Criteria andContractAddressGreaterThanOrEqualTo(String value) {
+            addCriterion("contract_address >=", value, "contractAddress");
+            return (Criteria) this;
+        }
+
+        public Criteria andContractAddressGreaterThanOrEqualToColumn(YxxWorker.Column column) {
+            addCriterion(new StringBuilder("contract_address >= ").append(column.getEscapedColumnName()).toString());
+            return (Criteria) this;
+        }
+
+        public Criteria andContractAddressLessThan(String value) {
+            addCriterion("contract_address <", value, "contractAddress");
+            return (Criteria) this;
+        }
+
+        public Criteria andContractAddressLessThanColumn(YxxWorker.Column column) {
+            addCriterion(new StringBuilder("contract_address < ").append(column.getEscapedColumnName()).toString());
+            return (Criteria) this;
+        }
+
+        public Criteria andContractAddressLessThanOrEqualTo(String value) {
+            addCriterion("contract_address <=", value, "contractAddress");
+            return (Criteria) this;
+        }
+
+        public Criteria andContractAddressLessThanOrEqualToColumn(YxxWorker.Column column) {
+            addCriterion(new StringBuilder("contract_address <= ").append(column.getEscapedColumnName()).toString());
+            return (Criteria) this;
+        }
+
+        public Criteria andContractAddressLike(String value) {
+            addCriterion("contract_address like", value, "contractAddress");
+            return (Criteria) this;
+        }
+
+        public Criteria andContractAddressNotLike(String value) {
+            addCriterion("contract_address not like", value, "contractAddress");
+            return (Criteria) this;
+        }
+
+        public Criteria andContractAddressIn(List<String> values) {
+            addCriterion("contract_address in", values, "contractAddress");
+            return (Criteria) this;
+        }
+
+        public Criteria andContractAddressNotIn(List<String> values) {
+            addCriterion("contract_address not in", values, "contractAddress");
+            return (Criteria) this;
+        }
+
+        public Criteria andContractAddressBetween(String value1, String value2) {
+            addCriterion("contract_address between", value1, value2, "contractAddress");
+            return (Criteria) this;
+        }
+
+        public Criteria andContractAddressNotBetween(String value1, String value2) {
+            addCriterion("contract_address not between", value1, value2, "contractAddress");
+            return (Criteria) this;
+        }
+
         public Criteria andLevelIdIsNull() {
             addCriterion("level_id is null");
             return (Criteria) this;
@@ -1019,6 +1118,106 @@ public class YxxWorkerExample {
 
         public Criteria andLevelIdNotBetween(Integer value1, Integer value2) {
             addCriterion("level_id not between", value1, value2, "levelId");
+            return (Criteria) this;
+        }
+
+        public Criteria andAddressIsNull() {
+            addCriterion("address is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andAddressIsNotNull() {
+            addCriterion("address is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andAddressEqualTo(String value) {
+            addCriterion("address =", value, "address");
+            return (Criteria) this;
+        }
+
+        public Criteria andAddressEqualToColumn(YxxWorker.Column column) {
+            addCriterion(new StringBuilder("address = ").append(column.getEscapedColumnName()).toString());
+            return (Criteria) this;
+        }
+
+        public Criteria andAddressNotEqualTo(String value) {
+            addCriterion("address <>", value, "address");
+            return (Criteria) this;
+        }
+
+        public Criteria andAddressNotEqualToColumn(YxxWorker.Column column) {
+            addCriterion(new StringBuilder("address <> ").append(column.getEscapedColumnName()).toString());
+            return (Criteria) this;
+        }
+
+        public Criteria andAddressGreaterThan(String value) {
+            addCriterion("address >", value, "address");
+            return (Criteria) this;
+        }
+
+        public Criteria andAddressGreaterThanColumn(YxxWorker.Column column) {
+            addCriterion(new StringBuilder("address > ").append(column.getEscapedColumnName()).toString());
+            return (Criteria) this;
+        }
+
+        public Criteria andAddressGreaterThanOrEqualTo(String value) {
+            addCriterion("address >=", value, "address");
+            return (Criteria) this;
+        }
+
+        public Criteria andAddressGreaterThanOrEqualToColumn(YxxWorker.Column column) {
+            addCriterion(new StringBuilder("address >= ").append(column.getEscapedColumnName()).toString());
+            return (Criteria) this;
+        }
+
+        public Criteria andAddressLessThan(String value) {
+            addCriterion("address <", value, "address");
+            return (Criteria) this;
+        }
+
+        public Criteria andAddressLessThanColumn(YxxWorker.Column column) {
+            addCriterion(new StringBuilder("address < ").append(column.getEscapedColumnName()).toString());
+            return (Criteria) this;
+        }
+
+        public Criteria andAddressLessThanOrEqualTo(String value) {
+            addCriterion("address <=", value, "address");
+            return (Criteria) this;
+        }
+
+        public Criteria andAddressLessThanOrEqualToColumn(YxxWorker.Column column) {
+            addCriterion(new StringBuilder("address <= ").append(column.getEscapedColumnName()).toString());
+            return (Criteria) this;
+        }
+
+        public Criteria andAddressLike(String value) {
+            addCriterion("address like", value, "address");
+            return (Criteria) this;
+        }
+
+        public Criteria andAddressNotLike(String value) {
+            addCriterion("address not like", value, "address");
+            return (Criteria) this;
+        }
+
+        public Criteria andAddressIn(List<String> values) {
+            addCriterion("address in", values, "address");
+            return (Criteria) this;
+        }
+
+        public Criteria andAddressNotIn(List<String> values) {
+            addCriterion("address not in", values, "address");
+            return (Criteria) this;
+        }
+
+        public Criteria andAddressBetween(String value1, String value2) {
+            addCriterion("address between", value1, value2, "address");
+            return (Criteria) this;
+        }
+
+        public Criteria andAddressNotBetween(String value1, String value2) {
+            addCriterion("address not between", value1, value2, "address");
             return (Criteria) this;
         }
 

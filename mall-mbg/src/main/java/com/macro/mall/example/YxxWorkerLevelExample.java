@@ -1,7 +1,6 @@
 package com.macro.mall.example;
 
 import com.macro.mall.model.YxxWorkerLevel;
-
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;

@@ -15,7 +15,7 @@ import java.util.List;
  * @author macro
  * @date 2018/8/28
  */
-@Api(tags = "会员服务地址管理")
+@Api(tags = "5.1服务地址管理")
 @RestController
 @RequestMapping("/member/address")
 public class UmsMemberReceiveAddressController {
@@ -58,8 +58,8 @@ public class UmsMemberReceiveAddressController {
         return CommonResult.failed();
     }
 
-    @ApiOperation("修改地址")
-    @RequestMapping(value = "/update/{id}", method = RequestMethod.POST)
+    @ApiOperation("修改地址-设置为默认地址")
+    @RequestMapping(value = "/set-default/{id}", method = RequestMethod.POST)
     @ResponseBody
     public CommonResult setDefault(@PathVariable Long id) {
         int count = addressService.setDefault(id);

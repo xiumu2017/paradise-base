@@ -6,7 +6,7 @@ import com.github.pagehelper.PageHelper;
 import com.macro.mall.mapper.*;
 import com.macro.mall.model.*;
 import com.macro.mall.portal.dao.PortalProductDao;
-import com.macro.mall.portal.domain.PmsPortalProductDetail;
+import com.macro.mall.portal.domain.PmsProductDetail;
 import com.macro.mall.portal.domain.PmsProductCategoryNode;
 import com.macro.mall.portal.service.PmsPortalProductService;
 import org.springframework.beans.BeanUtils;
@@ -72,25 +72,11 @@ public class PmsPortalProductServiceImpl implements PmsPortalProductService {
     }
 
     @Override
-    public PmsPortalProductDetail detail(Long id) {
-        PmsPortalProductDetail result = new PmsPortalProductDetail();
+    public PmsProductDetail detail(Long id) {
+        PmsProductDetail result = new PmsProductDetail();
         //获取商品信息
         PmsProduct product = productMapper.selectByPrimaryKey(id);
         result.setProduct(product);
-        //获取商品属性信息
-        PmsProductAttributeExample attributeExample = new PmsProductAttributeExample();
-        attributeExample.createCriteria().andProductAttributeCategoryIdEqualTo(product.getProductAttributeCategoryId());
-        List<PmsProductAttribute> productAttributeList = productAttributeMapper.selectByExample(attributeExample);
-        result.setProductAttributeList(productAttributeList);
-        //获取商品属性值信息
-        if (CollUtil.isNotEmpty(productAttributeList)) {
-            List<Long> attributeIds = productAttributeList.stream().map(PmsProductAttribute::getId).collect(Collectors.toList());
-            PmsProductAttributeValueExample attributeValueExample = new PmsProductAttributeValueExample();
-            attributeValueExample.createCriteria().andProductIdEqualTo(product.getId())
-                    .andProductAttributeIdIn(attributeIds);
-            List<PmsProductAttributeValue> productAttributeValueList = productAttributeValueMapper.selectByExample(attributeValueExample);
-            result.setProductAttributeValueList(productAttributeValueList);
-        }
         //获取商品SKU库存信息
         PmsSkuStockExample skuExample = new PmsSkuStockExample();
         skuExample.createCriteria().andProductIdEqualTo(product.getId());
