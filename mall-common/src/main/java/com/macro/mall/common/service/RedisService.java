@@ -6,7 +6,9 @@ import java.util.Set;
 
 /**
  * redis操作Service
- * Created by macro on 2020/3/3.
+ *
+ * @author macro
+ * @date 2020/3/3
  */
 public interface RedisService {
 
@@ -189,4 +191,12 @@ public interface RedisService {
      * @return value
      */
     Object lrPop(String key);
+
+    /**
+     * 列表左侧出队
+     *
+     * @param key redis key
+     * @return value
+     */
+    Object llPop(String key);
 }

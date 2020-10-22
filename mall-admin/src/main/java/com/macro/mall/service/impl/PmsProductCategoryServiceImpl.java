@@ -1,20 +1,20 @@
 package com.macro.mall.service.impl;
 
 import com.github.pagehelper.PageHelper;
-import com.macro.mall.dao.PmsProductCategoryAttributeRelationDao;
 import com.macro.mall.dao.PmsProductCategoryDao;
 import com.macro.mall.dto.PmsProductCategoryParam;
 import com.macro.mall.dto.PmsProductCategoryWithChildrenItem;
-import com.macro.mall.mapper.PmsProductCategoryAttributeRelationMapper;
+import com.macro.mall.example.PmsProductCategoryExample;
+import com.macro.mall.example.PmsProductExample;
 import com.macro.mall.mapper.PmsProductCategoryMapper;
 import com.macro.mall.mapper.PmsProductMapper;
-import com.macro.mall.model.*;
+import com.macro.mall.model.PmsProduct;
+import com.macro.mall.model.PmsProductCategory;
 import com.macro.mall.service.PmsProductCategoryService;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -28,8 +28,6 @@ import java.util.List;
 public class PmsProductCategoryServiceImpl implements PmsProductCategoryService {
     private final PmsProductCategoryMapper productCategoryMapper;
     private final PmsProductMapper productMapper;
-    private final PmsProductCategoryAttributeRelationDao productCategoryAttributeRelationDao;
-    private final PmsProductCategoryAttributeRelationMapper productCategoryAttributeRelationMapper;
     private final PmsProductCategoryDao productCategoryDao;
 
     @Override
@@ -40,23 +38,6 @@ public class PmsProductCategoryServiceImpl implements PmsProductCategoryService 
         // level 赋值处理
         setCategoryLevel(productCategory);
         return productCategoryMapper.insertSelective(productCategory);
-    }
-
-    /**
-     * 批量插入商品分类与筛选属性关系表
-     *
-     * @param productCategoryId      商品分类id
-     * @param productAttributeIdList 相关商品筛选属性id集合
-     */
-    private void insertRelationList(Long productCategoryId, List<Long> productAttributeIdList) {
-        List<PmsProductCategoryAttributeRelation> relationList = new ArrayList<>();
-        for (Long productAttrId : productAttributeIdList) {
-            PmsProductCategoryAttributeRelation relation = new PmsProductCategoryAttributeRelation();
-            relation.setProductAttributeId(productAttrId);
-            relation.setProductCategoryId(productCategoryId);
-            relationList.add(relation);
-        }
-        productCategoryAttributeRelationDao.insertList(relationList);
     }
 
     @Override

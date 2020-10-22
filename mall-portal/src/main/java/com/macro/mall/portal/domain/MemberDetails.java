@@ -34,7 +34,7 @@ public class MemberDetails implements UserDetails {
 
     @Override
     public String getUsername() {
-        return yxxMember.getWxOpenId();
+        return yxxMember.getUsername();
     }
 
     @Override

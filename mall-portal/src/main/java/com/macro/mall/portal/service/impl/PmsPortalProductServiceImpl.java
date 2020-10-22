@@ -1,16 +1,22 @@
 package com.macro.mall.portal.service.impl;
 
-import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
 import com.github.pagehelper.PageHelper;
-import com.macro.mall.mapper.*;
-import com.macro.mall.model.*;
+import com.macro.mall.example.PmsProductCategoryExample;
+import com.macro.mall.example.PmsProductExample;
+import com.macro.mall.example.PmsProductSkuExample;
+import com.macro.mall.mapper.PmsProductCategoryMapper;
+import com.macro.mall.mapper.PmsProductMapper;
+import com.macro.mall.mapper.PmsProductSkuMapper;
+import com.macro.mall.model.PmsProduct;
+import com.macro.mall.model.PmsProductCategory;
 import com.macro.mall.portal.dao.PortalProductDao;
-import com.macro.mall.portal.domain.PmsProductDetail;
 import com.macro.mall.portal.domain.PmsProductCategoryNode;
+import com.macro.mall.portal.domain.PmsProductDetail;
+import com.macro.mall.portal.domain.PmsProductInfo;
 import com.macro.mall.portal.service.PmsPortalProductService;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -23,22 +29,15 @@ import java.util.stream.Collectors;
  * @date 2020/4/6
  */
 @Service
+@AllArgsConstructor
 public class PmsPortalProductServiceImpl implements PmsPortalProductService {
-    @Autowired
-    private PmsProductMapper productMapper;
-    @Autowired
-    private PmsProductCategoryMapper productCategoryMapper;
-    @Autowired
-    private PmsProductAttributeMapper productAttributeMapper;
-    @Autowired
-    private PmsProductAttributeValueMapper productAttributeValueMapper;
-    @Autowired
-    private PmsSkuStockMapper skuStockMapper;
-    @Autowired
-    private PortalProductDao portalProductDao;
+    private final PmsProductMapper productMapper;
+    private final PmsProductCategoryMapper productCategoryMapper;
+    private final PmsProductSkuMapper productSkuMapper;
+    private final PortalProductDao portalProductDao;
 
     @Override
-    public List<PmsProduct> search(String keyword, Long productCategoryId, Integer pageNum, Integer pageSize, Integer sort) {
+    public List<PmsProduct> search(String keyword, Long productCategoryId, Integer pageNum, Integer pageSize) {
         PageHelper.startPage(pageNum, pageSize);
         PmsProductExample example = new PmsProductExample();
         PmsProductExample.Criteria criteria = example.createCriteria();
@@ -49,17 +48,7 @@ public class PmsPortalProductServiceImpl implements PmsPortalProductService {
         if (productCategoryId != null) {
             criteria.andProductCategoryIdEqualTo(productCategoryId);
         }
-        //1->按新品；2->按销量；3->价格从低到高；4->价格从高到低
-        if (sort == 1) {
-            example.setOrderByClause("id desc");
-        } else if (sort == 2) {
-            example.setOrderByClause("sale desc");
-        } else if (sort == 3) {
-            example.setOrderByClause("price asc");
-        } else if (sort == 4) {
-            example.setOrderByClause("price desc");
-        }
-        return productMapper.selectByExample(example);
+        return productMapper.selectByExample(example.orderBy(PmsProduct.Column.sort.desc()));
     }
 
     @Override
@@ -78,10 +67,7 @@ public class PmsPortalProductServiceImpl implements PmsPortalProductService {
         PmsProduct product = productMapper.selectByPrimaryKey(id);
         result.setProduct(product);
         //获取商品SKU库存信息
-        PmsSkuStockExample skuExample = new PmsSkuStockExample();
-        skuExample.createCriteria().andProductIdEqualTo(product.getId());
-        List<PmsSkuStock> skuStockList = skuStockMapper.selectByExample(skuExample);
-        result.setSkuStockList(skuStockList);
+        result.setSkuStockList(productSkuMapper.selectByExample(new PmsProductSkuExample().createCriteria().andProductIdEqualTo(id).example()));
         //商品可用优惠券
         result.setCouponList(portalProductDao.getAvailableCouponList(product.getId(), product.getProductCategoryId()));
         return result;
@@ -99,5 +85,16 @@ public class PmsPortalProductServiceImpl implements PmsPortalProductService {
                 .map(subItem -> covert(subItem, allList)).collect(Collectors.toList());
         node.setChildren(children);
         return node;
+    }
+
+    /**
+     * 推荐商品列表
+     *
+     * @param regionId 区域ID
+     * @return 商品列表
+     */
+    @Override
+    public List<PmsProductInfo> recommendProductList(Long regionId) {
+        return portalProductDao.recommendProductList(regionId);
     }
 }

@@ -2,6 +2,7 @@ package com.macro.mall.controller.repaire;
 
 import com.macro.mall.common.api.CommonPage;
 import com.macro.mall.common.api.CommonResult;
+import com.macro.mall.dto.YxxWorkerBody;
 import com.macro.mall.model.YxxWorker;
 import com.macro.mall.service.impl.YxxWorkerService;
 import io.swagger.annotations.Api;
@@ -24,14 +25,14 @@ public class YxxWorkerController {
 
     @ApiOperation("新增维修工")
     @PostMapping("/create")
-    public CommonResult create(@RequestBody YxxWorker worker) {
+    public CommonResult create(@RequestBody YxxWorkerBody worker) {
         YxxWorker yxxWorker = yxxWorkerService.create(worker);
         return CommonResult.success(yxxWorker);
     }
 
     @ApiOperation("新增维修工")
     @PostMapping("/update")
-    public CommonResult update(@RequestBody YxxWorker worker) {
+    public CommonResult update(@RequestBody YxxWorkerBody worker) {
         YxxWorker yxxWorker = yxxWorkerService.update(worker);
         return CommonResult.success(yxxWorker);
     }

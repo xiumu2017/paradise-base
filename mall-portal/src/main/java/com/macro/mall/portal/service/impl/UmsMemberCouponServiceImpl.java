@@ -5,13 +5,10 @@ import com.macro.mall.common.exception.Asserts;
 import com.macro.mall.mapper.*;
 import com.macro.mall.model.*;
 import com.macro.mall.portal.dao.SmsCouponHistoryDao;
-import com.macro.mall.portal.domain.CartPromotionItem;
-import com.macro.mall.portal.domain.SmsCouponHistoryDetail;
 import com.macro.mall.portal.service.UmsMemberCouponService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -20,7 +17,9 @@ import java.util.stream.Collectors;
 
 /**
  * 会员优惠券管理Service实现类
- * Created by macro on 2018/8/29.
+ *
+ * @author macro
+ * @date 2018/8/29
  */
 @Service
 public class UmsMemberCouponServiceImpl implements UmsMemberCouponService {
@@ -111,63 +110,6 @@ public class UmsMemberCouponServiceImpl implements UmsMemberCouponService {
         return couponHistoryMapper.selectByExample(couponHistoryExample);
     }
 
-    @Override
-    public List<SmsCouponHistoryDetail> listCart(List<CartPromotionItem> cartItemList, Integer type) {
-        YxxMember currentMember = memberService.getCurrentMember();
-        Date now = new Date();
-        //获取该用户所有优惠券
-        List<SmsCouponHistoryDetail> allList = couponHistoryDao.getDetailList(currentMember.getId());
-        //根据优惠券使用类型来判断优惠券是否可用
-        List<SmsCouponHistoryDetail> enableList = new ArrayList<>();
-        List<SmsCouponHistoryDetail> disableList = new ArrayList<>();
-        for (SmsCouponHistoryDetail couponHistoryDetail : allList) {
-            Integer useType = couponHistoryDetail.getCoupon().getUseType();
-            BigDecimal minPoint = couponHistoryDetail.getCoupon().getMinPoint();
-            Date endTime = couponHistoryDetail.getCoupon().getEndTime();
-            if (useType.equals(0)) {
-                //0->全场通用
-                //判断是否满足优惠起点
-                //计算购物车商品的总价
-                BigDecimal totalAmount = calcTotalAmount(cartItemList);
-                if (now.before(endTime) && totalAmount.subtract(minPoint).intValue() >= 0) {
-                    enableList.add(couponHistoryDetail);
-                } else {
-                    disableList.add(couponHistoryDetail);
-                }
-            } else if (useType.equals(1)) {
-                //1->指定分类
-                //计算指定分类商品的总价
-                List<Long> productCategoryIds = new ArrayList<>();
-                for (SmsCouponProductCategoryRelation categoryRelation : couponHistoryDetail.getCategoryRelationList()) {
-                    productCategoryIds.add(categoryRelation.getProductCategoryId());
-                }
-                BigDecimal totalAmount = calcTotalAmountByproductCategoryId(cartItemList, productCategoryIds);
-                if (now.before(endTime) && totalAmount.intValue() > 0 && totalAmount.subtract(minPoint).intValue() >= 0) {
-                    enableList.add(couponHistoryDetail);
-                } else {
-                    disableList.add(couponHistoryDetail);
-                }
-            } else if (useType.equals(2)) {
-                //2->指定商品
-                //计算指定商品的总价
-                List<Long> productIds = new ArrayList<>();
-                for (SmsCouponProductRelation productRelation : couponHistoryDetail.getProductRelationList()) {
-                    productIds.add(productRelation.getProductId());
-                }
-                BigDecimal totalAmount = calcTotalAmountByProductId(cartItemList, productIds);
-                if (now.before(endTime) && totalAmount.intValue() > 0 && totalAmount.subtract(minPoint).intValue() >= 0) {
-                    enableList.add(couponHistoryDetail);
-                } else {
-                    disableList.add(couponHistoryDetail);
-                }
-            }
-        }
-        if (type.equals(1)) {
-            return enableList;
-        } else {
-            return disableList;
-        }
-    }
 
     @Override
     public List<SmsCoupon> listByProduct(Long productId) {
@@ -209,37 +151,6 @@ public class UmsMemberCouponServiceImpl implements UmsMemberCouponService {
     public List<SmsCoupon> list(Integer useStatus) {
         YxxMember member = memberService.getCurrentMember();
         return couponHistoryDao.getCouponList(member.getId(), useStatus);
-    }
-
-    private BigDecimal calcTotalAmount(List<CartPromotionItem> cartItemList) {
-        BigDecimal total = new BigDecimal("0");
-        for (CartPromotionItem item : cartItemList) {
-            BigDecimal realPrice = item.getPrice().subtract(item.getReduceAmount());
-            total = total.add(realPrice.multiply(new BigDecimal(item.getQuantity())));
-        }
-        return total;
-    }
-
-    private BigDecimal calcTotalAmountByproductCategoryId(List<CartPromotionItem> cartItemList, List<Long> productCategoryIds) {
-        BigDecimal total = new BigDecimal("0");
-        for (CartPromotionItem item : cartItemList) {
-            if (productCategoryIds.contains(item.getProductCategoryId())) {
-                BigDecimal realPrice = item.getPrice().subtract(item.getReduceAmount());
-                total = total.add(realPrice.multiply(new BigDecimal(item.getQuantity())));
-            }
-        }
-        return total;
-    }
-
-    private BigDecimal calcTotalAmountByProductId(List<CartPromotionItem> cartItemList, List<Long> productIds) {
-        BigDecimal total = new BigDecimal("0");
-        for (CartPromotionItem item : cartItemList) {
-            if (productIds.contains(item.getProductId())) {
-                BigDecimal realPrice = item.getPrice().subtract(item.getReduceAmount());
-                total = total.add(realPrice.multiply(new BigDecimal(item.getQuantity())));
-            }
-        }
-        return total;
     }
 
 }

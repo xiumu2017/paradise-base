@@ -27,13 +27,13 @@ public class HomeController {
         this.homeService = homeService;
     }
 
-    @ApiOperation("首页-Banner头图列表")
+    @ApiOperation("Banner头图列表")
     @RequestMapping(value = "/banner/{regionId}", method = RequestMethod.GET)
     public CommonResult<List<YxxHomeBanner>> content(@PathVariable Long regionId) {
         return CommonResult.success(homeService.homeBannerList(regionId));
     }
 
-    @ApiOperation("获取首页商品分类")
+    @ApiOperation("首页服务分类")
     @RequestMapping(value = "/productCateList/{parentId}", method = RequestMethod.GET)
     public CommonResult<List<PmsProductCategory>> getProductCateList(@PathVariable Long parentId) {
         List<PmsProductCategory> productCategoryList = homeService.getProductCateList(parentId);

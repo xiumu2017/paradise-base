@@ -30,6 +30,6 @@ public class MallSecurityConfig extends SecurityConfig {
     @Bean
     public UserDetailsService userDetailsService() {
         //获取登录用户信息
-        return memberService::loadUserByUsername;
+        return memberService::loadUserByOpenId;
     }
 }

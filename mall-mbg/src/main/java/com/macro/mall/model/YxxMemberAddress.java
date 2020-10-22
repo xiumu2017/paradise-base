@@ -23,16 +23,19 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 public class YxxMemberAddress implements Serializable {
-    @ApiModelProperty(value = "自增主键", hidden = true)
+    @ApiModelProperty(value = "")
     private Long id;
 
-    @ApiModelProperty(value = "用户ID", hidden = true)
+    @ApiModelProperty(value = "用户ID")
     private Long memberId;
 
     @ApiModelProperty(value = "收货人名称")
     private String name;
 
-    @ApiModelProperty(value = "手机号码")
+    @ApiModelProperty(value = "性别：1男0女")
+    private Integer sex;
+
+    @ApiModelProperty(value = "联系方式")
     private String phoneNumber;
 
     @ApiModelProperty(value = "是否为默认")
@@ -56,7 +59,7 @@ public class YxxMemberAddress implements Serializable {
     @ApiModelProperty(value = "坐标")
     private String location;
 
-    @ApiModelProperty(value = "创建时间", hidden = true)
+    @ApiModelProperty(value = "创建时间")
     private Date createTime;
 
     @ApiModelProperty(value = "更新时间")
@@ -68,6 +71,7 @@ public class YxxMemberAddress implements Serializable {
         id("id", "id", "BIGINT", false),
         memberId("member_id", "memberId", "BIGINT", false),
         name("name", "name", "VARCHAR", true),
+        sex("sex", "sex", "INTEGER", false),
         phoneNumber("phone_number", "phoneNumber", "VARCHAR", false),
         defaultStatus("default_status", "defaultStatus", "INTEGER", false),
         postCode("post_code", "postCode", "VARCHAR", false),

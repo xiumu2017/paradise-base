@@ -1,115 +1,128 @@
 package com.macro.mall.model;
 
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Arrays;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
+/**
+ * sku规格
+ *
+ * @author Paradise
+ */
+@ApiModel(value="sku规格")
+@Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class PmsProductSku implements Serializable {
+    @ApiModelProperty(value="")
     private Long id;
 
+    @ApiModelProperty(value="")
     private Long productId;
 
-    @ApiModelProperty(value = "sku编码", hidden = true)
+    @ApiModelProperty(value="sku编码")
     private String skuCode;
 
-    @ApiModelProperty(value = "价格")
+    @ApiModelProperty(value="")
     private BigDecimal price;
 
-    @ApiModelProperty(value = "展示图片", hidden = true)
+    @ApiModelProperty(value="展示图片")
     private String pic;
 
-    @ApiModelProperty(value = "销量", hidden = true)
+    @ApiModelProperty(value="销量")
     private Integer sale;
 
-    @ApiModelProperty(value = "单品促销价格", hidden = true)
+    @ApiModelProperty(value="单品促销价格")
     private BigDecimal promotionPrice;
 
-    @ApiModelProperty(value = "规格名称")
+    @ApiModelProperty(value="规格名称")
     private String skuName;
 
     private static final long serialVersionUID = 1L;
 
-    public Long getId() {
-        return id;
-    }
+    public enum Column {
+        id("id", "id", "BIGINT", false),
+        productId("product_id", "productId", "BIGINT", false),
+        skuCode("sku_code", "skuCode", "VARCHAR", false),
+        price("price", "price", "DECIMAL", false),
+        pic("pic", "pic", "VARCHAR", false),
+        sale("sale", "sale", "INTEGER", false),
+        promotionPrice("promotion_price", "promotionPrice", "DECIMAL", false),
+        skuName("sku_name", "skuName", "VARCHAR", false);
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+        private static final String BEGINNING_DELIMITER = "`";
 
-    public Long getProductId() {
-        return productId;
-    }
+        private static final String ENDING_DELIMITER = "`";
 
-    public void setProductId(Long productId) {
-        this.productId = productId;
-    }
+        private final String column;
 
-    public String getSkuCode() {
-        return skuCode;
-    }
+        private final boolean isColumnNameDelimited;
 
-    public void setSkuCode(String skuCode) {
-        this.skuCode = skuCode;
-    }
+        private final String javaProperty;
 
-    public BigDecimal getPrice() {
-        return price;
-    }
+        private final String jdbcType;
 
-    public void setPrice(BigDecimal price) {
-        this.price = price;
-    }
+        public String value() {
+            return this.column;
+        }
 
-    public String getPic() {
-        return pic;
-    }
+        public String getValue() {
+            return this.column;
+        }
 
-    public void setPic(String pic) {
-        this.pic = pic;
-    }
+        public String getJavaProperty() {
+            return this.javaProperty;
+        }
 
-    public Integer getSale() {
-        return sale;
-    }
+        public String getJdbcType() {
+            return this.jdbcType;
+        }
 
-    public void setSale(Integer sale) {
-        this.sale = sale;
-    }
+        Column(String column, String javaProperty, String jdbcType, boolean isColumnNameDelimited) {
+            this.column = column;
+            this.javaProperty = javaProperty;
+            this.jdbcType = jdbcType;
+            this.isColumnNameDelimited = isColumnNameDelimited;
+        }
 
-    public BigDecimal getPromotionPrice() {
-        return promotionPrice;
-    }
+        public String desc() {
+            return this.getEscapedColumnName() + " DESC";
+        }
 
-    public void setPromotionPrice(BigDecimal promotionPrice) {
-        this.promotionPrice = promotionPrice;
-    }
+        public String asc() {
+            return this.getEscapedColumnName() + " ASC";
+        }
 
-    public String getSkuName() {
-        return skuName;
-    }
+        public static Column[] excludes(Column ... excludes) {
+            ArrayList<Column> columns = new ArrayList<>(Arrays.asList(Column.values()));
+            if (excludes != null && excludes.length > 0) {
+                columns.removeAll(new ArrayList<>(Arrays.asList(excludes)));
+            }
+            return columns.toArray(new Column[]{});
+        }
 
-    public void setSkuName(String skuName) {
-        this.skuName = skuName;
-    }
+        public static Column[] all() {
+            return Column.values();
+        }
 
-    @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append(getClass().getSimpleName());
-        sb.append(" [");
-        sb.append("Hash = ").append(hashCode());
-        sb.append(", id=").append(id);
-        sb.append(", productId=").append(productId);
-        sb.append(", skuCode=").append(skuCode);
-        sb.append(", price=").append(price);
-        sb.append(", pic=").append(pic);
-        sb.append(", sale=").append(sale);
-        sb.append(", promotionPrice=").append(promotionPrice);
-        sb.append(", skuName=").append(skuName);
-        sb.append(", serialVersionUID=").append(serialVersionUID);
-        sb.append("]");
-        return sb.toString();
+        public String getEscapedColumnName() {
+            if (this.isColumnNameDelimited) {
+                return new StringBuilder().append(BEGINNING_DELIMITER).append(this.column).append(ENDING_DELIMITER).toString();
+            } else {
+                return this.column;
+            }
+        }
+
+        public String getAliasedEscapedColumnName() {
+            return this.getEscapedColumnName();
+        }
     }
 }

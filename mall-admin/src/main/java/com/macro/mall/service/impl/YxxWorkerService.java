@@ -1,13 +1,17 @@
 package com.macro.mall.service.impl;
 
 import com.github.pagehelper.PageHelper;
+import com.macro.mall.common.utils.GeneratorUtil;
+import com.macro.mall.dto.YxxWorkerBody;
 import com.macro.mall.example.YxxWorkerExample;
 import com.macro.mall.mapper.YxxWorkerMapper;
-import com.macro.mall.model.YxxOrder;
 import com.macro.mall.model.YxxWorker;
+import org.springframework.beans.BeanUtils;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -17,9 +21,11 @@ import java.util.stream.Collectors;
 @Service
 public class YxxWorkerService {
     private final YxxWorkerMapper yxxWorkerMapper;
+    private final PasswordEncoder passwordEncoder;
 
-    public YxxWorkerService(YxxWorkerMapper yxxWorkerMapper) {
+    public YxxWorkerService(YxxWorkerMapper yxxWorkerMapper, PasswordEncoder passwordEncoder) {
         this.yxxWorkerMapper = yxxWorkerMapper;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public List<YxxWorker> page(String keywords, Integer pageNum, Integer pageSize) {
@@ -45,9 +51,17 @@ public class YxxWorkerService {
         return yxxWorkerMapper.selectByExample(yxxMemberExample);
     }
 
-    public YxxWorker create(YxxWorker worker) {
-        yxxWorkerMapper.insert(worker);
-        return worker;
+    public YxxWorker create(YxxWorkerBody worker) {
+        YxxWorker yxxWorker = new YxxWorker();
+        BeanUtils.copyProperties(worker, yxxWorker);
+        yxxWorker.setCreateTime(new Date());
+        yxxWorker.setPassword(passwordEncoder.encode(worker.getPassword()));
+        yxxWorkerMapper.insert(yxxWorker);
+        if (yxxWorker.getId() != null) {
+            yxxWorker.setInvitationCode(GeneratorUtil.generatePromotionCode(yxxWorker.getId()));
+            yxxWorkerMapper.updateByPrimaryKeySelective(yxxWorker, YxxWorker.Column.invitationCode);
+        }
+        return yxxWorker;
     }
 
     public int changeStatus(Long id, Integer enable) {
@@ -64,18 +78,18 @@ public class YxxWorkerService {
         return yxxWorkerMapper.updateByPrimaryKeySelective(worker);
     }
 
-    public YxxWorker update(YxxWorker worker) {
+    public YxxWorker update(YxxWorkerBody yxxWorkerBody) {
+        YxxWorker worker = new YxxWorker();
+        BeanUtils.copyProperties(yxxWorkerBody, worker);
         yxxWorkerMapper.updateByPrimaryKeySelective(worker);
         return worker;
     }
 
-    public List<YxxWorker> getAvailableWorkerList(YxxOrder order) {
+    public List<Long> getAvailableWorkerList(Long orderId) {
         // 关联技能 查询
-        List<YxxWorker> workers = yxxWorkerMapper.selectByExample(
-                new YxxWorkerExample().createCriteria().andEnableEqualTo(1).andRegionIdEqualTo(order.getRegionId()).example()
-        );
+        List<YxxWorker> workers = yxxWorkerMapper.selectByExample(new YxxWorkerExample().createCriteria().andEnableEqualTo(1).example());
         // 查询策略权重规则 并计算得分 排序
-        return workers.stream().sorted().collect(Collectors.toList());
+        return workers.stream().sorted().map(YxxWorker::getId).collect(Collectors.toList());
     }
 
 

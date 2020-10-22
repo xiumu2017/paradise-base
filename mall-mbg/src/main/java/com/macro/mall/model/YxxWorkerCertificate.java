@@ -2,48 +2,53 @@ package com.macro.mall.model;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
 
 /**
  * 垚修修维修工证书表
  *
  * @author Paradise
  */
-@ApiModel(value="垚修修维修工证书")
+@ApiModel(value = "垚修修维修工证书")
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class YxxWorkerCertificate implements Serializable {
-    @ApiModelProperty(value="自增主键")
+    @ApiModelProperty(value = "自增主键")
     private Long id;
 
-    @ApiModelProperty(value="维修工ID")
+    @ApiModelProperty(value = "维修工ID")
     private Long workerId;
 
-    @ApiModelProperty(value="证书名称")
+    @ApiModelProperty(value = "证书名称")
     private String name;
 
-    @ApiModelProperty(value="证书颁发日期")
+    @ApiModelProperty(value = "证书颁发日期")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date issueDate;
 
-    @ApiModelProperty(value="证书有效期")
+    @ApiModelProperty(value = "证书有效期")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date expireDate;
 
-    @ApiModelProperty(value="备注信息")
+    @ApiModelProperty(value = "备注信息")
     private String remark;
 
-    @ApiModelProperty(value="创建时间")
+    @ApiModelProperty(value = "创建时间")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date createTime;
 
-    @ApiModelProperty(value="证书图片")
+    @ApiModelProperty(value = "证书图片")
     private String pic;
 
     private static final long serialVersionUID = 1L;
@@ -101,7 +106,7 @@ public class YxxWorkerCertificate implements Serializable {
             return this.getEscapedColumnName() + " ASC";
         }
 
-        public static Column[] excludes(Column ... excludes) {
+        public static Column[] excludes(Column... excludes) {
             ArrayList<Column> columns = new ArrayList<>(Arrays.asList(Column.values()));
             if (excludes != null && excludes.length > 0) {
                 columns.removeAll(new ArrayList<>(Arrays.asList(excludes)));

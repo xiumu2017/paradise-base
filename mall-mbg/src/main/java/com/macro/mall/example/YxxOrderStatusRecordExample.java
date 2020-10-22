@@ -1,7 +1,6 @@
 package com.macro.mall.example;
 
 import com.macro.mall.model.YxxOrderStatusRecord;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -17,25 +16,20 @@ public class YxxOrderStatusRecordExample {
         oredCriteria = new ArrayList<Criteria>();
     }
 
-    public static Criteria newAndCreateCriteria() {
-        YxxOrderStatusRecordExample example = new YxxOrderStatusRecordExample();
-        return example.createCriteria();
+    public void setOrderByClause(String orderByClause) {
+        this.orderByClause = orderByClause;
     }
 
     public String getOrderByClause() {
         return orderByClause;
     }
 
-    public void setOrderByClause(String orderByClause) {
-        this.orderByClause = orderByClause;
+    public void setDistinct(boolean distinct) {
+        this.distinct = distinct;
     }
 
     public boolean isDistinct() {
         return distinct;
-    }
-
-    public void setDistinct(boolean distinct) {
-        this.distinct = distinct;
     }
 
     public List<Criteria> getOredCriteria() {
@@ -88,6 +82,11 @@ public class YxxOrderStatusRecordExample {
         distinct = false;
     }
 
+    public static Criteria newAndCreateCriteria() {
+        YxxOrderStatusRecordExample example = new YxxOrderStatusRecordExample();
+        return example.createCriteria();
+    }
+
     public YxxOrderStatusRecordExample when(boolean condition, IExampleWhen then) {
         if (condition) {
             then.example(this);
@@ -102,14 +101,6 @@ public class YxxOrderStatusRecordExample {
             otherwise.example(this);
         }
         return this;
-    }
-
-    public interface ICriteriaWhen {
-        void criteria(Criteria criteria);
-    }
-
-    public interface IExampleWhen {
-        void example(com.macro.mall.example.YxxOrderStatusRecordExample example);
     }
 
     protected abstract static class GeneratedCriteria {
@@ -763,6 +754,38 @@ public class YxxOrderStatusRecordExample {
 
         private String typeHandler;
 
+        public String getCondition() {
+            return condition;
+        }
+
+        public Object getValue() {
+            return value;
+        }
+
+        public Object getSecondValue() {
+            return secondValue;
+        }
+
+        public boolean isNoValue() {
+            return noValue;
+        }
+
+        public boolean isSingleValue() {
+            return singleValue;
+        }
+
+        public boolean isBetweenValue() {
+            return betweenValue;
+        }
+
+        public boolean isListValue() {
+            return listValue;
+        }
+
+        public String getTypeHandler() {
+            return typeHandler;
+        }
+
         protected Criterion(String condition) {
             super();
             this.condition = condition;
@@ -798,37 +821,13 @@ public class YxxOrderStatusRecordExample {
         protected Criterion(String condition, Object value, Object secondValue) {
             this(condition, value, secondValue, null);
         }
+    }
 
-        public String getCondition() {
-            return condition;
-        }
+    public interface ICriteriaWhen {
+        void criteria(Criteria criteria);
+    }
 
-        public Object getValue() {
-            return value;
-        }
-
-        public Object getSecondValue() {
-            return secondValue;
-        }
-
-        public boolean isNoValue() {
-            return noValue;
-        }
-
-        public boolean isSingleValue() {
-            return singleValue;
-        }
-
-        public boolean isBetweenValue() {
-            return betweenValue;
-        }
-
-        public boolean isListValue() {
-            return listValue;
-        }
-
-        public String getTypeHandler() {
-            return typeHandler;
-        }
+    public interface IExampleWhen {
+        void example(com.macro.mall.example.YxxOrderStatusRecordExample example);
     }
 }

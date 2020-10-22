@@ -2,15 +2,14 @@ package com.macro.mall.portal.controller;
 
 import com.macro.mall.common.api.CommonPage;
 import com.macro.mall.common.api.CommonResult;
-import com.macro.mall.portal.domain.OmsOrderDetail;
+import com.macro.mall.domain.YxxOrderDetail;
+import com.macro.mall.model.YxxOrder;
 import com.macro.mall.portal.domain.YxxOrderParam;
-import com.macro.mall.portal.service.impl.YxxOrderService;
+import com.macro.mall.portal.service.impl.YxxMpOrderService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Map;
 
 /**
  * 订单管理Controller
@@ -22,93 +21,96 @@ import java.util.Map;
 @Api(tags = "4.订单管理")
 @RequestMapping("/order")
 public class YxxOrderController {
-    private final YxxOrderService yxxOrderService;
+    private final YxxMpOrderService yxxMpOrderService;
 
-    public YxxOrderController(YxxOrderService yxxOrderService) {
-        this.yxxOrderService = yxxOrderService;
+    public YxxOrderController(YxxMpOrderService yxxMpOrderService) {
+        this.yxxMpOrderService = yxxMpOrderService;
     }
 
-    @ApiOperation("按状态分页获取用户订单列表")
-    @ApiImplicitParam(name = "status", value = "订单状态：参见数据字典", paramType = "query", dataType = "int")
+    @ApiOperation("查询 - 分页获取用户订单列表")
+    @ApiImplicitParam(name = "status", value = "1-待确认，2-进行中，3-待评价;默认全部", paramType = "query", dataType = "int")
     @RequestMapping(value = "/list", method = RequestMethod.GET)
-    public CommonResult<CommonPage<OmsOrderDetail>> list(@RequestParam Integer status,
-                                                         @RequestParam(required = false, defaultValue = "1") Integer pageNum,
-                                                         @RequestParam(required = false, defaultValue = "5") Integer pageSize) {
-        CommonPage<OmsOrderDetail> orderPage = yxxOrderService.list(status, pageNum, pageSize);
+    public CommonResult<CommonPage<YxxOrder>> queryList(@RequestParam(required = false) Integer status,
+                                                        @RequestParam(required = false, defaultValue = "1") Integer pageNum,
+                                                        @RequestParam(required = false, defaultValue = "5") Integer pageSize) {
+        CommonPage<YxxOrder> orderPage = yxxMpOrderService.pageQuery(status, pageNum, pageSize);
         return CommonResult.success(orderPage);
     }
 
-    @ApiOperation("根据ID获取订单详情")
+    @ApiOperation("查询 - 订单状态")
+    @PostMapping("/status/query/{orderId}")
+    public CommonResult queryOrderStatus(@PathVariable Long orderId) {
+        return CommonResult.success(yxxMpOrderService.yxxOrder(orderId));
+    }
+
+    @ApiOperation("查询 - 订单详情")
     @RequestMapping(value = "/detail/{orderId}", method = RequestMethod.GET)
-    public CommonResult<OmsOrderDetail> detail(@PathVariable Long orderId) {
-        OmsOrderDetail orderDetail = yxxOrderService.detail(orderId);
+    public CommonResult<YxxOrderDetail> queryDetail(@PathVariable Long orderId) {
+        // 状态变更记录
+        // 报价单
+        // 维修工单
+        YxxOrderDetail orderDetail = yxxMpOrderService.detail(orderId);
         return CommonResult.success(orderDetail);
     }
 
-    @ApiOperation("创建新订单")
+    @ApiOperation("订单流程 - 创建新订单")
     @RequestMapping(value = "/create", method = RequestMethod.POST)
-    public CommonResult generateOrder(@RequestBody YxxOrderParam orderParam) {
-        Map<String, Object> result = yxxOrderService.generateOrder(orderParam);
+    public CommonResult orderCreate(@RequestBody YxxOrderParam orderParam) {
+        YxxOrder result = yxxMpOrderService.generateOrder(orderParam);
         return CommonResult.success(result, "下单成功");
     }
 
-    // 派单
-    // 待派单 队列 ：单号、品类、坐标
-    // （缓存） 接单状态中的维修工（单数限制 + 技能符合） （维修工ID，状态，当前坐标，可接单数量，可抢单数量...）
-    // 计算位置和距离，计算等级+距离 权重得分 并排序
-    //
-
-    @ApiOperation("无需上门 - 取消订单")
+    @ApiOperation("订单流程 - 无需上门-取消订单")
     @RequestMapping(value = "/cancel", method = RequestMethod.POST)
-    public CommonResult cancelOrder(Long orderId) {
-        int x = yxxOrderService.cancelOrder(orderId);
+    public CommonResult orderCancel(Long orderId) {
+        int x = yxxMpOrderService.cancelOrder(orderId);
         if (x == 1) {
             return CommonResult.success(null);
         }
         return CommonResult.failed();
     }
 
-    @ApiOperation("确认上门-支付上门费")
+    @ApiOperation("订单流程 - 同意上门-支付上门费")
     @RequestMapping(value = "/confirm", method = RequestMethod.POST)
-    public CommonResult confirm(Long orderId) {
-        int x = yxxOrderService.confirmToVisit(orderId);
+    public CommonResult orderConfirm(Long orderId) {
+        int x = yxxMpOrderService.confirmToVisit(orderId);
         if (x == 1) {
             return CommonResult.success(null);
         }
         return CommonResult.failed();
     }
 
-    @ApiOperation("用户确认报价")
+    @ApiOperation("订单流程 - 用户确认报价")
     @RequestMapping(value = "/price/confirm", method = RequestMethod.POST)
-    public CommonResult confirmPrice(Long orderId) {
-        int x = yxxOrderService.confirmPrice(orderId);
+    public CommonResult orderConfirmPrice(Long orderId) {
+        int x = yxxMpOrderService.confirmPrice(orderId);
         if (x == 1) {
             return CommonResult.success(null);
         }
         return CommonResult.failed();
     }
 
-    @ApiOperation("不同意报价-取消订单")
+    @ApiOperation("订单流程 - 不同意报价-取消订单")
     @RequestMapping(value = "/disagree/cancel", method = RequestMethod.POST)
-    public CommonResult cancelUserOrder(Long orderId) {
-        int x = yxxOrderService.cancelOrderDisagree(orderId);
+    public CommonResult orderDisagree(Long orderId) {
+        int x = yxxMpOrderService.cancelOrderDisagree(orderId);
         if (x == 1) {
             return CommonResult.success(null);
         }
         return CommonResult.failed();
     }
 
-    @ApiOperation("用户支付成功的回调")
+    @ApiOperation("订单流程 - 用户支付成功的回调")
     @RequestMapping(value = "/paySuccess", method = RequestMethod.POST)
     public CommonResult paySuccess(@RequestParam Long orderId) {
-        Integer count = yxxOrderService.paySuccess(orderId);
+        Integer count = yxxMpOrderService.paySuccess(orderId);
         return CommonResult.success(count, "支付成功");
     }
 
-    @ApiOperation("用户删除订单")
+    @ApiOperation("订单操作 - 用户删除订单")
     @RequestMapping(value = "/deleteOrder", method = RequestMethod.POST)
     public CommonResult deleteOrder(Long orderId) {
-        int x = yxxOrderService.deleteOrder(orderId);
+        int x = yxxMpOrderService.deleteOrder(orderId);
         if (x == 1) {
             return CommonResult.success(null);
         }

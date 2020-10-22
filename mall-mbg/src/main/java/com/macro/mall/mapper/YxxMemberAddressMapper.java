@@ -35,4 +35,8 @@ public interface YxxMemberAddressMapper {
     int updateByPrimaryKeySelective(@Param("record") YxxMemberAddress record, @Param("selective") YxxMemberAddress.Column ... selective);
 
     int updateByPrimaryKey(YxxMemberAddress record);
+
+    int batchInsert(@Param("list") List<YxxMemberAddress> list);
+
+    int batchInsertSelective(@Param("list") List<YxxMemberAddress> list, @Param("selective") YxxMemberAddress.Column ... selective);
 }

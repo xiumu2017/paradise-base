@@ -334,4 +334,42 @@
     </if>
     limit 1
   </select>
+  <insert id="batchInsert" keyColumn="id" keyProperty="id" parameterType="map" useGeneratedKeys="true">
+    insert into yxx_order_status_record
+    (order_id, origin_status, current_status, remark, create_time)
+    values
+    <foreach collection="list" item="item" separator=",">
+      (#{item.orderId,jdbcType=BIGINT}, #{item.originStatus,jdbcType=INTEGER}, #{item.currentStatus,jdbcType=INTEGER}, 
+        #{item.remark,jdbcType=VARCHAR}, #{item.createTime,jdbcType=TIMESTAMP})
+    </foreach>
+  </insert>
+  <insert id="batchInsertSelective" keyColumn="id" keyProperty="list.id" parameterType="map" useGeneratedKeys="true">
+    insert into yxx_order_status_record (
+    <foreach collection="selective" item="column" separator=",">
+      ${column.escapedColumnName}
+    </foreach>
+    )
+    values
+    <foreach collection="list" item="item" separator=",">
+      (
+      <foreach collection="selective" item="column" separator=",">
+        <if test="'order_id'.toString() == column.value">
+          #{item.orderId,jdbcType=BIGINT}
+        </if>
+        <if test="'origin_status'.toString() == column.value">
+          #{item.originStatus,jdbcType=INTEGER}
+        </if>
+        <if test="'current_status'.toString() == column.value">
+          #{item.currentStatus,jdbcType=INTEGER}
+        </if>
+        <if test="'remark'.toString() == column.value">
+          #{item.remark,jdbcType=VARCHAR}
+        </if>
+        <if test="'create_time'.toString() == column.value">
+          #{item.createTime,jdbcType=TIMESTAMP}
+        </if>
+      </foreach>
+      )
+    </foreach>
+  </insert>
 </mapper>

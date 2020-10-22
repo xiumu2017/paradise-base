@@ -41,14 +41,6 @@ public class PmsProductController {
         }
     }
 
-    @ApiIgnore
-    @ApiOperation("根据id获取服务品类编辑信息")
-    @RequestMapping(value = "/updateInfo/{id}", method = RequestMethod.GET)
-    public CommonResult<PmsProductResult> getUpdateInfo(@PathVariable Long id) {
-        PmsProductResult productResult = productService.getUpdateInfo(id);
-        return CommonResult.success(productResult);
-    }
-
     @ApiOperation("更新服务品类")
     @RequestMapping(value = "/update/{id}", method = RequestMethod.POST)
     public CommonResult update(@PathVariable Long id, @RequestBody PmsProductParam productParam) {
@@ -104,8 +96,7 @@ public class PmsProductController {
         }
     }
 
-    @ApiIgnore
-    @ApiOperation(value = "批量推荐服务品类", hidden = true)
+    @ApiOperation(value = "批量推荐服务品类")
     @RequestMapping(value = "/update/recommendStatus", method = RequestMethod.POST)
     public CommonResult updateRecommendStatus(@RequestParam("ids") List<Long> ids,
                                               @RequestParam("recommendStatus") Integer recommendStatus) {

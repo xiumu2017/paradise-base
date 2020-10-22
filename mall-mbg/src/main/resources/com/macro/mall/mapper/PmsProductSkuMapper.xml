@@ -72,7 +72,7 @@
   <sql id="Base_Column_List">
     id, product_id, sku_code, price, pic, sale, promotion_price, sku_name
   </sql>
-  <select id="selectByExample" parameterType="com.macro.mall.model.PmsProductSkuExample" resultMap="BaseResultMap">
+  <select id="selectByExample" parameterType="com.macro.mall.example.PmsProductSkuExample" resultMap="BaseResultMap">
     select
     <if test="distinct">
       distinct
@@ -86,9 +86,47 @@
       order by ${orderByClause}
     </if>
   </select>
+  <select id="selectByExampleSelective" parameterType="map" resultMap="BaseResultMap">
+    select
+    <if test="example != null and example.distinct">
+      distinct
+    </if>
+    <choose>
+      <when test="selective != null and selective.length > 0">
+        <foreach collection="selective" item="column" separator=",">
+          ${column.aliasedEscapedColumnName}
+        </foreach>
+      </when>
+      <otherwise>
+        <include refid="Base_Column_List" />
+      </otherwise>
+    </choose>
+    from pms_product_sku
+    <if test="example != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+    <if test="example != null and example.orderByClause != null">
+      order by ${example.orderByClause}
+    </if>
+  </select>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
+    from pms_product_sku
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <select id="selectByPrimaryKeySelective" parameterType="map" resultMap="BaseResultMap">
+    select
+    <choose>
+      <when test="selective != null and selective.length > 0">
+        <foreach collection="selective" item="column" separator=",">
+          ${column.aliasedEscapedColumnName}
+        </foreach>
+      </when>
+      <otherwise>
+        <include refid="Base_Column_List" />
+      </otherwise>
+    </choose>
     from pms_product_sku
     where id = #{id,jdbcType=BIGINT}
   </select>
@@ -96,7 +134,7 @@
     delete from pms_product_sku
     where id = #{id,jdbcType=BIGINT}
   </delete>
-  <delete id="deleteByExample" parameterType="com.macro.mall.model.PmsProductSkuExample">
+  <delete id="deleteByExample" parameterType="com.macro.mall.example.PmsProductSkuExample">
     delete from pms_product_sku
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
@@ -113,59 +151,79 @@
       #{pic,jdbcType=VARCHAR}, #{sale,jdbcType=INTEGER}, #{promotionPrice,jdbcType=DECIMAL}, 
       #{skuName,jdbcType=VARCHAR})
   </insert>
-  <insert id="insertSelective" parameterType="com.macro.mall.model.PmsProductSku">
-    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
+  <insert id="insertSelective" parameterType="map">
+    <selectKey keyProperty="record.id" order="AFTER" resultType="java.lang.Long">
       SELECT LAST_INSERT_ID()
     </selectKey>
     insert into pms_product_sku
-    <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="productId != null">
-        product_id,
-      </if>
-      <if test="skuCode != null">
-        sku_code,
-      </if>
-      <if test="price != null">
-        price,
-      </if>
-      <if test="pic != null">
-        pic,
-      </if>
-      <if test="sale != null">
-        sale,
-      </if>
-      <if test="promotionPrice != null">
-        promotion_price,
-      </if>
-      <if test="skuName != null">
-        sku_name,
-      </if>
-    </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="productId != null">
-        #{productId,jdbcType=BIGINT},
-      </if>
-      <if test="skuCode != null">
-        #{skuCode,jdbcType=VARCHAR},
-      </if>
-      <if test="price != null">
-        #{price,jdbcType=DECIMAL},
-      </if>
-      <if test="pic != null">
-        #{pic,jdbcType=VARCHAR},
-      </if>
-      <if test="sale != null">
-        #{sale,jdbcType=INTEGER},
-      </if>
-      <if test="promotionPrice != null">
-        #{promotionPrice,jdbcType=DECIMAL},
-      </if>
-      <if test="skuName != null">
-        #{skuName,jdbcType=VARCHAR},
-      </if>
-    </trim>
+    <choose>
+      <when test="selective != null and selective.length > 0">
+        <foreach close=")" collection="selective" item="column" open="(" separator=",">
+          ${column.escapedColumnName}
+        </foreach>
+      </when>
+      <otherwise>
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+          <if test="record.productId != null">
+            product_id,
+          </if>
+          <if test="record.skuCode != null">
+            sku_code,
+          </if>
+          <if test="record.price != null">
+            price,
+          </if>
+          <if test="record.pic != null">
+            pic,
+          </if>
+          <if test="record.sale != null">
+            sale,
+          </if>
+          <if test="record.promotionPrice != null">
+            promotion_price,
+          </if>
+          <if test="record.skuName != null">
+            sku_name,
+          </if>
+        </trim>
+        <trim prefix="(" suffix=")" suffixOverrides="," />
+      </otherwise>
+    </choose>
+    values
+    <choose>
+      <when test="selective != null and selective.length > 0">
+        <foreach close=")" collection="selective" item="column" open="(" separator=",">
+          #{record.${column.javaProperty},jdbcType=${column.jdbcType}}
+        </foreach>
+      </when>
+      <otherwise>
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+          <if test="record.productId != null">
+            #{record.productId,jdbcType=BIGINT},
+          </if>
+          <if test="record.skuCode != null">
+            #{record.skuCode,jdbcType=VARCHAR},
+          </if>
+          <if test="record.price != null">
+            #{record.price,jdbcType=DECIMAL},
+          </if>
+          <if test="record.pic != null">
+            #{record.pic,jdbcType=VARCHAR},
+          </if>
+          <if test="record.sale != null">
+            #{record.sale,jdbcType=INTEGER},
+          </if>
+          <if test="record.promotionPrice != null">
+            #{record.promotionPrice,jdbcType=DECIMAL},
+          </if>
+          <if test="record.skuName != null">
+            #{record.skuName,jdbcType=VARCHAR},
+          </if>
+        </trim>
+      </otherwise>
+    </choose>
   </insert>
-  <select id="countByExample" parameterType="com.macro.mall.model.PmsProductSkuExample" resultType="java.lang.Long">
+  <select id="countByExample" parameterType="com.macro.mall.example.PmsProductSkuExample" resultType="java.lang.Long">
     select count(*) from pms_product_sku
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
@@ -173,32 +231,42 @@
   </select>
   <update id="updateByExampleSelective" parameterType="map">
     update pms_product_sku
-    <set>
-      <if test="record.id != null">
-        id = #{record.id,jdbcType=BIGINT},
-      </if>
-      <if test="record.productId != null">
-        product_id = #{record.productId,jdbcType=BIGINT},
-      </if>
-      <if test="record.skuCode != null">
-        sku_code = #{record.skuCode,jdbcType=VARCHAR},
-      </if>
-      <if test="record.price != null">
-        price = #{record.price,jdbcType=DECIMAL},
-      </if>
-      <if test="record.pic != null">
-        pic = #{record.pic,jdbcType=VARCHAR},
-      </if>
-      <if test="record.sale != null">
-        sale = #{record.sale,jdbcType=INTEGER},
-      </if>
-      <if test="record.promotionPrice != null">
-        promotion_price = #{record.promotionPrice,jdbcType=DECIMAL},
-      </if>
-      <if test="record.skuName != null">
-        sku_name = #{record.skuName,jdbcType=VARCHAR},
-      </if>
-    </set>
+    SET
+    <choose>
+      <when test="selective != null and selective.length > 0">
+        <foreach collection="selective" item="column" separator=",">
+          ${column.escapedColumnName} = #{record.${column.javaProperty},jdbcType=${column.jdbcType}}
+        </foreach>
+      </when>
+      <otherwise>
+        <trim suffixOverrides=",">
+          <if test="record.id != null">
+            id = #{record.id,jdbcType=BIGINT},
+          </if>
+          <if test="record.productId != null">
+            product_id = #{record.productId,jdbcType=BIGINT},
+          </if>
+          <if test="record.skuCode != null">
+            sku_code = #{record.skuCode,jdbcType=VARCHAR},
+          </if>
+          <if test="record.price != null">
+            price = #{record.price,jdbcType=DECIMAL},
+          </if>
+          <if test="record.pic != null">
+            pic = #{record.pic,jdbcType=VARCHAR},
+          </if>
+          <if test="record.sale != null">
+            sale = #{record.sale,jdbcType=INTEGER},
+          </if>
+          <if test="record.promotionPrice != null">
+            promotion_price = #{record.promotionPrice,jdbcType=DECIMAL},
+          </if>
+          <if test="record.skuName != null">
+            sku_name = #{record.skuName,jdbcType=VARCHAR},
+          </if>
+        </trim>
+      </otherwise>
+    </choose>
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
@@ -217,32 +285,42 @@
       <include refid="Update_By_Example_Where_Clause" />
     </if>
   </update>
-  <update id="updateByPrimaryKeySelective" parameterType="com.macro.mall.model.PmsProductSku">
+  <update id="updateByPrimaryKeySelective" parameterType="map">
     update pms_product_sku
-    <set>
-      <if test="productId != null">
-        product_id = #{productId,jdbcType=BIGINT},
-      </if>
-      <if test="skuCode != null">
-        sku_code = #{skuCode,jdbcType=VARCHAR},
-      </if>
-      <if test="price != null">
-        price = #{price,jdbcType=DECIMAL},
-      </if>
-      <if test="pic != null">
-        pic = #{pic,jdbcType=VARCHAR},
-      </if>
-      <if test="sale != null">
-        sale = #{sale,jdbcType=INTEGER},
-      </if>
-      <if test="promotionPrice != null">
-        promotion_price = #{promotionPrice,jdbcType=DECIMAL},
-      </if>
-      <if test="skuName != null">
-        sku_name = #{skuName,jdbcType=VARCHAR},
-      </if>
-    </set>
-    where id = #{id,jdbcType=BIGINT}
+    SET
+    <choose>
+      <when test="selective != null and selective.length > 0">
+        <foreach collection="selective" item="column" separator=",">
+          ${column.escapedColumnName} = #{record.${column.javaProperty},jdbcType=${column.jdbcType}}
+        </foreach>
+      </when>
+      <otherwise>
+        <trim suffixOverrides=",">
+          <if test="record.productId != null">
+            product_id = #{record.productId,jdbcType=BIGINT},
+          </if>
+          <if test="record.skuCode != null">
+            sku_code = #{record.skuCode,jdbcType=VARCHAR},
+          </if>
+          <if test="record.price != null">
+            price = #{record.price,jdbcType=DECIMAL},
+          </if>
+          <if test="record.pic != null">
+            pic = #{record.pic,jdbcType=VARCHAR},
+          </if>
+          <if test="record.sale != null">
+            sale = #{record.sale,jdbcType=INTEGER},
+          </if>
+          <if test="record.promotionPrice != null">
+            promotion_price = #{record.promotionPrice,jdbcType=DECIMAL},
+          </if>
+          <if test="record.skuName != null">
+            sku_name = #{record.skuName,jdbcType=VARCHAR},
+          </if>
+        </trim>
+      </otherwise>
+    </choose>
+    where id = #{record.id,jdbcType=BIGINT}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.macro.mall.model.PmsProductSku">
     update pms_product_sku
@@ -255,4 +333,82 @@
       sku_name = #{skuName,jdbcType=VARCHAR}
     where id = #{id,jdbcType=BIGINT}
   </update>
+  <select id="selectOneByExample" parameterType="com.macro.mall.example.PmsProductSkuExample" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from pms_product_sku
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+    limit 1
+  </select>
+  <select id="selectOneByExampleSelective" parameterType="map" resultMap="BaseResultMap">
+    select
+    <choose>
+      <when test="selective != null and selective.length > 0">
+        <foreach collection="selective" item="column" separator=",">
+          ${column.aliasedEscapedColumnName}
+        </foreach>
+      </when>
+      <otherwise>
+        <include refid="Base_Column_List" />
+      </otherwise>
+    </choose>
+    from pms_product_sku
+    <if test="example != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+    <if test="example != null and example.orderByClause != null">
+      order by ${example.orderByClause}
+    </if>
+    limit 1
+  </select>
+  <insert id="batchInsert" keyColumn="id" keyProperty="id" parameterType="map" useGeneratedKeys="true">
+    insert into pms_product_sku
+    (product_id, sku_code, price, pic, sale, promotion_price, sku_name)
+    values
+    <foreach collection="list" item="item" separator=",">
+      (#{item.productId,jdbcType=BIGINT}, #{item.skuCode,jdbcType=VARCHAR}, #{item.price,jdbcType=DECIMAL}, 
+        #{item.pic,jdbcType=VARCHAR}, #{item.sale,jdbcType=INTEGER}, #{item.promotionPrice,jdbcType=DECIMAL}, 
+        #{item.skuName,jdbcType=VARCHAR})
+    </foreach>
+  </insert>
+  <insert id="batchInsertSelective" keyColumn="id" keyProperty="list.id" parameterType="map" useGeneratedKeys="true">
+    insert into pms_product_sku (
+    <foreach collection="selective" item="column" separator=",">
+      ${column.escapedColumnName}
+    </foreach>
+    )
+    values
+    <foreach collection="list" item="item" separator=",">
+      (
+      <foreach collection="selective" item="column" separator=",">
+        <if test="'product_id'.toString() == column.value">
+          #{item.productId,jdbcType=BIGINT}
+        </if>
+        <if test="'sku_code'.toString() == column.value">
+          #{item.skuCode,jdbcType=VARCHAR}
+        </if>
+        <if test="'price'.toString() == column.value">
+          #{item.price,jdbcType=DECIMAL}
+        </if>
+        <if test="'pic'.toString() == column.value">
+          #{item.pic,jdbcType=VARCHAR}
+        </if>
+        <if test="'sale'.toString() == column.value">
+          #{item.sale,jdbcType=INTEGER}
+        </if>
+        <if test="'promotion_price'.toString() == column.value">
+          #{item.promotionPrice,jdbcType=DECIMAL}
+        </if>
+        <if test="'sku_name'.toString() == column.value">
+          #{item.skuName,jdbcType=VARCHAR}
+        </if>
+      </foreach>
+      )
+    </foreach>
+  </insert>
 </mapper>

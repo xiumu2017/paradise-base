@@ -33,7 +33,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/sso")
 public class UmsMemberController {
-    private final static String APP_ID = "wx46c42dac91f7fd92";
+    private final static String APP_ID = "wxc5045e7d2cb2224a";
 
     @Value("${jwt.tokenHeader}")
     private String tokenHeader;
@@ -73,9 +73,8 @@ public class UmsMemberController {
     }
 
 
-    @ApiIgnore
-    @ApiOperation("会员登录")
-    @RequestMapping(value = "/login", method = RequestMethod.POST)
+    @ApiOperation("接口调试用：登录")
+    @RequestMapping(value = "/login-test", method = RequestMethod.POST)
     public CommonResult login(@RequestParam String username,
                               @RequestParam String password) {
         String token = memberService.login(username, password);

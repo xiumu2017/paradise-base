@@ -204,4 +204,10 @@ public class RedisServiceImpl implements RedisService {
     public Object lrPop(String key) {
         return redisTemplate.opsForList().rightPop(key);
     }
+
+
+    @Override
+    public Object llPop(String key) {
+        return redisTemplate.opsForList().leftPop(key);
+    }
 }

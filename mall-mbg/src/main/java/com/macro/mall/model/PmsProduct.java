@@ -1,376 +1,213 @@
 package com.macro.mall.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
+/**
+ * 商品信息
+ *
+ * @author Paradise
+ */
+@ApiModel(value="商品信息")
+@Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class PmsProduct implements Serializable {
-    @ApiModelProperty(value = "自增主键")
+    @ApiModelProperty(value="自增主键")
     private Long id;
 
-    @ApiModelProperty(value = "商品分类ID")
+    @ApiModelProperty(value="商品分类ID")
     private Long productCategoryId;
 
-    @JsonIgnore
-    @ApiModelProperty(value = "商品分类ID",hidden = true)
-    private Long productAttributeCategoryId;
-
-    @ApiModelProperty(value = "商品名称")
+    @ApiModelProperty(value="商品名称")
     private String name;
 
-    @ApiModelProperty(value = "商品小图")
+    @ApiModelProperty(value="商品小图")
     private String pic;
 
-    @ApiModelProperty(value = "货号")
+    @ApiModelProperty(value="货号")
     private String productSn;
 
-    @ApiModelProperty(value = "删除状态：0->未删除；1->已删除")
+    @ApiModelProperty(value="删除状态：0->未删除；1->已删除")
     private Integer deleteStatus;
 
-    @ApiModelProperty(value = "上架状态：0->下架；1->上架")
+    @ApiModelProperty(value="上架状态：0->下架；1->上架")
     private Integer publishStatus;
 
-    @JsonIgnore
-    @ApiModelProperty(value = "新品状态:0->不是新品；1->新品")
+    @ApiModelProperty(value="新品状态:0->不是新品；1->新品")
     private Integer newStatus;
 
-    @JsonIgnore
-    @ApiModelProperty(value = "推荐状态；0->不推荐；1->推荐")
-    private Integer recommandStatus;
+    @ApiModelProperty(value="推荐状态；0->不推荐；1->推荐")
+    private Integer recommendStatus;
 
-    @JsonIgnore
-    @ApiModelProperty(value = "审核状态：0->未审核；1->审核通过")
+    @ApiModelProperty(value="审核状态：0->未审核；1->审核通过")
     private Integer verifyStatus;
 
-    @ApiModelProperty(value = "排序")
+    @ApiModelProperty(value="排序")
     private Integer sort;
 
-    @ApiModelProperty(value = "销量")
+    @ApiModelProperty(value="销量")
     private Integer sale;
 
-    @ApiModelProperty(value = "价格")
+    @ApiModelProperty(value="价格")
     private BigDecimal price;
 
-    @JsonIgnore
-    @ApiModelProperty(value = "促销价格")
+    @ApiModelProperty(value="促销价格")
     private BigDecimal promotionPrice;
 
-    @ApiModelProperty(value = "副标题")
+    @ApiModelProperty(value="副标题")
     private String subTitle;
 
-    @JsonIgnore
-    @ApiModelProperty(value = "市场价")
-    private BigDecimal originalPrice;
-
-    @ApiModelProperty(value = "单位")
-    private String unit;
-
-    @ApiModelProperty(value = "搜索关键词")
+    @ApiModelProperty(value="搜索关键词")
     private String keywords;
 
-    @ApiModelProperty(value = "画册图片，连产品图片限制为5张，以逗号分割")
+    @ApiModelProperty(value="画册图片，连产品图片限制为5张，以逗号分割")
     private String albumPics;
 
-    @ApiModelProperty(value = "详情页标题")
+    @ApiModelProperty(value="详情页标题")
     private String detailTitle;
 
-    @ApiModelProperty(value = "商品分类名称")
+    @ApiModelProperty(value="商品分类名称")
     private String productCategoryName;
 
-    @ApiModelProperty(value = "地域ID")
+    @ApiModelProperty(value="地域ID")
     private Long regionId;
 
-    @ApiModelProperty(value = "地域名称")
+    @ApiModelProperty(value="地域名称")
     private String region;
 
-    @ApiModelProperty(value = "是否询价：0->一口价；1-> 询价")
+    @ApiModelProperty(value="是否询价：0->一口价；1-> 询价")
     private Integer isBargain;
 
-    @ApiModelProperty(value = "商品描述")
+    @ApiModelProperty(value="收费标准ID")
+    private Long chargeStandardId;
+
+    @ApiModelProperty(value="创建时间")
+    private Date createTime;
+
+    @ApiModelProperty(value="修改时间")
+    private Date updateTime;
+
+    @ApiModelProperty(value="商品描述")
     private String description;
 
-    @ApiModelProperty(value = "详情页文本描述")
+    @ApiModelProperty(value="详情页文本描述")
     private String detailDesc;
 
-    @ApiModelProperty(value = "产品详情网页内容")
+    @ApiModelProperty(value="产品详情网页内容")
     private String detailHtml;
 
-    @ApiModelProperty(value = "询价商品收费标准")
+    @ApiModelProperty(value="询价商品收费标准")
     private String chargeStandardJson;
 
     private static final long serialVersionUID = 1L;
 
-    public Long getId() {
-        return id;
-    }
+    public enum Column {
+        id("id", "id", "BIGINT", false),
+        productCategoryId("product_category_id", "productCategoryId", "BIGINT", false),
+        name("name", "name", "VARCHAR", true),
+        pic("pic", "pic", "VARCHAR", false),
+        productSn("product_sn", "productSn", "VARCHAR", false),
+        deleteStatus("delete_status", "deleteStatus", "INTEGER", false),
+        publishStatus("publish_status", "publishStatus", "INTEGER", false),
+        newStatus("new_status", "newStatus", "INTEGER", false),
+        recommendStatus("recommend_status", "recommendStatus", "INTEGER", false),
+        verifyStatus("verify_status", "verifyStatus", "INTEGER", false),
+        sort("sort", "sort", "INTEGER", false),
+        sale("sale", "sale", "INTEGER", false),
+        price("price", "price", "DECIMAL", false),
+        promotionPrice("promotion_price", "promotionPrice", "DECIMAL", false),
+        subTitle("sub_title", "subTitle", "VARCHAR", false),
+        keywords("keywords", "keywords", "VARCHAR", false),
+        albumPics("album_pics", "albumPics", "VARCHAR", false),
+        detailTitle("detail_title", "detailTitle", "VARCHAR", false),
+        productCategoryName("product_category_name", "productCategoryName", "VARCHAR", false),
+        regionId("region_id", "regionId", "BIGINT", false),
+        region("region", "region", "VARCHAR", false),
+        isBargain("is_bargain", "isBargain", "INTEGER", false),
+        chargeStandardId("charge_standard_id", "chargeStandardId", "BIGINT", false),
+        createTime("create_time", "createTime", "TIMESTAMP", false),
+        updateTime("update_time", "updateTime", "TIMESTAMP", false),
+        description("description", "description", "LONGVARCHAR", false),
+        detailDesc("detail_desc", "detailDesc", "LONGVARCHAR", false),
+        detailHtml("detail_html", "detailHtml", "LONGVARCHAR", false),
+        chargeStandardJson("charge_standard_json", "chargeStandardJson", "LONGVARCHAR", false);
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+        private static final String BEGINNING_DELIMITER = "`";
 
-    public Long getProductCategoryId() {
-        return productCategoryId;
-    }
+        private static final String ENDING_DELIMITER = "`";
 
-    public void setProductCategoryId(Long productCategoryId) {
-        this.productCategoryId = productCategoryId;
-    }
+        private final String column;
 
-    public Long getProductAttributeCategoryId() {
-        return productAttributeCategoryId;
-    }
+        private final boolean isColumnNameDelimited;
 
-    public void setProductAttributeCategoryId(Long productAttributeCategoryId) {
-        this.productAttributeCategoryId = productAttributeCategoryId;
-    }
+        private final String javaProperty;
 
-    public String getName() {
-        return name;
-    }
+        private final String jdbcType;
 
-    public void setName(String name) {
-        this.name = name;
-    }
+        public String value() {
+            return this.column;
+        }
 
-    public String getPic() {
-        return pic;
-    }
+        public String getValue() {
+            return this.column;
+        }
 
-    public void setPic(String pic) {
-        this.pic = pic;
-    }
+        public String getJavaProperty() {
+            return this.javaProperty;
+        }
 
-    public String getProductSn() {
-        return productSn;
-    }
+        public String getJdbcType() {
+            return this.jdbcType;
+        }
 
-    public void setProductSn(String productSn) {
-        this.productSn = productSn;
-    }
+        Column(String column, String javaProperty, String jdbcType, boolean isColumnNameDelimited) {
+            this.column = column;
+            this.javaProperty = javaProperty;
+            this.jdbcType = jdbcType;
+            this.isColumnNameDelimited = isColumnNameDelimited;
+        }
 
-    public Integer getDeleteStatus() {
-        return deleteStatus;
-    }
+        public String desc() {
+            return this.getEscapedColumnName() + " DESC";
+        }
 
-    public void setDeleteStatus(Integer deleteStatus) {
-        this.deleteStatus = deleteStatus;
-    }
+        public String asc() {
+            return this.getEscapedColumnName() + " ASC";
+        }
 
-    public Integer getPublishStatus() {
-        return publishStatus;
-    }
+        public static Column[] excludes(Column ... excludes) {
+            ArrayList<Column> columns = new ArrayList<>(Arrays.asList(Column.values()));
+            if (excludes != null && excludes.length > 0) {
+                columns.removeAll(new ArrayList<>(Arrays.asList(excludes)));
+            }
+            return columns.toArray(new Column[]{});
+        }
 
-    public void setPublishStatus(Integer publishStatus) {
-        this.publishStatus = publishStatus;
-    }
+        public static Column[] all() {
+            return Column.values();
+        }
 
-    public Integer getNewStatus() {
-        return newStatus;
-    }
+        public String getEscapedColumnName() {
+            if (this.isColumnNameDelimited) {
+                return new StringBuilder().append(BEGINNING_DELIMITER).append(this.column).append(ENDING_DELIMITER).toString();
+            } else {
+                return this.column;
+            }
+        }
 
-    public void setNewStatus(Integer newStatus) {
-        this.newStatus = newStatus;
-    }
-
-    public Integer getRecommandStatus() {
-        return recommandStatus;
-    }
-
-    public void setRecommandStatus(Integer recommandStatus) {
-        this.recommandStatus = recommandStatus;
-    }
-
-    public Integer getVerifyStatus() {
-        return verifyStatus;
-    }
-
-    public void setVerifyStatus(Integer verifyStatus) {
-        this.verifyStatus = verifyStatus;
-    }
-
-    public Integer getSort() {
-        return sort;
-    }
-
-    public void setSort(Integer sort) {
-        this.sort = sort;
-    }
-
-    public Integer getSale() {
-        return sale;
-    }
-
-    public void setSale(Integer sale) {
-        this.sale = sale;
-    }
-
-    public BigDecimal getPrice() {
-        return price;
-    }
-
-    public void setPrice(BigDecimal price) {
-        this.price = price;
-    }
-
-    public BigDecimal getPromotionPrice() {
-        return promotionPrice;
-    }
-
-    public void setPromotionPrice(BigDecimal promotionPrice) {
-        this.promotionPrice = promotionPrice;
-    }
-
-    public String getSubTitle() {
-        return subTitle;
-    }
-
-    public void setSubTitle(String subTitle) {
-        this.subTitle = subTitle;
-    }
-
-    public BigDecimal getOriginalPrice() {
-        return originalPrice;
-    }
-
-    public void setOriginalPrice(BigDecimal originalPrice) {
-        this.originalPrice = originalPrice;
-    }
-
-    public String getUnit() {
-        return unit;
-    }
-
-    public void setUnit(String unit) {
-        this.unit = unit;
-    }
-
-    public String getKeywords() {
-        return keywords;
-    }
-
-    public void setKeywords(String keywords) {
-        this.keywords = keywords;
-    }
-
-    public String getAlbumPics() {
-        return albumPics;
-    }
-
-    public void setAlbumPics(String albumPics) {
-        this.albumPics = albumPics;
-    }
-
-    public String getDetailTitle() {
-        return detailTitle;
-    }
-
-    public void setDetailTitle(String detailTitle) {
-        this.detailTitle = detailTitle;
-    }
-
-    public String getProductCategoryName() {
-        return productCategoryName;
-    }
-
-    public void setProductCategoryName(String productCategoryName) {
-        this.productCategoryName = productCategoryName;
-    }
-
-    public Long getRegionId() {
-        return regionId;
-    }
-
-    public void setRegionId(Long regionId) {
-        this.regionId = regionId;
-    }
-
-    public String getRegion() {
-        return region;
-    }
-
-    public void setRegion(String region) {
-        this.region = region;
-    }
-
-    public Integer getIsBargain() {
-        return isBargain;
-    }
-
-    public void setIsBargain(Integer isBargain) {
-        this.isBargain = isBargain;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public String getDetailDesc() {
-        return detailDesc;
-    }
-
-    public void setDetailDesc(String detailDesc) {
-        this.detailDesc = detailDesc;
-    }
-
-    public String getDetailHtml() {
-        return detailHtml;
-    }
-
-    public void setDetailHtml(String detailHtml) {
-        this.detailHtml = detailHtml;
-    }
-
-    public String getChargeStandardJson() {
-        return chargeStandardJson;
-    }
-
-    public void setChargeStandardJson(String chargeStandardJson) {
-        this.chargeStandardJson = chargeStandardJson;
-    }
-
-    @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append(getClass().getSimpleName());
-        sb.append(" [");
-        sb.append("Hash = ").append(hashCode());
-        sb.append(", id=").append(id);
-        sb.append(", productCategoryId=").append(productCategoryId);
-        sb.append(", productAttributeCategoryId=").append(productAttributeCategoryId);
-        sb.append(", name=").append(name);
-        sb.append(", pic=").append(pic);
-        sb.append(", productSn=").append(productSn);
-        sb.append(", deleteStatus=").append(deleteStatus);
-        sb.append(", publishStatus=").append(publishStatus);
-        sb.append(", newStatus=").append(newStatus);
-        sb.append(", recommandStatus=").append(recommandStatus);
-        sb.append(", verifyStatus=").append(verifyStatus);
-        sb.append(", sort=").append(sort);
-        sb.append(", sale=").append(sale);
-        sb.append(", price=").append(price);
-        sb.append(", promotionPrice=").append(promotionPrice);
-        sb.append(", subTitle=").append(subTitle);
-        sb.append(", originalPrice=").append(originalPrice);
-        sb.append(", unit=").append(unit);
-        sb.append(", keywords=").append(keywords);
-        sb.append(", albumPics=").append(albumPics);
-        sb.append(", detailTitle=").append(detailTitle);
-        sb.append(", productCategoryName=").append(productCategoryName);
-        sb.append(", regionId=").append(regionId);
-        sb.append(", region=").append(region);
-        sb.append(", isBargain=").append(isBargain);
-        sb.append(", description=").append(description);
-        sb.append(", detailDesc=").append(detailDesc);
-        sb.append(", detailHtml=").append(detailHtml);
-        sb.append(", chargeStandardJson=").append(chargeStandardJson);
-        sb.append(", serialVersionUID=").append(serialVersionUID);
-        sb.append("]");
-        return sb.toString();
+        public String getAliasedEscapedColumnName() {
+            return this.getEscapedColumnName();
+        }
     }
 }

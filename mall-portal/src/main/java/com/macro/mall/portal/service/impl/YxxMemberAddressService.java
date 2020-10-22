@@ -29,6 +29,7 @@ public class YxxMemberAddressService {
         YxxMember currentMember = memberService.getCurrentMember();
         address.setMemberId(currentMember.getId());
         address.setCreateTime(new Date());
+        address.setUpdateTime(new Date());
         return addressMapper.insert(address);
     }
 
@@ -43,27 +44,32 @@ public class YxxMemberAddressService {
         YxxMemberAddress yxxMemberAddress = addressMapper.selectByPrimaryKey(id);
         YxxMember currentMember = memberService.getCurrentMember();
         address.setDefaultStatus(yxxMemberAddress.getDefaultStatus());
+        address.setUpdateTime(new Date());
         return addressMapper.updateByPrimaryKeySelective(address);
     }
 
     public int setDefault(Long id) {
         YxxMember currentMember = memberService.getCurrentMember();
-        YxxMemberAddress defaultAddress = addressMapper.selectOneByExample(
-                new YxxMemberAddressExample().createCriteria().andMemberIdEqualTo(currentMember.getId())
-                        .andDefaultStatusEqualTo(1).example()
-        );
-        // 原有的默认地址设为非默认
-        if (defaultAddress != null) {
-            if (defaultAddress.getId().equals(id)) {
-                return 1;
+        YxxMemberAddress address = addressMapper.selectByPrimaryKey(id);
+        // 取消默认
+        if (address.getDefaultStatus() == 1) {
+            address.setDefaultStatus(0);
+            return addressMapper.updateByPrimaryKeySelective(address, YxxMemberAddress.Column.defaultStatus);
+        } else {
+            // 设置为默认地址
+            // 查询已有的默认地址
+            YxxMemberAddress defaultAddress = addressMapper.selectOneByExample(
+                    new YxxMemberAddressExample().createCriteria().andMemberIdEqualTo(currentMember.getId())
+                            .andDefaultStatusEqualTo(1).example()
+            );
+            if (defaultAddress != null) {
+                // 原有的默认地址设为非默认
+                defaultAddress.setDefaultStatus(0);
+                addressMapper.updateByPrimaryKeySelective(defaultAddress, YxxMemberAddress.Column.defaultStatus);
             }
-            addressMapper.updateByPrimaryKeySelective(YxxMemberAddress.builder()
-                    .id(id).defaultStatus(1)
-                    .build(), YxxMemberAddress.Column.defaultStatus);
-            defaultAddress.setDefaultStatus(0);
-            addressMapper.updateByPrimaryKeySelective(defaultAddress, YxxMemberAddress.Column.defaultStatus);
+            return addressMapper.updateByPrimaryKeySelective(YxxMemberAddress.builder().id(id).defaultStatus(1).build(),
+                    YxxMemberAddress.Column.defaultStatus);
         }
-        return 1;
 
     }
 

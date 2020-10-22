@@ -107,8 +107,8 @@ public class YxxWorkerController {
     }
 
     @ApiOperation("忘记密码")
-    @RequestMapping(value = "/updatePassword", method = RequestMethod.POST)
-    public CommonResult updatePassword(@RequestParam String telephone,
+    @RequestMapping(value = "/resetPassword", method = RequestMethod.POST)
+    public CommonResult resetPassword(@RequestParam String telephone,
                                        @RequestParam String password,
                                        @RequestParam String authCode) {
         workerService.resetPass(telephone, password, authCode);

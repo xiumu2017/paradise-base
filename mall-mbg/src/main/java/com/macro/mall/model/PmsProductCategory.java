@@ -1,157 +1,143 @@
 package com.macro.mall.model;
 
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Arrays;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
+/**
+ * 产品分类
+ *
+ * @author Paradise
+ */
+@ApiModel(value="产品分类")
+@Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class PmsProductCategory implements Serializable {
+    @ApiModelProperty(value="")
     private Long id;
 
-    @ApiModelProperty(value = "上机分类的编号：0表示一级分类")
+    @ApiModelProperty(value="上机分类的编号：0表示一级分类")
     private Long parentId;
 
+    @ApiModelProperty(value="")
     private String name;
 
-    @ApiModelProperty(value = "分类级别：0->1级；1->2级")
+    @ApiModelProperty(value="分类级别：0->1级；1->2级")
     private Integer level;
 
+    @ApiModelProperty(value="")
     private Integer productCount;
 
+    @ApiModelProperty(value="")
     private String productUnit;
 
-    @ApiModelProperty(value = "是否显示在导航栏：0->不显示；1->显示")
+    @ApiModelProperty(value="是否显示在导航栏：0->不显示；1->显示")
     private Integer navStatus;
 
-    @ApiModelProperty(value = "显示状态：0->不显示；1->显示")
+    @ApiModelProperty(value="显示状态：0->不显示；1->显示")
     private Integer showStatus;
 
+    @ApiModelProperty(value="")
     private Integer sort;
 
-    @ApiModelProperty(value = "图标")
+    @ApiModelProperty(value="图标")
     private String icon;
 
+    @ApiModelProperty(value="")
     private String keywords;
 
-    @ApiModelProperty(value = "描述")
+    @ApiModelProperty(value="描述")
     private String description;
 
     private static final long serialVersionUID = 1L;
 
-    public Long getId() {
-        return id;
-    }
+    public enum Column {
+        id("id", "id", "BIGINT", false),
+        parentId("parent_id", "parentId", "BIGINT", false),
+        name("name", "name", "VARCHAR", true),
+        level("level", "level", "INTEGER", true),
+        productCount("product_count", "productCount", "INTEGER", false),
+        productUnit("product_unit", "productUnit", "VARCHAR", false),
+        navStatus("nav_status", "navStatus", "INTEGER", false),
+        showStatus("show_status", "showStatus", "INTEGER", false),
+        sort("sort", "sort", "INTEGER", false),
+        icon("icon", "icon", "VARCHAR", false),
+        keywords("keywords", "keywords", "VARCHAR", false),
+        description("description", "description", "LONGVARCHAR", false);
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+        private static final String BEGINNING_DELIMITER = "`";
 
-    public Long getParentId() {
-        return parentId;
-    }
+        private static final String ENDING_DELIMITER = "`";
 
-    public void setParentId(Long parentId) {
-        this.parentId = parentId;
-    }
+        private final String column;
 
-    public String getName() {
-        return name;
-    }
+        private final boolean isColumnNameDelimited;
 
-    public void setName(String name) {
-        this.name = name;
-    }
+        private final String javaProperty;
 
-    public Integer getLevel() {
-        return level;
-    }
+        private final String jdbcType;
 
-    public void setLevel(Integer level) {
-        this.level = level;
-    }
+        public String value() {
+            return this.column;
+        }
 
-    public Integer getProductCount() {
-        return productCount;
-    }
+        public String getValue() {
+            return this.column;
+        }
 
-    public void setProductCount(Integer productCount) {
-        this.productCount = productCount;
-    }
+        public String getJavaProperty() {
+            return this.javaProperty;
+        }
 
-    public String getProductUnit() {
-        return productUnit;
-    }
+        public String getJdbcType() {
+            return this.jdbcType;
+        }
 
-    public void setProductUnit(String productUnit) {
-        this.productUnit = productUnit;
-    }
+        Column(String column, String javaProperty, String jdbcType, boolean isColumnNameDelimited) {
+            this.column = column;
+            this.javaProperty = javaProperty;
+            this.jdbcType = jdbcType;
+            this.isColumnNameDelimited = isColumnNameDelimited;
+        }
 
-    public Integer getNavStatus() {
-        return navStatus;
-    }
+        public String desc() {
+            return this.getEscapedColumnName() + " DESC";
+        }
 
-    public void setNavStatus(Integer navStatus) {
-        this.navStatus = navStatus;
-    }
+        public String asc() {
+            return this.getEscapedColumnName() + " ASC";
+        }
 
-    public Integer getShowStatus() {
-        return showStatus;
-    }
+        public static Column[] excludes(Column ... excludes) {
+            ArrayList<Column> columns = new ArrayList<>(Arrays.asList(Column.values()));
+            if (excludes != null && excludes.length > 0) {
+                columns.removeAll(new ArrayList<>(Arrays.asList(excludes)));
+            }
+            return columns.toArray(new Column[]{});
+        }
 
-    public void setShowStatus(Integer showStatus) {
-        this.showStatus = showStatus;
-    }
+        public static Column[] all() {
+            return Column.values();
+        }
 
-    public Integer getSort() {
-        return sort;
-    }
+        public String getEscapedColumnName() {
+            if (this.isColumnNameDelimited) {
+                return new StringBuilder().append(BEGINNING_DELIMITER).append(this.column).append(ENDING_DELIMITER).toString();
+            } else {
+                return this.column;
+            }
+        }
 
-    public void setSort(Integer sort) {
-        this.sort = sort;
-    }
-
-    public String getIcon() {
-        return icon;
-    }
-
-    public void setIcon(String icon) {
-        this.icon = icon;
-    }
-
-    public String getKeywords() {
-        return keywords;
-    }
-
-    public void setKeywords(String keywords) {
-        this.keywords = keywords;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append(getClass().getSimpleName());
-        sb.append(" [");
-        sb.append("Hash = ").append(hashCode());
-        sb.append(", id=").append(id);
-        sb.append(", parentId=").append(parentId);
-        sb.append(", name=").append(name);
-        sb.append(", level=").append(level);
-        sb.append(", productCount=").append(productCount);
-        sb.append(", productUnit=").append(productUnit);
-        sb.append(", navStatus=").append(navStatus);
-        sb.append(", showStatus=").append(showStatus);
-        sb.append(", sort=").append(sort);
-        sb.append(", icon=").append(icon);
-        sb.append(", keywords=").append(keywords);
-        sb.append(", description=").append(description);
-        sb.append(", serialVersionUID=").append(serialVersionUID);
-        sb.append("]");
-        return sb.toString();
+        public String getAliasedEscapedColumnName() {
+            return this.getEscapedColumnName();
+        }
     }
 }

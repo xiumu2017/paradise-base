@@ -76,13 +76,13 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, parent_id, name, level, product_count, product_unit, nav_status, show_status, 
+    id, parent_id, `name`, `level`, product_count, product_unit, nav_status, show_status, 
     sort, icon, keywords
   </sql>
   <sql id="Blob_Column_List">
     description
   </sql>
-  <select id="selectByExampleWithBLOBs" parameterType="com.macro.mall.model.PmsProductCategoryExample" resultMap="ResultMapWithBLOBs">
+  <select id="selectByExampleWithBLOBs" parameterType="com.macro.mall.example.PmsProductCategoryExample" resultMap="ResultMapWithBLOBs">
     select
     <if test="distinct">
       distinct
@@ -98,7 +98,7 @@
       order by ${orderByClause}
     </if>
   </select>
-  <select id="selectByExample" parameterType="com.macro.mall.model.PmsProductCategoryExample" resultMap="BaseResultMap">
+  <select id="selectByExample" parameterType="com.macro.mall.example.PmsProductCategoryExample" resultMap="BaseResultMap">
     select
     <if test="distinct">
       distinct
@@ -110,6 +110,31 @@
     </if>
     <if test="orderByClause != null">
       order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByExampleSelective" parameterType="map" resultMap="ResultMapWithBLOBs">
+    select
+    <if test="example != null and example.distinct">
+      distinct
+    </if>
+    <choose>
+      <when test="selective != null and selective.length > 0">
+        <foreach collection="selective" item="column" separator=",">
+          ${column.aliasedEscapedColumnName}
+        </foreach>
+      </when>
+      <otherwise>
+        <include refid="Base_Column_List" />
+        ,
+        <include refid="Blob_Column_List" />
+      </otherwise>
+    </choose>
+    from pms_product_category
+    <if test="example != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+    <if test="example != null and example.orderByClause != null">
+      order by ${example.orderByClause}
     </if>
   </select>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="ResultMapWithBLOBs">
@@ -120,11 +145,28 @@
     from pms_product_category
     where id = #{id,jdbcType=BIGINT}
   </select>
+  <select id="selectByPrimaryKeySelective" parameterType="map" resultMap="ResultMapWithBLOBs">
+    select
+    <choose>
+      <when test="selective != null and selective.length > 0">
+        <foreach collection="selective" item="column" separator=",">
+          ${column.aliasedEscapedColumnName}
+        </foreach>
+      </when>
+      <otherwise>
+        <include refid="Base_Column_List" />
+        ,
+        <include refid="Blob_Column_List" />
+      </otherwise>
+    </choose>
+    from pms_product_category
+    where id = #{id,jdbcType=BIGINT}
+  </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from pms_product_category
     where id = #{id,jdbcType=BIGINT}
   </delete>
-  <delete id="deleteByExample" parameterType="com.macro.mall.model.PmsProductCategoryExample">
+  <delete id="deleteByExample" parameterType="com.macro.mall.example.PmsProductCategoryExample">
     delete from pms_product_category
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
@@ -134,7 +176,7 @@
     <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
       SELECT LAST_INSERT_ID()
     </selectKey>
-    insert into pms_product_category (parent_id, name, level, 
+    insert into pms_product_category (parent_id, `name`, `level`, 
       product_count, product_unit, nav_status, 
       show_status, sort, icon, 
       keywords, description)
@@ -143,83 +185,103 @@
       #{showStatus,jdbcType=INTEGER}, #{sort,jdbcType=INTEGER}, #{icon,jdbcType=VARCHAR}, 
       #{keywords,jdbcType=VARCHAR}, #{description,jdbcType=LONGVARCHAR})
   </insert>
-  <insert id="insertSelective" parameterType="com.macro.mall.model.PmsProductCategory">
-    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
+  <insert id="insertSelective" parameterType="map">
+    <selectKey keyProperty="record.id" order="AFTER" resultType="java.lang.Long">
       SELECT LAST_INSERT_ID()
     </selectKey>
     insert into pms_product_category
-    <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="parentId != null">
-        parent_id,
-      </if>
-      <if test="name != null">
-        name,
-      </if>
-      <if test="level != null">
-        level,
-      </if>
-      <if test="productCount != null">
-        product_count,
-      </if>
-      <if test="productUnit != null">
-        product_unit,
-      </if>
-      <if test="navStatus != null">
-        nav_status,
-      </if>
-      <if test="showStatus != null">
-        show_status,
-      </if>
-      <if test="sort != null">
-        sort,
-      </if>
-      <if test="icon != null">
-        icon,
-      </if>
-      <if test="keywords != null">
-        keywords,
-      </if>
-      <if test="description != null">
-        description,
-      </if>
-    </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="parentId != null">
-        #{parentId,jdbcType=BIGINT},
-      </if>
-      <if test="name != null">
-        #{name,jdbcType=VARCHAR},
-      </if>
-      <if test="level != null">
-        #{level,jdbcType=INTEGER},
-      </if>
-      <if test="productCount != null">
-        #{productCount,jdbcType=INTEGER},
-      </if>
-      <if test="productUnit != null">
-        #{productUnit,jdbcType=VARCHAR},
-      </if>
-      <if test="navStatus != null">
-        #{navStatus,jdbcType=INTEGER},
-      </if>
-      <if test="showStatus != null">
-        #{showStatus,jdbcType=INTEGER},
-      </if>
-      <if test="sort != null">
-        #{sort,jdbcType=INTEGER},
-      </if>
-      <if test="icon != null">
-        #{icon,jdbcType=VARCHAR},
-      </if>
-      <if test="keywords != null">
-        #{keywords,jdbcType=VARCHAR},
-      </if>
-      <if test="description != null">
-        #{description,jdbcType=LONGVARCHAR},
-      </if>
-    </trim>
+    <choose>
+      <when test="selective != null and selective.length > 0">
+        <foreach close=")" collection="selective" item="column" open="(" separator=",">
+          ${column.escapedColumnName}
+        </foreach>
+      </when>
+      <otherwise>
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+          <if test="record.parentId != null">
+            parent_id,
+          </if>
+          <if test="record.name != null">
+            `name`,
+          </if>
+          <if test="record.level != null">
+            `level`,
+          </if>
+          <if test="record.productCount != null">
+            product_count,
+          </if>
+          <if test="record.productUnit != null">
+            product_unit,
+          </if>
+          <if test="record.navStatus != null">
+            nav_status,
+          </if>
+          <if test="record.showStatus != null">
+            show_status,
+          </if>
+          <if test="record.sort != null">
+            sort,
+          </if>
+          <if test="record.icon != null">
+            icon,
+          </if>
+          <if test="record.keywords != null">
+            keywords,
+          </if>
+          <if test="record.description != null">
+            description,
+          </if>
+        </trim>
+        <trim prefix="(" suffix=")" suffixOverrides="," />
+      </otherwise>
+    </choose>
+    values
+    <choose>
+      <when test="selective != null and selective.length > 0">
+        <foreach close=")" collection="selective" item="column" open="(" separator=",">
+          #{record.${column.javaProperty},jdbcType=${column.jdbcType}}
+        </foreach>
+      </when>
+      <otherwise>
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+          <if test="record.parentId != null">
+            #{record.parentId,jdbcType=BIGINT},
+          </if>
+          <if test="record.name != null">
+            #{record.name,jdbcType=VARCHAR},
+          </if>
+          <if test="record.level != null">
+            #{record.level,jdbcType=INTEGER},
+          </if>
+          <if test="record.productCount != null">
+            #{record.productCount,jdbcType=INTEGER},
+          </if>
+          <if test="record.productUnit != null">
+            #{record.productUnit,jdbcType=VARCHAR},
+          </if>
+          <if test="record.navStatus != null">
+            #{record.navStatus,jdbcType=INTEGER},
+          </if>
+          <if test="record.showStatus != null">
+            #{record.showStatus,jdbcType=INTEGER},
+          </if>
+          <if test="record.sort != null">
+            #{record.sort,jdbcType=INTEGER},
+          </if>
+          <if test="record.icon != null">
+            #{record.icon,jdbcType=VARCHAR},
+          </if>
+          <if test="record.keywords != null">
+            #{record.keywords,jdbcType=VARCHAR},
+          </if>
+          <if test="record.description != null">
+            #{record.description,jdbcType=LONGVARCHAR},
+          </if>
+        </trim>
+      </otherwise>
+    </choose>
   </insert>
-  <select id="countByExample" parameterType="com.macro.mall.model.PmsProductCategoryExample" resultType="java.lang.Long">
+  <select id="countByExample" parameterType="com.macro.mall.example.PmsProductCategoryExample" resultType="java.lang.Long">
     select count(*) from pms_product_category
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
@@ -227,44 +289,54 @@
   </select>
   <update id="updateByExampleSelective" parameterType="map">
     update pms_product_category
-    <set>
-      <if test="record.id != null">
-        id = #{record.id,jdbcType=BIGINT},
-      </if>
-      <if test="record.parentId != null">
-        parent_id = #{record.parentId,jdbcType=BIGINT},
-      </if>
-      <if test="record.name != null">
-        name = #{record.name,jdbcType=VARCHAR},
-      </if>
-      <if test="record.level != null">
-        level = #{record.level,jdbcType=INTEGER},
-      </if>
-      <if test="record.productCount != null">
-        product_count = #{record.productCount,jdbcType=INTEGER},
-      </if>
-      <if test="record.productUnit != null">
-        product_unit = #{record.productUnit,jdbcType=VARCHAR},
-      </if>
-      <if test="record.navStatus != null">
-        nav_status = #{record.navStatus,jdbcType=INTEGER},
-      </if>
-      <if test="record.showStatus != null">
-        show_status = #{record.showStatus,jdbcType=INTEGER},
-      </if>
-      <if test="record.sort != null">
-        sort = #{record.sort,jdbcType=INTEGER},
-      </if>
-      <if test="record.icon != null">
-        icon = #{record.icon,jdbcType=VARCHAR},
-      </if>
-      <if test="record.keywords != null">
-        keywords = #{record.keywords,jdbcType=VARCHAR},
-      </if>
-      <if test="record.description != null">
-        description = #{record.description,jdbcType=LONGVARCHAR},
-      </if>
-    </set>
+    SET
+    <choose>
+      <when test="selective != null and selective.length > 0">
+        <foreach collection="selective" item="column" separator=",">
+          ${column.escapedColumnName} = #{record.${column.javaProperty},jdbcType=${column.jdbcType}}
+        </foreach>
+      </when>
+      <otherwise>
+        <trim suffixOverrides=",">
+          <if test="record.id != null">
+            id = #{record.id,jdbcType=BIGINT},
+          </if>
+          <if test="record.parentId != null">
+            parent_id = #{record.parentId,jdbcType=BIGINT},
+          </if>
+          <if test="record.name != null">
+            `name` = #{record.name,jdbcType=VARCHAR},
+          </if>
+          <if test="record.level != null">
+            `level` = #{record.level,jdbcType=INTEGER},
+          </if>
+          <if test="record.productCount != null">
+            product_count = #{record.productCount,jdbcType=INTEGER},
+          </if>
+          <if test="record.productUnit != null">
+            product_unit = #{record.productUnit,jdbcType=VARCHAR},
+          </if>
+          <if test="record.navStatus != null">
+            nav_status = #{record.navStatus,jdbcType=INTEGER},
+          </if>
+          <if test="record.showStatus != null">
+            show_status = #{record.showStatus,jdbcType=INTEGER},
+          </if>
+          <if test="record.sort != null">
+            sort = #{record.sort,jdbcType=INTEGER},
+          </if>
+          <if test="record.icon != null">
+            icon = #{record.icon,jdbcType=VARCHAR},
+          </if>
+          <if test="record.keywords != null">
+            keywords = #{record.keywords,jdbcType=VARCHAR},
+          </if>
+          <if test="record.description != null">
+            description = #{record.description,jdbcType=LONGVARCHAR},
+          </if>
+        </trim>
+      </otherwise>
+    </choose>
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
@@ -273,8 +345,8 @@
     update pms_product_category
     set id = #{record.id,jdbcType=BIGINT},
       parent_id = #{record.parentId,jdbcType=BIGINT},
-      name = #{record.name,jdbcType=VARCHAR},
-      level = #{record.level,jdbcType=INTEGER},
+      `name` = #{record.name,jdbcType=VARCHAR},
+      `level` = #{record.level,jdbcType=INTEGER},
       product_count = #{record.productCount,jdbcType=INTEGER},
       product_unit = #{record.productUnit,jdbcType=VARCHAR},
       nav_status = #{record.navStatus,jdbcType=INTEGER},
@@ -291,8 +363,8 @@
     update pms_product_category
     set id = #{record.id,jdbcType=BIGINT},
       parent_id = #{record.parentId,jdbcType=BIGINT},
-      name = #{record.name,jdbcType=VARCHAR},
-      level = #{record.level,jdbcType=INTEGER},
+      `name` = #{record.name,jdbcType=VARCHAR},
+      `level` = #{record.level,jdbcType=INTEGER},
       product_count = #{record.productCount,jdbcType=INTEGER},
       product_unit = #{record.productUnit,jdbcType=VARCHAR},
       nav_status = #{record.navStatus,jdbcType=INTEGER},
@@ -304,50 +376,60 @@
       <include refid="Update_By_Example_Where_Clause" />
     </if>
   </update>
-  <update id="updateByPrimaryKeySelective" parameterType="com.macro.mall.model.PmsProductCategory">
+  <update id="updateByPrimaryKeySelective" parameterType="map">
     update pms_product_category
-    <set>
-      <if test="parentId != null">
-        parent_id = #{parentId,jdbcType=BIGINT},
-      </if>
-      <if test="name != null">
-        name = #{name,jdbcType=VARCHAR},
-      </if>
-      <if test="level != null">
-        level = #{level,jdbcType=INTEGER},
-      </if>
-      <if test="productCount != null">
-        product_count = #{productCount,jdbcType=INTEGER},
-      </if>
-      <if test="productUnit != null">
-        product_unit = #{productUnit,jdbcType=VARCHAR},
-      </if>
-      <if test="navStatus != null">
-        nav_status = #{navStatus,jdbcType=INTEGER},
-      </if>
-      <if test="showStatus != null">
-        show_status = #{showStatus,jdbcType=INTEGER},
-      </if>
-      <if test="sort != null">
-        sort = #{sort,jdbcType=INTEGER},
-      </if>
-      <if test="icon != null">
-        icon = #{icon,jdbcType=VARCHAR},
-      </if>
-      <if test="keywords != null">
-        keywords = #{keywords,jdbcType=VARCHAR},
-      </if>
-      <if test="description != null">
-        description = #{description,jdbcType=LONGVARCHAR},
-      </if>
-    </set>
-    where id = #{id,jdbcType=BIGINT}
+    SET
+    <choose>
+      <when test="selective != null and selective.length > 0">
+        <foreach collection="selective" item="column" separator=",">
+          ${column.escapedColumnName} = #{record.${column.javaProperty},jdbcType=${column.jdbcType}}
+        </foreach>
+      </when>
+      <otherwise>
+        <trim suffixOverrides=",">
+          <if test="record.parentId != null">
+            parent_id = #{record.parentId,jdbcType=BIGINT},
+          </if>
+          <if test="record.name != null">
+            `name` = #{record.name,jdbcType=VARCHAR},
+          </if>
+          <if test="record.level != null">
+            `level` = #{record.level,jdbcType=INTEGER},
+          </if>
+          <if test="record.productCount != null">
+            product_count = #{record.productCount,jdbcType=INTEGER},
+          </if>
+          <if test="record.productUnit != null">
+            product_unit = #{record.productUnit,jdbcType=VARCHAR},
+          </if>
+          <if test="record.navStatus != null">
+            nav_status = #{record.navStatus,jdbcType=INTEGER},
+          </if>
+          <if test="record.showStatus != null">
+            show_status = #{record.showStatus,jdbcType=INTEGER},
+          </if>
+          <if test="record.sort != null">
+            sort = #{record.sort,jdbcType=INTEGER},
+          </if>
+          <if test="record.icon != null">
+            icon = #{record.icon,jdbcType=VARCHAR},
+          </if>
+          <if test="record.keywords != null">
+            keywords = #{record.keywords,jdbcType=VARCHAR},
+          </if>
+          <if test="record.description != null">
+            description = #{record.description,jdbcType=LONGVARCHAR},
+          </if>
+        </trim>
+      </otherwise>
+    </choose>
+    where id = #{record.id,jdbcType=BIGINT}
   </update>
   <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.macro.mall.model.PmsProductCategory">
     update pms_product_category
     set parent_id = #{parentId,jdbcType=BIGINT},
-      name = #{name,jdbcType=VARCHAR},
-      level = #{level,jdbcType=INTEGER},
+      `name` = #{name,jdbcType=VARCHAR},
+      `level` = #{level,jdbcType=INTEGER},
       product_count = #{productCount,jdbcType=INTEGER},
       product_unit = #{productUnit,jdbcType=VARCHAR},
       nav_status = #{navStatus,jdbcType=INTEGER},
@@ -361,8 +443,8 @@
   <update id="updateByPrimaryKey" parameterType="com.macro.mall.model.PmsProductCategory">
     update pms_product_category
     set parent_id = #{parentId,jdbcType=BIGINT},
-      name = #{name,jdbcType=VARCHAR},
-      level = #{level,jdbcType=INTEGER},
+      `name` = #{name,jdbcType=VARCHAR},
+      `level` = #{level,jdbcType=INTEGER},
       product_count = #{productCount,jdbcType=INTEGER},
       product_unit = #{productUnit,jdbcType=VARCHAR},
       nav_status = #{navStatus,jdbcType=INTEGER},
@@ -372,4 +454,112 @@
       keywords = #{keywords,jdbcType=VARCHAR}
     where id = #{id,jdbcType=BIGINT}
   </update>
+  <select id="selectOneByExample" parameterType="com.macro.mall.example.PmsProductCategoryExample" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from pms_product_category
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+    limit 1
+  </select>
+  <select id="selectOneByExampleWithBLOBs" parameterType="com.macro.mall.example.PmsProductCategoryExample" resultMap="ResultMapWithBLOBs">
+    select
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from pms_product_category
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+    limit 1
+  </select>
+  <select id="selectOneByExampleSelective" parameterType="map" resultMap="ResultMapWithBLOBs">
+    select
+    <choose>
+      <when test="selective != null and selective.length > 0">
+        <foreach collection="selective" item="column" separator=",">
+          ${column.aliasedEscapedColumnName}
+        </foreach>
+      </when>
+      <otherwise>
+        <include refid="Base_Column_List" />
+        ,
+        <include refid="Blob_Column_List" />
+      </otherwise>
+    </choose>
+    from pms_product_category
+    <if test="example != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+    <if test="example != null and example.orderByClause != null">
+      order by ${example.orderByClause}
+    </if>
+    limit 1
+  </select>
+  <insert id="batchInsert" keyColumn="id" keyProperty="id" parameterType="map" useGeneratedKeys="true">
+    insert into pms_product_category
+    (parent_id, `name`, `level`, product_count, product_unit, nav_status, show_status, 
+      sort, icon, keywords, description)
+    values
+    <foreach collection="list" item="item" separator=",">
+      (#{item.parentId,jdbcType=BIGINT}, #{item.name,jdbcType=VARCHAR}, #{item.level,jdbcType=INTEGER}, 
+        #{item.productCount,jdbcType=INTEGER}, #{item.productUnit,jdbcType=VARCHAR}, #{item.navStatus,jdbcType=INTEGER}, 
+        #{item.showStatus,jdbcType=INTEGER}, #{item.sort,jdbcType=INTEGER}, #{item.icon,jdbcType=VARCHAR}, 
+        #{item.keywords,jdbcType=VARCHAR}, #{item.description,jdbcType=LONGVARCHAR})
+    </foreach>
+  </insert>
+  <insert id="batchInsertSelective" keyColumn="id" keyProperty="list.id" parameterType="map" useGeneratedKeys="true">
+    insert into pms_product_category (
+    <foreach collection="selective" item="column" separator=",">
+      ${column.escapedColumnName}
+    </foreach>
+    )
+    values
+    <foreach collection="list" item="item" separator=",">
+      (
+      <foreach collection="selective" item="column" separator=",">
+        <if test="'parent_id'.toString() == column.value">
+          #{item.parentId,jdbcType=BIGINT}
+        </if>
+        <if test="'name'.toString() == column.value">
+          #{item.name,jdbcType=VARCHAR}
+        </if>
+        <if test="'level'.toString() == column.value">
+          #{item.level,jdbcType=INTEGER}
+        </if>
+        <if test="'product_count'.toString() == column.value">
+          #{item.productCount,jdbcType=INTEGER}
+        </if>
+        <if test="'product_unit'.toString() == column.value">
+          #{item.productUnit,jdbcType=VARCHAR}
+        </if>
+        <if test="'nav_status'.toString() == column.value">
+          #{item.navStatus,jdbcType=INTEGER}
+        </if>
+        <if test="'show_status'.toString() == column.value">
+          #{item.showStatus,jdbcType=INTEGER}
+        </if>
+        <if test="'sort'.toString() == column.value">
+          #{item.sort,jdbcType=INTEGER}
+        </if>
+        <if test="'icon'.toString() == column.value">
+          #{item.icon,jdbcType=VARCHAR}
+        </if>
+        <if test="'keywords'.toString() == column.value">
+          #{item.keywords,jdbcType=VARCHAR}
+        </if>
+        <if test="'description'.toString() == column.value">
+          #{item.description,jdbcType=LONGVARCHAR}
+        </if>
+      </foreach>
+      )
+    </foreach>
+  </insert>
 </mapper>

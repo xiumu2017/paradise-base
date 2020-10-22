@@ -58,8 +58,9 @@ rabbitmq:
 wx:
   miniapp:
     configs:
-      - appid: wx46c42dac91f7fd92 #微信小程序的appid
-        secret: e3f1c050bbf66596623f4c30d6f67ab8 #微信小程序的Secret
+      - appid: wxc5045e7d2cb2224a #微信小程序的appid
+#        secret: e3f1c050bbf66596623f4c30d6f67ab8 #微信小程序的Secret
+        secret: a1215679fdd88f3d5497ab5ad093bc03 #微信小程序的Secret
         token: #微信小程序消息服务器配置的token
         aesKey: #微信小程序消息服务器配置的EncodingAESKey
         msgDataFormat: JSON
