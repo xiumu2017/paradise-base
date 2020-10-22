@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.macro.mall.portal.dao.SmsCouponHistoryDao">
-    <resultMap id="couponHistoryDetailMap" type="com.macro.mall.portal.domain.SmsCouponHistoryDetail"
+<mapper namespace="com.macro.mall.app.dao.SmsCouponHistoryDao">
+    <resultMap id="couponHistoryDetailMap" type="com.macro.mall.app.domain.SmsCouponHistoryDetail"
                extends="com.macro.mall.mapper.SmsCouponHistoryMapper.BaseResultMap">
         <association property="coupon" resultMap="com.macro.mall.mapper.SmsCouponMapper.BaseResultMap" columnPrefix="c_">
         </association>

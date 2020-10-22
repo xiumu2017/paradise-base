@@ -2,14 +2,13 @@ package com.macro.mall.model;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Arrays;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Arrays;
 
 /**
  * 垚修修区域表
@@ -28,11 +27,19 @@ public class YxxRegion implements Serializable {
     @ApiModelProperty(value="区域名称")
     private String regionName;
 
+    @ApiModelProperty(value="省份")
+    private String province;
+
+    @ApiModelProperty(value="状态：1启用0禁用")
+    private Integer enable;
+
     private static final long serialVersionUID = 1L;
 
     public enum Column {
         regionId("region_id", "regionId", "BIGINT", false),
-        regionName("region_name", "regionName", "VARCHAR", false);
+        regionName("region_name", "regionName", "VARCHAR", false),
+        province("province", "province", "VARCHAR", false),
+        enable("enable", "enable", "INTEGER", true);
 
         private static final String BEGINNING_DELIMITER = "`";
 

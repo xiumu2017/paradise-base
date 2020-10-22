@@ -7,19 +7,16 @@ import com.macro.mall.common.service.impl.DistributorService;
 import com.macro.mall.domain.YxxOrderDetail;
 import com.macro.mall.enums.OrderStatus;
 import com.macro.mall.example.YxxOrderExample;
+import com.macro.mall.example.YxxOrderItemExample;
 import com.macro.mall.example.YxxOrderStatusRecordExample;
 import com.macro.mall.example.YxxRepairRecordExample;
-import com.macro.mall.mapper.YxxMemberMapper;
-import com.macro.mall.mapper.YxxOrderMapper;
-import com.macro.mall.mapper.YxxOrderStatusRecordMapper;
-import com.macro.mall.mapper.YxxRepairRecordMapper;
-import com.macro.mall.model.YxxMember;
-import com.macro.mall.model.YxxOrder;
-import com.macro.mall.model.YxxOrderStatusRecord;
+import com.macro.mall.mapper.*;
+import com.macro.mall.model.*;
 import com.macro.mall.portal.domain.YxxOrderParam;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
@@ -45,11 +42,15 @@ public class YxxMpOrderService {
     private final YxxRepairRecordMapper repairRecordMapper;
     private final YxxOrderStatusRecordMapper orderStatusRecordMapper;
     private final DistributorService distributorService;
+    private final YxxOrderItemMapper orderItemMapper;
+    private final PmsProductMapper productMapper;
+    private final PmsProductSkuMapper productSkuMapper;
 
     public YxxMpOrderService(RedisService redisService, YxxOrderMapper yxxOrderMapper,
-                             YxxMemberService memberService,
+                             YxxMemberService memberService, YxxOrderItemMapper orderItemMapper,
                              YxxMemberMapper memberMapper, YxxRepairRecordMapper repairRecordMapper,
-                             YxxOrderStatusRecordMapper orderStatusRecordMapper, DistributorService distributorService) {
+                             YxxOrderStatusRecordMapper orderStatusRecordMapper, DistributorService distributorService,
+                             PmsProductMapper productMapper, PmsProductSkuMapper productSkuMapper) {
         this.redisService = redisService;
         this.yxxOrderMapper = yxxOrderMapper;
         this.memberService = memberService;
@@ -57,6 +58,9 @@ public class YxxMpOrderService {
         this.repairRecordMapper = repairRecordMapper;
         this.orderStatusRecordMapper = orderStatusRecordMapper;
         this.distributorService = distributorService;
+        this.orderItemMapper = orderItemMapper;
+        this.productMapper = productMapper;
+        this.productSkuMapper = productSkuMapper;
     }
 
     /**
@@ -66,6 +70,7 @@ public class YxxMpOrderService {
      * @return 返回结果
      */
     public YxxOrder generateOrder(YxxOrderParam orderParam) {
+        boolean hasItem = orderParam.getItemList() != null && !orderParam.getItemList().isEmpty();
         YxxMember member = memberService.getCurrentMember();
         long count = yxxOrderMapper.countByExample(new YxxOrderExample().createCriteria()
                 .andMemberIdEqualTo(member.getId()).example());
@@ -77,14 +82,43 @@ public class YxxMpOrderService {
             // 部分更新
             memberMapper.updateByPrimaryKeySelective(member, YxxMember.Column.phone, YxxMember.Column.address, YxxMember.Column.sex);
         }
+        PmsProduct product = productMapper.selectByPrimaryKey(orderParam.getProductId());
         // 保存订单信息
         YxxOrder order = orderParam.toOrder();
+        order.setIsBargain(product.getIsBargain());
         order.setOrderSn(generateOrderSn(order));
         order.setMemberId(member.getId());
         order.setMemberName(member.getRealName());
         order.setOrderStatus(CREATED.val());
+        order.setCreateTime(new Date());
+        order.setUpdateTime(new Date());
+        // 一口价订单价格计算
+        this.dealBargainOrderPrice(order, hasItem, orderParam);
         yxxOrderMapper.insertSelective(order);
+        if (order.getId() != null) {
+            // 保存子订单信息
+            if (hasItem) {
+                orderParam.getItemList().forEach(yxxOrderItem -> yxxOrderItem.setOrderId(order.getId()));
+                orderItemMapper.batchInsert(orderParam.getItemList());
+            }
+        }
         return order;
+    }
+
+    private void dealBargainOrderPrice(YxxOrder order, boolean hasItem, YxxOrderParam orderParam) {
+        if (order.getIsBargain() == 0) {
+            if (hasItem) {
+                BigDecimal price = BigDecimal.ZERO;
+                for (YxxOrderItem yxxOrderItem : orderParam.getItemList()) {
+                    PmsProductSku sku = productSkuMapper.selectByPrimaryKey(orderParam.getSkuId());
+                    price = price.add(sku.getPrice().multiply(new BigDecimal(yxxOrderItem.getAmount())));
+                }
+                order.setOfferPrice(price);
+            } else {
+                PmsProductSku sku = productSkuMapper.selectByPrimaryKey(orderParam.getSkuId());
+                order.setOfferPrice(sku.getPrice());
+            }
+        }
     }
 
     /**
@@ -96,6 +130,12 @@ public class YxxMpOrderService {
         String key = REDIS_DATABASE + ":" + REDIS_KEY_ORDER_ID + date;
         Long increment = redisService.incr(key, 1);
         sb.append(date);
+        if (order.getIsBargain() == null) {
+            order.setIsBargain(1);
+        }
+        if (order.getIsTransfer() == null) {
+            order.setIsTransfer(0);
+        }
         sb.append(String.format("%02d", order.getIsBargain()));
         sb.append(String.format("%02d", order.getIsTransfer()));
         String incrementStr = increment.toString();
@@ -124,6 +164,8 @@ public class YxxMpOrderService {
         YxxOrderDetail detail = new YxxOrderDetail();
         // 订单信息
         detail.setYxxOrder(yxxOrderMapper.selectByPrimaryKey(orderId));
+        // 子订单信息
+        detail.setItemList(orderItemMapper.selectByExample(new YxxOrderItemExample().createCriteria().andOrderIdEqualTo(orderId).example()));
         // 维修工单信息
         detail.setRepairRecord(repairRecordMapper.selectOneByExample(new YxxRepairRecordExample().createCriteria()
                 .andOrderIdEqualTo(orderId).example()));

@@ -1,10 +1,12 @@
 package com.macro.mall.portal.domain;
 
 import com.macro.mall.model.YxxOrder;
+import com.macro.mall.model.YxxOrderItem;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * 生成订单时传入的参数
@@ -49,6 +51,12 @@ public class YxxOrderParam {
 
     @ApiModelProperty("性别：1男0女")
     private Integer sex;
+
+    /**
+     * 子订单信息
+     */
+    @ApiModelProperty("子订单信息")
+    private List<YxxOrderItem> itemList;
 
     public YxxOrder toOrder() {
         YxxOrder order = new YxxOrder();

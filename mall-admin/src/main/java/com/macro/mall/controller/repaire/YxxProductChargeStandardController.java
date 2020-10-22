@@ -7,6 +7,7 @@ import com.macro.mall.service.impl.PmsProductChargeStandardService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -27,13 +28,13 @@ public class YxxProductChargeStandardController {
 
     @ApiOperation("新增收费标准")
     @PostMapping("/create")
-    public CommonResult<YxxProductChargeStandard> create(YxxProductChargeStandard chargeStandard) {
+    public CommonResult<YxxProductChargeStandard> create(@RequestBody @Validated YxxProductChargeStandard chargeStandard) {
         return CommonResult.success(chargeStandardService.create(chargeStandard));
     }
 
     @ApiOperation("更新收费标准")
     @PostMapping("/update")
-    public CommonResult<YxxProductChargeStandard> update(YxxProductChargeStandard chargeStandard) {
+    public CommonResult<YxxProductChargeStandard> update(@RequestBody @Validated YxxProductChargeStandard chargeStandard) {
         return CommonResult.success(chargeStandardService.update(chargeStandard));
     }
 

@@ -57,7 +57,7 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
-                    <mainClass>com.macro.mall.portal.MallAppApplication</mainClass>
+                    <mainClass>com.macro.mall.app.MallAppApplication</mainClass>
                     <layout>ZIP</layout>
                     <includes>
                         <include>

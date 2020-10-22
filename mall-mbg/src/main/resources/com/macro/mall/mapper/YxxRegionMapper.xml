@@ -4,6 +4,8 @@
   <resultMap id="BaseResultMap" type="com.macro.mall.model.YxxRegion">
     <id column="region_id" jdbcType="BIGINT" property="regionId" />
     <result column="region_name" jdbcType="VARCHAR" property="regionName" />
+    <result column="province" jdbcType="VARCHAR" property="province" />
+    <result column="enable" jdbcType="INTEGER" property="enable" />
   </resultMap>
   <sql id="Example_Where_Clause">
     <where>
@@ -64,7 +66,7 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    region_id, region_name
+    region_id, region_name, province, `enable`
   </sql>
   <select id="selectByExample" parameterType="com.macro.mall.example.YxxRegionExample" resultMap="BaseResultMap">
     select
@@ -135,8 +137,10 @@
     </if>
   </delete>
   <insert id="insert" parameterType="com.macro.mall.model.YxxRegion">
-    insert into yxx_region (region_id, region_name)
-    values (#{regionId,jdbcType=BIGINT}, #{regionName,jdbcType=VARCHAR})
+    insert into yxx_region (region_id, region_name, province, 
+      `enable`)
+    values (#{regionId,jdbcType=BIGINT}, #{regionName,jdbcType=VARCHAR}, #{province,jdbcType=VARCHAR}, 
+      #{enable,jdbcType=INTEGER})
   </insert>
   <insert id="insertSelective" parameterType="map">
     insert into yxx_region
@@ -153,6 +157,12 @@
           </if>
           <if test="record.regionName != null">
             region_name,
+          </if>
+          <if test="record.province != null">
+            province,
+          </if>
+          <if test="record.enable != null">
+            `enable`,
           </if>
         </trim>
         <trim prefix="(" suffix=")" suffixOverrides="," />
@@ -172,6 +182,12 @@
           </if>
           <if test="record.regionName != null">
             #{record.regionName,jdbcType=VARCHAR},
+          </if>
+          <if test="record.province != null">
+            #{record.province,jdbcType=VARCHAR},
+          </if>
+          <if test="record.enable != null">
+            #{record.enable,jdbcType=INTEGER},
           </if>
         </trim>
       </otherwise>
@@ -200,6 +216,12 @@
           <if test="record.regionName != null">
             region_name = #{record.regionName,jdbcType=VARCHAR},
           </if>
+          <if test="record.province != null">
+            province = #{record.province,jdbcType=VARCHAR},
+          </if>
+          <if test="record.enable != null">
+            `enable` = #{record.enable,jdbcType=INTEGER},
+          </if>
         </trim>
       </otherwise>
     </choose>
@@ -210,7 +232,9 @@
   <update id="updateByExample" parameterType="map">
     update yxx_region
     set region_id = #{record.regionId,jdbcType=BIGINT},
-      region_name = #{record.regionName,jdbcType=VARCHAR}
+      region_name = #{record.regionName,jdbcType=VARCHAR},
+      province = #{record.province,jdbcType=VARCHAR},
+      `enable` = #{record.enable,jdbcType=INTEGER}
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
@@ -229,6 +253,12 @@
           <if test="record.regionName != null">
             region_name = #{record.regionName,jdbcType=VARCHAR},
           </if>
+          <if test="record.province != null">
+            province = #{record.province,jdbcType=VARCHAR},
+          </if>
+          <if test="record.enable != null">
+            `enable` = #{record.enable,jdbcType=INTEGER},
+          </if>
         </trim>
       </otherwise>
     </choose>
@@ -236,7 +266,9 @@
   </update>
   <update id="updateByPrimaryKey" parameterType="com.macro.mall.model.YxxRegion">
     update yxx_region
-    set region_name = #{regionName,jdbcType=VARCHAR}
+    set region_name = #{regionName,jdbcType=VARCHAR},
+      province = #{province,jdbcType=VARCHAR},
+      `enable` = #{enable,jdbcType=INTEGER}
     where region_id = #{regionId,jdbcType=BIGINT}
   </update>
   <select id="selectOneByExample" parameterType="com.macro.mall.example.YxxRegionExample" resultMap="BaseResultMap">
@@ -272,4 +304,39 @@
     </if>
     limit 1
   </select>
+  <insert id="batchInsert" parameterType="map">
+    insert into yxx_region
+    (region_id, region_name, province, `enable`)
+    values
+    <foreach collection="list" item="item" separator=",">
+      (#{item.regionId,jdbcType=BIGINT}, #{item.regionName,jdbcType=VARCHAR}, #{item.province,jdbcType=VARCHAR}, 
+        #{item.enable,jdbcType=INTEGER})
+    </foreach>
+  </insert>
+  <insert id="batchInsertSelective" parameterType="map">
+    insert into yxx_region (
+    <foreach collection="selective" item="column" separator=",">
+      ${column.escapedColumnName}
+    </foreach>
+    )
+    values
+    <foreach collection="list" item="item" separator=",">
+      (
+      <foreach collection="selective" item="column" separator=",">
+        <if test="'region_id'.toString() == column.value">
+          #{item.regionId,jdbcType=BIGINT}
+        </if>
+        <if test="'region_name'.toString() == column.value">
+          #{item.regionName,jdbcType=VARCHAR}
+        </if>
+        <if test="'province'.toString() == column.value">
+          #{item.province,jdbcType=VARCHAR}
+        </if>
+        <if test="'enable'.toString() == column.value">
+          #{item.enable,jdbcType=INTEGER}
+        </if>
+      </foreach>
+      )
+    </foreach>
+  </insert>
 </mapper>

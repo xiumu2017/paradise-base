@@ -2271,6 +2271,206 @@ public class YxxWorkerExample {
             return (Criteria) this;
         }
 
+        public Criteria andIdNoIsNull() {
+            addCriterion("id_no is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andIdNoIsNotNull() {
+            addCriterion("id_no is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andIdNoEqualTo(String value) {
+            addCriterion("id_no =", value, "idNo");
+            return (Criteria) this;
+        }
+
+        public Criteria andIdNoEqualToColumn(YxxWorker.Column column) {
+            addCriterion(new StringBuilder("id_no = ").append(column.getEscapedColumnName()).toString());
+            return (Criteria) this;
+        }
+
+        public Criteria andIdNoNotEqualTo(String value) {
+            addCriterion("id_no <>", value, "idNo");
+            return (Criteria) this;
+        }
+
+        public Criteria andIdNoNotEqualToColumn(YxxWorker.Column column) {
+            addCriterion(new StringBuilder("id_no <> ").append(column.getEscapedColumnName()).toString());
+            return (Criteria) this;
+        }
+
+        public Criteria andIdNoGreaterThan(String value) {
+            addCriterion("id_no >", value, "idNo");
+            return (Criteria) this;
+        }
+
+        public Criteria andIdNoGreaterThanColumn(YxxWorker.Column column) {
+            addCriterion(new StringBuilder("id_no > ").append(column.getEscapedColumnName()).toString());
+            return (Criteria) this;
+        }
+
+        public Criteria andIdNoGreaterThanOrEqualTo(String value) {
+            addCriterion("id_no >=", value, "idNo");
+            return (Criteria) this;
+        }
+
+        public Criteria andIdNoGreaterThanOrEqualToColumn(YxxWorker.Column column) {
+            addCriterion(new StringBuilder("id_no >= ").append(column.getEscapedColumnName()).toString());
+            return (Criteria) this;
+        }
+
+        public Criteria andIdNoLessThan(String value) {
+            addCriterion("id_no <", value, "idNo");
+            return (Criteria) this;
+        }
+
+        public Criteria andIdNoLessThanColumn(YxxWorker.Column column) {
+            addCriterion(new StringBuilder("id_no < ").append(column.getEscapedColumnName()).toString());
+            return (Criteria) this;
+        }
+
+        public Criteria andIdNoLessThanOrEqualTo(String value) {
+            addCriterion("id_no <=", value, "idNo");
+            return (Criteria) this;
+        }
+
+        public Criteria andIdNoLessThanOrEqualToColumn(YxxWorker.Column column) {
+            addCriterion(new StringBuilder("id_no <= ").append(column.getEscapedColumnName()).toString());
+            return (Criteria) this;
+        }
+
+        public Criteria andIdNoLike(String value) {
+            addCriterion("id_no like", value, "idNo");
+            return (Criteria) this;
+        }
+
+        public Criteria andIdNoNotLike(String value) {
+            addCriterion("id_no not like", value, "idNo");
+            return (Criteria) this;
+        }
+
+        public Criteria andIdNoIn(List<String> values) {
+            addCriterion("id_no in", values, "idNo");
+            return (Criteria) this;
+        }
+
+        public Criteria andIdNoNotIn(List<String> values) {
+            addCriterion("id_no not in", values, "idNo");
+            return (Criteria) this;
+        }
+
+        public Criteria andIdNoBetween(String value1, String value2) {
+            addCriterion("id_no between", value1, value2, "idNo");
+            return (Criteria) this;
+        }
+
+        public Criteria andIdNoNotBetween(String value1, String value2) {
+            addCriterion("id_no not between", value1, value2, "idNo");
+            return (Criteria) this;
+        }
+
+        public Criteria andIdPhotoIsNull() {
+            addCriterion("id_photo is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andIdPhotoIsNotNull() {
+            addCriterion("id_photo is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andIdPhotoEqualTo(String value) {
+            addCriterion("id_photo =", value, "idPhoto");
+            return (Criteria) this;
+        }
+
+        public Criteria andIdPhotoEqualToColumn(YxxWorker.Column column) {
+            addCriterion(new StringBuilder("id_photo = ").append(column.getEscapedColumnName()).toString());
+            return (Criteria) this;
+        }
+
+        public Criteria andIdPhotoNotEqualTo(String value) {
+            addCriterion("id_photo <>", value, "idPhoto");
+            return (Criteria) this;
+        }
+
+        public Criteria andIdPhotoNotEqualToColumn(YxxWorker.Column column) {
+            addCriterion(new StringBuilder("id_photo <> ").append(column.getEscapedColumnName()).toString());
+            return (Criteria) this;
+        }
+
+        public Criteria andIdPhotoGreaterThan(String value) {
+            addCriterion("id_photo >", value, "idPhoto");
+            return (Criteria) this;
+        }
+
+        public Criteria andIdPhotoGreaterThanColumn(YxxWorker.Column column) {
+            addCriterion(new StringBuilder("id_photo > ").append(column.getEscapedColumnName()).toString());
+            return (Criteria) this;
+        }
+
+        public Criteria andIdPhotoGreaterThanOrEqualTo(String value) {
+            addCriterion("id_photo >=", value, "idPhoto");
+            return (Criteria) this;
+        }
+
+        public Criteria andIdPhotoGreaterThanOrEqualToColumn(YxxWorker.Column column) {
+            addCriterion(new StringBuilder("id_photo >= ").append(column.getEscapedColumnName()).toString());
+            return (Criteria) this;
+        }
+
+        public Criteria andIdPhotoLessThan(String value) {
+            addCriterion("id_photo <", value, "idPhoto");
+            return (Criteria) this;
+        }
+
+        public Criteria andIdPhotoLessThanColumn(YxxWorker.Column column) {
+            addCriterion(new StringBuilder("id_photo < ").append(column.getEscapedColumnName()).toString());
+            return (Criteria) this;
+        }
+
+        public Criteria andIdPhotoLessThanOrEqualTo(String value) {
+            addCriterion("id_photo <=", value, "idPhoto");
+            return (Criteria) this;
+        }
+
+        public Criteria andIdPhotoLessThanOrEqualToColumn(YxxWorker.Column column) {
+            addCriterion(new StringBuilder("id_photo <= ").append(column.getEscapedColumnName()).toString());
+            return (Criteria) this;
+        }
+
+        public Criteria andIdPhotoLike(String value) {
+            addCriterion("id_photo like", value, "idPhoto");
+            return (Criteria) this;
+        }
+
+        public Criteria andIdPhotoNotLike(String value) {
+            addCriterion("id_photo not like", value, "idPhoto");
+            return (Criteria) this;
+        }
+
+        public Criteria andIdPhotoIn(List<String> values) {
+            addCriterion("id_photo in", values, "idPhoto");
+            return (Criteria) this;
+        }
+
+        public Criteria andIdPhotoNotIn(List<String> values) {
+            addCriterion("id_photo not in", values, "idPhoto");
+            return (Criteria) this;
+        }
+
+        public Criteria andIdPhotoBetween(String value1, String value2) {
+            addCriterion("id_photo between", value1, value2, "idPhoto");
+            return (Criteria) this;
+        }
+
+        public Criteria andIdPhotoNotBetween(String value1, String value2) {
+            addCriterion("id_photo not between", value1, value2, "idPhoto");
+            return (Criteria) this;
+        }
+
         public Criteria andCreateTimeIsNull() {
             addCriterion("create_time is null");
             return (Criteria) this;
@@ -2358,6 +2558,96 @@ public class YxxWorkerExample {
 
         public Criteria andCreateTimeNotBetween(Date value1, Date value2) {
             addCriterion("create_time not between", value1, value2, "createTime");
+            return (Criteria) this;
+        }
+
+        public Criteria andUpdateTimeIsNull() {
+            addCriterion("update_time is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andUpdateTimeIsNotNull() {
+            addCriterion("update_time is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andUpdateTimeEqualTo(Date value) {
+            addCriterion("update_time =", value, "updateTime");
+            return (Criteria) this;
+        }
+
+        public Criteria andUpdateTimeEqualToColumn(YxxWorker.Column column) {
+            addCriterion(new StringBuilder("update_time = ").append(column.getEscapedColumnName()).toString());
+            return (Criteria) this;
+        }
+
+        public Criteria andUpdateTimeNotEqualTo(Date value) {
+            addCriterion("update_time <>", value, "updateTime");
+            return (Criteria) this;
+        }
+
+        public Criteria andUpdateTimeNotEqualToColumn(YxxWorker.Column column) {
+            addCriterion(new StringBuilder("update_time <> ").append(column.getEscapedColumnName()).toString());
+            return (Criteria) this;
+        }
+
+        public Criteria andUpdateTimeGreaterThan(Date value) {
+            addCriterion("update_time >", value, "updateTime");
+            return (Criteria) this;
+        }
+
+        public Criteria andUpdateTimeGreaterThanColumn(YxxWorker.Column column) {
+            addCriterion(new StringBuilder("update_time > ").append(column.getEscapedColumnName()).toString());
+            return (Criteria) this;
+        }
+
+        public Criteria andUpdateTimeGreaterThanOrEqualTo(Date value) {
+            addCriterion("update_time >=", value, "updateTime");
+            return (Criteria) this;
+        }
+
+        public Criteria andUpdateTimeGreaterThanOrEqualToColumn(YxxWorker.Column column) {
+            addCriterion(new StringBuilder("update_time >= ").append(column.getEscapedColumnName()).toString());
+            return (Criteria) this;
+        }
+
+        public Criteria andUpdateTimeLessThan(Date value) {
+            addCriterion("update_time <", value, "updateTime");
+            return (Criteria) this;
+        }
+
+        public Criteria andUpdateTimeLessThanColumn(YxxWorker.Column column) {
+            addCriterion(new StringBuilder("update_time < ").append(column.getEscapedColumnName()).toString());
+            return (Criteria) this;
+        }
+
+        public Criteria andUpdateTimeLessThanOrEqualTo(Date value) {
+            addCriterion("update_time <=", value, "updateTime");
+            return (Criteria) this;
+        }
+
+        public Criteria andUpdateTimeLessThanOrEqualToColumn(YxxWorker.Column column) {
+            addCriterion(new StringBuilder("update_time <= ").append(column.getEscapedColumnName()).toString());
+            return (Criteria) this;
+        }
+
+        public Criteria andUpdateTimeIn(List<Date> values) {
+            addCriterion("update_time in", values, "updateTime");
+            return (Criteria) this;
+        }
+
+        public Criteria andUpdateTimeNotIn(List<Date> values) {
+            addCriterion("update_time not in", values, "updateTime");
+            return (Criteria) this;
+        }
+
+        public Criteria andUpdateTimeBetween(Date value1, Date value2) {
+            addCriterion("update_time between", value1, value2, "updateTime");
+            return (Criteria) this;
+        }
+
+        public Criteria andUpdateTimeNotBetween(Date value1, Date value2) {
+            addCriterion("update_time not between", value1, value2, "updateTime");
             return (Criteria) this;
         }
     }

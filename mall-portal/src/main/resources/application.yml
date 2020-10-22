@@ -64,3 +64,9 @@ wx:
         token: #微信小程序消息服务器配置的token
         aesKey: #微信小程序消息服务器配置的EncodingAESKey
         msgDataFormat: JSON
+minio:
+  endpoint: http://192.168.199.37:8008 #MinIO服务所在地址
+  bucketName: yxx-oss #存储桶名称
+  accessKey: L18S3MC4V2B6W8ZLLP9Y #访问的key
+  secretKey: Y+nkVyUgRG9RiiYOJARe7aBS0ighgfZnxbaaHGJN #访问的秘钥
+  openUrl: https://yxx.gaoshan.co:8003

@@ -88,8 +88,17 @@ public class YxxWorker implements Serializable {
     @ApiModelProperty(value="邀请码")
     private String invitationCode;
 
+    @ApiModelProperty(value="身份证号码")
+    private String idNo;
+
+    @ApiModelProperty(value="身份证照片")
+    private String idPhoto;
+
     @ApiModelProperty(value="注册时间")
     private Date createTime;
+
+    @ApiModelProperty(value="更新时间")
+    private Date updateTime;
 
     private static final long serialVersionUID = 1L;
 
@@ -116,7 +125,10 @@ public class YxxWorker implements Serializable {
         wxUnionId("wx_union_id", "wxUnionId", "VARCHAR", false),
         parentId("parent_id", "parentId", "BIGINT", false),
         invitationCode("invitation_code", "invitationCode", "VARCHAR", false),
-        createTime("create_time", "createTime", "TIMESTAMP", false);
+        idNo("id_no", "idNo", "VARCHAR", false),
+        idPhoto("id_photo", "idPhoto", "VARCHAR", false),
+        createTime("create_time", "createTime", "TIMESTAMP", false),
+        updateTime("update_time", "updateTime", "TIMESTAMP", false);
 
         private static final String BEGINNING_DELIMITER = "`";
 

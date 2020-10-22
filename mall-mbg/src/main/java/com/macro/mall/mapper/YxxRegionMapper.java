@@ -2,9 +2,8 @@ package com.macro.mall.mapper;
 
 import com.macro.mall.example.YxxRegionExample;
 import com.macro.mall.model.YxxRegion;
-import org.apache.ibatis.annotations.Param;
-
 import java.util.List;
+import org.apache.ibatis.annotations.Param;
 
 public interface YxxRegionMapper {
     long countByExample(YxxRegionExample example);
@@ -36,4 +35,8 @@ public interface YxxRegionMapper {
     int updateByPrimaryKeySelective(@Param("record") YxxRegion record, @Param("selective") YxxRegion.Column ... selective);
 
     int updateByPrimaryKey(YxxRegion record);
+
+    int batchInsert(@Param("list") List<YxxRegion> list);
+
+    int batchInsertSelective(@Param("list") List<YxxRegion> list, @Param("selective") YxxRegion.Column ... selective);
 }
