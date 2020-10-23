@@ -1,6 +1,5 @@
 package com.macro.mall.domain;
 
-import com.macro.mall.model.YxxOrder;
 import com.macro.mall.model.YxxOrderItem;
 import com.macro.mall.model.YxxOrderStatusRecord;
 import com.macro.mall.model.YxxRepairRecord;
@@ -20,7 +19,7 @@ public class YxxOrderDetail {
      * 订单信息
      */
     @ApiModelProperty("订单信息")
-    private YxxOrder yxxOrder;
+    private YxxOrderInfo yxxOrder;
     /**
      * 子订单信息
      */

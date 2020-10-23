@@ -31,6 +31,7 @@
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
     <result column="zone_id" jdbcType="BIGINT" property="zoneId" />
     <result column="region_id" jdbcType="BIGINT" property="regionId" />
+    <result column="order_type" jdbcType="INTEGER" property="orderType" />
   </resultMap>
   <sql id="Example_Where_Clause">
     <where>
@@ -94,7 +95,8 @@
     id, order_sn, member_id, tel_no, member_name, member_sex, product_id, sku_id, order_status, 
     worker_id, `location`, address, detail_address, visit_time_start, visit_time_end, 
     remark, photos, coupon_id, is_bargain, is_transfer, cancel_reason, pause_reason, 
-    offer_price, discount_price, pay_price, create_time, update_time, zone_id, region_id
+    offer_price, discount_price, pay_price, create_time, update_time, zone_id, region_id, 
+    order_type
   </sql>
   <select id="selectByExample" parameterType="com.macro.mall.example.YxxOrderExample" resultMap="BaseResultMap">
     select
@@ -177,7 +179,7 @@
       is_transfer, cancel_reason, pause_reason, 
       offer_price, discount_price, pay_price, 
       create_time, update_time, zone_id, 
-      region_id)
+      region_id, order_type)
     values (#{orderSn,jdbcType=VARCHAR}, #{memberId,jdbcType=BIGINT}, #{telNo,jdbcType=VARCHAR}, 
       #{memberName,jdbcType=VARCHAR}, #{memberSex,jdbcType=INTEGER}, #{productId,jdbcType=BIGINT}, 
       #{skuId,jdbcType=BIGINT}, #{orderStatus,jdbcType=INTEGER}, #{workerId,jdbcType=BIGINT}, 
@@ -187,7 +189,7 @@
       #{isTransfer,jdbcType=INTEGER}, #{cancelReason,jdbcType=VARCHAR}, #{pauseReason,jdbcType=VARCHAR}, 
       #{offerPrice,jdbcType=DECIMAL}, #{discountPrice,jdbcType=DECIMAL}, #{payPrice,jdbcType=DECIMAL}, 
       #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, #{zoneId,jdbcType=BIGINT}, 
-      #{regionId,jdbcType=BIGINT})
+      #{regionId,jdbcType=BIGINT}, #{orderType,jdbcType=INTEGER})
   </insert>
   <insert id="insertSelective" parameterType="map">
     <selectKey keyProperty="record.id" order="AFTER" resultType="java.lang.Long">
@@ -286,6 +288,9 @@
           <if test="record.regionId != null">
             region_id,
           </if>
+          <if test="record.orderType != null">
+            order_type,
+          </if>
         </trim>
         <trim prefix="(" suffix=")" suffixOverrides="," />
       </otherwise>
@@ -382,6 +387,9 @@
           </if>
           <if test="record.regionId != null">
             #{record.regionId,jdbcType=BIGINT},
+          </if>
+          <if test="record.orderType != null">
+            #{record.orderType,jdbcType=INTEGER},
           </if>
         </trim>
       </otherwise>
@@ -491,6 +499,9 @@
           <if test="record.regionId != null">
             region_id = #{record.regionId,jdbcType=BIGINT},
           </if>
+          <if test="record.orderType != null">
+            order_type = #{record.orderType,jdbcType=INTEGER},
+          </if>
         </trim>
       </otherwise>
     </choose>
@@ -528,7 +539,8 @@
       create_time = #{record.createTime,jdbcType=TIMESTAMP},
       update_time = #{record.updateTime,jdbcType=TIMESTAMP},
       zone_id = #{record.zoneId,jdbcType=BIGINT},
-      region_id = #{record.regionId,jdbcType=BIGINT}
+      region_id = #{record.regionId,jdbcType=BIGINT},
+      order_type = #{record.orderType,jdbcType=INTEGER}
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
@@ -628,6 +640,9 @@
           <if test="record.regionId != null">
             region_id = #{record.regionId,jdbcType=BIGINT},
           </if>
+          <if test="record.orderType != null">
+            order_type = #{record.orderType,jdbcType=INTEGER},
+          </if>
         </trim>
       </otherwise>
     </choose>
@@ -662,7 +677,8 @@
       create_time = #{createTime,jdbcType=TIMESTAMP},
       update_time = #{updateTime,jdbcType=TIMESTAMP},
       zone_id = #{zoneId,jdbcType=BIGINT},
-      region_id = #{regionId,jdbcType=BIGINT}
+      region_id = #{regionId,jdbcType=BIGINT},
+      order_type = #{orderType,jdbcType=INTEGER}
     where id = #{id,jdbcType=BIGINT}
   </update>
   <select id="selectOneByExample" parameterType="com.macro.mall.example.YxxOrderExample" resultMap="BaseResultMap">
@@ -698,4 +714,127 @@
     </if>
     limit 1
   </select>
+  <insert id="batchInsert" keyColumn="id" keyProperty="id" parameterType="map" useGeneratedKeys="true">
+    insert into yxx_order
+    (order_sn, member_id, tel_no, member_name, member_sex, product_id, sku_id, order_status, 
+      worker_id, `location`, address, detail_address, visit_time_start, visit_time_end, 
+      remark, photos, coupon_id, is_bargain, is_transfer, cancel_reason, pause_reason, 
+      offer_price, discount_price, pay_price, create_time, update_time, zone_id, region_id, 
+      order_type)
+    values
+    <foreach collection="list" item="item" separator=",">
+      (#{item.orderSn,jdbcType=VARCHAR}, #{item.memberId,jdbcType=BIGINT}, #{item.telNo,jdbcType=VARCHAR}, 
+        #{item.memberName,jdbcType=VARCHAR}, #{item.memberSex,jdbcType=INTEGER}, #{item.productId,jdbcType=BIGINT}, 
+        #{item.skuId,jdbcType=BIGINT}, #{item.orderStatus,jdbcType=INTEGER}, #{item.workerId,jdbcType=BIGINT}, 
+        #{item.location,jdbcType=VARCHAR}, #{item.address,jdbcType=VARCHAR}, #{item.detailAddress,jdbcType=VARCHAR}, 
+        #{item.visitTimeStart,jdbcType=TIMESTAMP}, #{item.visitTimeEnd,jdbcType=TIMESTAMP}, 
+        #{item.remark,jdbcType=VARCHAR}, #{item.photos,jdbcType=VARCHAR}, #{item.couponId,jdbcType=BIGINT}, 
+        #{item.isBargain,jdbcType=INTEGER}, #{item.isTransfer,jdbcType=INTEGER}, #{item.cancelReason,jdbcType=VARCHAR}, 
+        #{item.pauseReason,jdbcType=VARCHAR}, #{item.offerPrice,jdbcType=DECIMAL}, #{item.discountPrice,jdbcType=DECIMAL}, 
+        #{item.payPrice,jdbcType=DECIMAL}, #{item.createTime,jdbcType=TIMESTAMP}, #{item.updateTime,jdbcType=TIMESTAMP}, 
+        #{item.zoneId,jdbcType=BIGINT}, #{item.regionId,jdbcType=BIGINT}, #{item.orderType,jdbcType=INTEGER}
+        )
+    </foreach>
+  </insert>
+  <insert id="batchInsertSelective" keyColumn="id" keyProperty="list.id" parameterType="map" useGeneratedKeys="true">
+    insert into yxx_order (
+    <foreach collection="selective" item="column" separator=",">
+      ${column.escapedColumnName}
+    </foreach>
+    )
+    values
+    <foreach collection="list" item="item" separator=",">
+      (
+      <foreach collection="selective" item="column" separator=",">
+        <if test="'order_sn'.toString() == column.value">
+          #{item.orderSn,jdbcType=VARCHAR}
+        </if>
+        <if test="'member_id'.toString() == column.value">
+          #{item.memberId,jdbcType=BIGINT}
+        </if>
+        <if test="'tel_no'.toString() == column.value">
+          #{item.telNo,jdbcType=VARCHAR}
+        </if>
+        <if test="'member_name'.toString() == column.value">
+          #{item.memberName,jdbcType=VARCHAR}
+        </if>
+        <if test="'member_sex'.toString() == column.value">
+          #{item.memberSex,jdbcType=INTEGER}
+        </if>
+        <if test="'product_id'.toString() == column.value">
+          #{item.productId,jdbcType=BIGINT}
+        </if>
+        <if test="'sku_id'.toString() == column.value">
+          #{item.skuId,jdbcType=BIGINT}
+        </if>
+        <if test="'order_status'.toString() == column.value">
+          #{item.orderStatus,jdbcType=INTEGER}
+        </if>
+        <if test="'worker_id'.toString() == column.value">
+          #{item.workerId,jdbcType=BIGINT}
+        </if>
+        <if test="'location'.toString() == column.value">
+          #{item.location,jdbcType=VARCHAR}
+        </if>
+        <if test="'address'.toString() == column.value">
+          #{item.address,jdbcType=VARCHAR}
+        </if>
+        <if test="'detail_address'.toString() == column.value">
+          #{item.detailAddress,jdbcType=VARCHAR}
+        </if>
+        <if test="'visit_time_start'.toString() == column.value">
+          #{item.visitTimeStart,jdbcType=TIMESTAMP}
+        </if>
+        <if test="'visit_time_end'.toString() == column.value">
+          #{item.visitTimeEnd,jdbcType=TIMESTAMP}
+        </if>
+        <if test="'remark'.toString() == column.value">
+          #{item.remark,jdbcType=VARCHAR}
+        </if>
+        <if test="'photos'.toString() == column.value">
+          #{item.photos,jdbcType=VARCHAR}
+        </if>
+        <if test="'coupon_id'.toString() == column.value">
+          #{item.couponId,jdbcType=BIGINT}
+        </if>
+        <if test="'is_bargain'.toString() == column.value">
+          #{item.isBargain,jdbcType=INTEGER}
+        </if>
+        <if test="'is_transfer'.toString() == column.value">
+          #{item.isTransfer,jdbcType=INTEGER}
+        </if>
+        <if test="'cancel_reason'.toString() == column.value">
+          #{item.cancelReason,jdbcType=VARCHAR}
+        </if>
+        <if test="'pause_reason'.toString() == column.value">
+          #{item.pauseReason,jdbcType=VARCHAR}
+        </if>
+        <if test="'offer_price'.toString() == column.value">
+          #{item.offerPrice,jdbcType=DECIMAL}
+        </if>
+        <if test="'discount_price'.toString() == column.value">
+          #{item.discountPrice,jdbcType=DECIMAL}
+        </if>
+        <if test="'pay_price'.toString() == column.value">
+          #{item.payPrice,jdbcType=DECIMAL}
+        </if>
+        <if test="'create_time'.toString() == column.value">
+          #{item.createTime,jdbcType=TIMESTAMP}
+        </if>
+        <if test="'update_time'.toString() == column.value">
+          #{item.updateTime,jdbcType=TIMESTAMP}
+        </if>
+        <if test="'zone_id'.toString() == column.value">
+          #{item.zoneId,jdbcType=BIGINT}
+        </if>
+        <if test="'region_id'.toString() == column.value">
+          #{item.regionId,jdbcType=BIGINT}
+        </if>
+        <if test="'order_type'.toString() == column.value">
+          #{item.orderType,jdbcType=INTEGER}
+        </if>
+      </foreach>
+      )
+    </foreach>
+  </insert>
 </mapper>

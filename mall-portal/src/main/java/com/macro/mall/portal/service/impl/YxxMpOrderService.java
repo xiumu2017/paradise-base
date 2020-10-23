@@ -4,14 +4,13 @@ import com.github.pagehelper.PageHelper;
 import com.macro.mall.common.api.CommonPage;
 import com.macro.mall.common.service.RedisService;
 import com.macro.mall.common.service.impl.DistributorService;
-import com.macro.mall.domain.YxxOrderDetail;
+import com.macro.mall.dao.YxxOrderCommonDao;
+import com.macro.mall.domain.YxxOrderInfo;
 import com.macro.mall.enums.OrderStatus;
 import com.macro.mall.example.YxxOrderExample;
-import com.macro.mall.example.YxxOrderItemExample;
-import com.macro.mall.example.YxxOrderStatusRecordExample;
-import com.macro.mall.example.YxxRepairRecordExample;
 import com.macro.mall.mapper.*;
 import com.macro.mall.model.*;
+import com.macro.mall.portal.domain.YxxOrderComment;
 import com.macro.mall.portal.domain.YxxOrderParam;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -38,30 +37,41 @@ public class YxxMpOrderService {
 
     private final YxxOrderMapper yxxOrderMapper;
     private final YxxMemberService memberService;
-    private final YxxMemberMapper memberMapper;
-    private final YxxRepairRecordMapper repairRecordMapper;
     private final YxxOrderStatusRecordMapper orderStatusRecordMapper;
     private final DistributorService distributorService;
     private final YxxOrderItemMapper orderItemMapper;
     private final PmsProductMapper productMapper;
     private final PmsProductSkuMapper productSkuMapper;
+    private final YxxMemberAddressMapper memberAddressMapper;
+    private final YxxOrderCommonDao orderCommonDao;
 
     public YxxMpOrderService(RedisService redisService, YxxOrderMapper yxxOrderMapper,
                              YxxMemberService memberService, YxxOrderItemMapper orderItemMapper,
-                             YxxMemberMapper memberMapper, YxxRepairRecordMapper repairRecordMapper,
                              YxxOrderStatusRecordMapper orderStatusRecordMapper, DistributorService distributorService,
-                             PmsProductMapper productMapper, PmsProductSkuMapper productSkuMapper) {
+                             PmsProductMapper productMapper, PmsProductSkuMapper productSkuMapper,
+                             YxxMemberAddressMapper memberAddressMapper, YxxOrderCommonDao orderCommonDao) {
         this.redisService = redisService;
         this.yxxOrderMapper = yxxOrderMapper;
         this.memberService = memberService;
-        this.memberMapper = memberMapper;
-        this.repairRecordMapper = repairRecordMapper;
         this.orderStatusRecordMapper = orderStatusRecordMapper;
         this.distributorService = distributorService;
         this.orderItemMapper = orderItemMapper;
         this.productMapper = productMapper;
         this.productSkuMapper = productSkuMapper;
+        this.memberAddressMapper = memberAddressMapper;
+        this.orderCommonDao = orderCommonDao;
     }
+
+//            long count = yxxOrderMapper.countByExample(new YxxOrderExample().createCriteria()
+//                .andMemberIdEqualTo(member.getId()).example());
+//        if (count < 1L) {
+//            // 第一次 下单 -> 保存更新用户信息 ，地址信息
+////            member.setPhone(orderParam.getTelephone());
+////            member.setAddress(orderParam.getAddress());
+////            member.setSex(orderParam.getSex());
+//            // 部分更新
+//            memberMapper.updateByPrimaryKeySelective(member, YxxMember.Column.phone, YxxMember.Column.address, YxxMember.Column.sex);
+//        }
 
     /**
      * 小程序下单
@@ -72,19 +82,13 @@ public class YxxMpOrderService {
     public YxxOrder generateOrder(YxxOrderParam orderParam) {
         boolean hasItem = orderParam.getItemList() != null && !orderParam.getItemList().isEmpty();
         YxxMember member = memberService.getCurrentMember();
-        long count = yxxOrderMapper.countByExample(new YxxOrderExample().createCriteria()
-                .andMemberIdEqualTo(member.getId()).example());
-        if (count < 1L) {
-            // 第一次 下单 -> 保存更新用户信息 ，地址信息
-            member.setPhone(orderParam.getTelephone());
-            member.setAddress(orderParam.getAddress());
-            member.setSex(orderParam.getSex());
-            // 部分更新
-            memberMapper.updateByPrimaryKeySelective(member, YxxMember.Column.phone, YxxMember.Column.address, YxxMember.Column.sex);
-        }
+        YxxMemberAddress address = memberAddressMapper.selectByPrimaryKey(orderParam.getAddressId());
         PmsProduct product = productMapper.selectByPrimaryKey(orderParam.getProductId());
         // 保存订单信息
         YxxOrder order = orderParam.toOrder();
+        order.setAddress(address.getDetailAddress());
+        order.setMemberName(address.getName());
+        order.setTelNo(address.getPhoneNumber());
         order.setIsBargain(product.getIsBargain());
         order.setOrderSn(generateOrderSn(order));
         order.setMemberId(member.getId());
@@ -110,7 +114,7 @@ public class YxxMpOrderService {
             if (hasItem) {
                 BigDecimal price = BigDecimal.ZERO;
                 for (YxxOrderItem yxxOrderItem : orderParam.getItemList()) {
-                    PmsProductSku sku = productSkuMapper.selectByPrimaryKey(orderParam.getSkuId());
+                    PmsProductSku sku = productSkuMapper.selectByPrimaryKey(yxxOrderItem.getSkuId());
                     price = price.add(sku.getPrice().multiply(new BigDecimal(yxxOrderItem.getAmount())));
                 }
                 order.setOfferPrice(price);
@@ -158,21 +162,6 @@ public class YxxMpOrderService {
     public int cancelOrder(Long orderId) {
         distributorService.removeFromQueue(orderId);
         return updateOrderStatus(orderId, FREE_CANCEL);
-    }
-
-    public YxxOrderDetail detail(Long orderId) {
-        YxxOrderDetail detail = new YxxOrderDetail();
-        // 订单信息
-        detail.setYxxOrder(yxxOrderMapper.selectByPrimaryKey(orderId));
-        // 子订单信息
-        detail.setItemList(orderItemMapper.selectByExample(new YxxOrderItemExample().createCriteria().andOrderIdEqualTo(orderId).example()));
-        // 维修工单信息
-        detail.setRepairRecord(repairRecordMapper.selectOneByExample(new YxxRepairRecordExample().createCriteria()
-                .andOrderIdEqualTo(orderId).example()));
-        // 订单状态变更记录
-        detail.setOrderStatusRecordList(orderStatusRecordMapper.selectByExample(new YxxOrderStatusRecordExample()
-                .createCriteria().andOrderIdEqualTo(orderId).example().orderBy(YxxOrderStatusRecord.Column.createTime.desc())));
-        return detail;
     }
 
     public YxxOrder yxxOrder(Long orderId) {
@@ -225,7 +214,17 @@ public class YxxMpOrderService {
         return CommonPage.restPage(orderList);
     }
 
+    public CommonPage<YxxOrderInfo> pageQueryInfo(Integer status, Integer pageNum, Integer pageSize) {
+        YxxMember currentMember = memberService.getCurrentMember();
+        PageHelper.startPage(pageNum, pageSize);
+        List<YxxOrderInfo> orderInfoList = orderCommonDao.queryList(currentMember.getId(), getOrderStatusArray(status));
+        return CommonPage.restPage(orderInfoList);
+    }
+
     private Integer[] getOrderStatusArray(Integer status) {
+        if (status == null) {
+            return new Integer[0];
+        }
         // 待确认
         if (status == 1) {
             return new Integer[]{CREATED.val(), DISTRIBUTING.val(), DISTRIBUTED.val(), RECEIVED.val()};
@@ -239,6 +238,25 @@ public class YxxMpOrderService {
         if (status == 3) {
             return new Integer[]{PAYED.val()};
         }
+        if (status == 4) {
+            return new Integer[]{FREE_CANCEL.val(), ARRIVED_CANCEL.val(), CS_CANCEL.val(), COMPLETED.val()};
+        }
         return new Integer[0];
+    }
+
+    // TODO
+    public int commentOrder(Long orderId, YxxOrderComment orderComment) {
+        YxxOrderInfo yxxOrderInfo = orderCommonDao.queryInfoById(orderId);
+        YxxProductComment productComment = YxxProductComment.builder()
+                .productId(yxxOrderInfo.getProductId())
+                .memberId(yxxOrderInfo.getMemberId())
+                .orderId(orderId)
+                .skuId(yxxOrderInfo.getSkuId())
+                .memberName(yxxOrderInfo.getMemberName())
+
+                .build();
+
+
+        return 0;
     }
 }

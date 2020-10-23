@@ -107,7 +107,7 @@
       distinct
     </if>
     <include refid="Base_Column_List" />
-    from pms_comment
+    from yxx_product_comment
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
@@ -124,11 +124,11 @@
     where id = #{id,jdbcType=BIGINT}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
-    delete from pms_comment
+    delete from yxx_product_comment
     where id = #{id,jdbcType=BIGINT}
   </delete>
   <delete id="deleteByExample" parameterType="com.macro.mall.model.PmsCommentExample">
-    delete from pms_comment
+    delete from yxx_product_comment
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
@@ -137,11 +137,11 @@
     <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
       SELECT LAST_INSERT_ID()
     </selectKey>
-    insert into pms_comment (product_id, member_nick_name, product_name, 
+    insert into yxx_product_comment (product_id, member_name, product_name,
       star, member_ip, create_time, 
-      show_status, product_attribute, collect_couont, 
+      show_status, sku_id, collect_count,
       read_count, pics, member_icon, 
-      replay_count, content)
+      is_replay, content)
     values (#{productId,jdbcType=BIGINT}, #{memberNickName,jdbcType=VARCHAR}, #{productName,jdbcType=VARCHAR}, 
       #{star,jdbcType=INTEGER}, #{memberIp,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, 
       #{showStatus,jdbcType=INTEGER}, #{productAttribute,jdbcType=VARCHAR}, #{collectCouont,jdbcType=INTEGER}, 
@@ -152,7 +152,7 @@
     <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
       SELECT LAST_INSERT_ID()
     </selectKey>
-    insert into pms_comment
+    insert into yxx_product_comment
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="productId != null">
         product_id,
@@ -243,13 +243,13 @@
     </trim>
   </insert>
   <select id="countByExample" parameterType="com.macro.mall.model.PmsCommentExample" resultType="java.lang.Long">
-    select count(*) from pms_comment
+    select count(*) from yxx_product_comment
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </select>
   <update id="updateByExampleSelective" parameterType="map">
-    update pms_comment
+    update yxx_product_comment
     <set>
       <if test="record.id != null">
         id = #{record.id,jdbcType=BIGINT},
@@ -302,48 +302,48 @@
     </if>
   </update>
   <update id="updateByExampleWithBLOBs" parameterType="map">
-    update pms_comment
+    update yxx_product_comment
     set id = #{record.id,jdbcType=BIGINT},
       product_id = #{record.productId,jdbcType=BIGINT},
-      member_nick_name = #{record.memberNickName,jdbcType=VARCHAR},
+      member_name = #{record.memberNickName,jdbcType=VARCHAR},
       product_name = #{record.productName,jdbcType=VARCHAR},
       star = #{record.star,jdbcType=INTEGER},
       member_ip = #{record.memberIp,jdbcType=VARCHAR},
       create_time = #{record.createTime,jdbcType=TIMESTAMP},
       show_status = #{record.showStatus,jdbcType=INTEGER},
-      product_attribute = #{record.productAttribute,jdbcType=VARCHAR},
-      collect_couont = #{record.collectCouont,jdbcType=INTEGER},
+      sku_id = #{record.productAttribute,jdbcType=VARCHAR},
+      collect_count = #{record.collectCouont,jdbcType=INTEGER},
       read_count = #{record.readCount,jdbcType=INTEGER},
       pics = #{record.pics,jdbcType=VARCHAR},
       member_icon = #{record.memberIcon,jdbcType=VARCHAR},
-      replay_count = #{record.replayCount,jdbcType=INTEGER},
+      is_replay = #{record.replayCount,jdbcType=INTEGER},
       content = #{record.content,jdbcType=LONGVARCHAR}
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
   </update>
   <update id="updateByExample" parameterType="map">
-    update pms_comment
+    update yxx_product_comment
     set id = #{record.id,jdbcType=BIGINT},
       product_id = #{record.productId,jdbcType=BIGINT},
-      member_nick_name = #{record.memberNickName,jdbcType=VARCHAR},
+      member_name = #{record.memberNickName,jdbcType=VARCHAR},
       product_name = #{record.productName,jdbcType=VARCHAR},
       star = #{record.star,jdbcType=INTEGER},
       member_ip = #{record.memberIp,jdbcType=VARCHAR},
       create_time = #{record.createTime,jdbcType=TIMESTAMP},
       show_status = #{record.showStatus,jdbcType=INTEGER},
-      product_attribute = #{record.productAttribute,jdbcType=VARCHAR},
-      collect_couont = #{record.collectCouont,jdbcType=INTEGER},
+      sku_id = #{record.productAttribute,jdbcType=VARCHAR},
+      collect_count = #{record.collectCouont,jdbcType=INTEGER},
       read_count = #{record.readCount,jdbcType=INTEGER},
       pics = #{record.pics,jdbcType=VARCHAR},
       member_icon = #{record.memberIcon,jdbcType=VARCHAR},
-      replay_count = #{record.replayCount,jdbcType=INTEGER}
+      is_replay = #{record.replayCount,jdbcType=INTEGER}
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
   </update>
   <update id="updateByPrimaryKeySelective" parameterType="com.macro.mall.model.PmsComment">
-    update pms_comment
+    update yxx_product_comment
     <set>
       <if test="productId != null">
         product_id = #{productId,jdbcType=BIGINT},
@@ -391,38 +391,38 @@
     where id = #{id,jdbcType=BIGINT}
   </update>
   <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.macro.mall.model.PmsComment">
-    update pms_comment
+    update yxx_product_comment
     set product_id = #{productId,jdbcType=BIGINT},
-      member_nick_name = #{memberNickName,jdbcType=VARCHAR},
+      member_name = #{memberNickName,jdbcType=VARCHAR},
       product_name = #{productName,jdbcType=VARCHAR},
       star = #{star,jdbcType=INTEGER},
       member_ip = #{memberIp,jdbcType=VARCHAR},
       create_time = #{createTime,jdbcType=TIMESTAMP},
       show_status = #{showStatus,jdbcType=INTEGER},
-      product_attribute = #{productAttribute,jdbcType=VARCHAR},
-      collect_couont = #{collectCouont,jdbcType=INTEGER},
+      sku_id = #{productAttribute,jdbcType=VARCHAR},
+      collect_count = #{collectCouont,jdbcType=INTEGER},
       read_count = #{readCount,jdbcType=INTEGER},
       pics = #{pics,jdbcType=VARCHAR},
       member_icon = #{memberIcon,jdbcType=VARCHAR},
-      replay_count = #{replayCount,jdbcType=INTEGER},
+      is_replay = #{replayCount,jdbcType=INTEGER},
       content = #{content,jdbcType=LONGVARCHAR}
     where id = #{id,jdbcType=BIGINT}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.macro.mall.model.PmsComment">
-    update pms_comment
+    update yxx_product_comment
     set product_id = #{productId,jdbcType=BIGINT},
-      member_nick_name = #{memberNickName,jdbcType=VARCHAR},
+      member_name = #{memberNickName,jdbcType=VARCHAR},
       product_name = #{productName,jdbcType=VARCHAR},
       star = #{star,jdbcType=INTEGER},
       member_ip = #{memberIp,jdbcType=VARCHAR},
       create_time = #{createTime,jdbcType=TIMESTAMP},
       show_status = #{showStatus,jdbcType=INTEGER},
-      product_attribute = #{productAttribute,jdbcType=VARCHAR},
-      collect_couont = #{collectCouont,jdbcType=INTEGER},
+      sku_id = #{productAttribute,jdbcType=VARCHAR},
+      collect_count = #{collectCouont,jdbcType=INTEGER},
       read_count = #{readCount,jdbcType=INTEGER},
       pics = #{pics,jdbcType=VARCHAR},
       member_icon = #{memberIcon,jdbcType=VARCHAR},
-      replay_count = #{replayCount,jdbcType=INTEGER}
+      is_replay = #{replayCount,jdbcType=INTEGER}
     where id = #{id,jdbcType=BIGINT}
   </update>
 </mapper>

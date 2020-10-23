@@ -90,6 +90,15 @@ public enum OrderStatus {
      */
     TRANSFERRED(16),
 
+    /**
+     * 已完成
+     */
+    COMPLETED(17),
+
+    /**
+     * 等待管理员手动指派
+     */
+    WAIT_MANUAL(50)
     ;
 
     private int value;
@@ -101,4 +110,5 @@ public enum OrderStatus {
     public int val() {
         return value;
     }
+
 }

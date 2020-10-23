@@ -5,11 +5,14 @@ import com.github.pagehelper.PageHelper;
 import com.macro.mall.example.PmsProductCategoryExample;
 import com.macro.mall.example.PmsProductExample;
 import com.macro.mall.example.PmsProductSkuExample;
+import com.macro.mall.example.YxxProductCommentLabelExample;
 import com.macro.mall.mapper.PmsProductCategoryMapper;
 import com.macro.mall.mapper.PmsProductMapper;
 import com.macro.mall.mapper.PmsProductSkuMapper;
+import com.macro.mall.mapper.YxxProductCommentLabelMapper;
 import com.macro.mall.model.PmsProduct;
 import com.macro.mall.model.PmsProductCategory;
+import com.macro.mall.model.YxxProductCommentLabel;
 import com.macro.mall.portal.dao.PortalProductDao;
 import com.macro.mall.portal.domain.PmsProductCategoryNode;
 import com.macro.mall.portal.domain.PmsProductDetail;
@@ -35,6 +38,7 @@ public class PmsPortalProductServiceImpl implements PmsPortalProductService {
     private final PmsProductCategoryMapper productCategoryMapper;
     private final PmsProductSkuMapper productSkuMapper;
     private final PortalProductDao portalProductDao;
+    private final YxxProductCommentLabelMapper commentLabelMapper;
 
     @Override
     public List<PmsProduct> search(String keyword, Long productCategoryId, Integer pageNum, Integer pageSize) {
@@ -70,6 +74,12 @@ public class PmsPortalProductServiceImpl implements PmsPortalProductService {
         result.setSkuStockList(productSkuMapper.selectByExample(new PmsProductSkuExample().createCriteria().andProductIdEqualTo(id).example()));
         //商品可用优惠券
         result.setCouponList(portalProductDao.getAvailableCouponList(product.getId(), product.getProductCategoryId()));
+        // 查询服务品类评价标签信息
+        List<YxxProductCommentLabel> commentLabelList = commentLabelMapper.selectByExample(
+                new YxxProductCommentLabelExample().createCriteria().andProductIdEqualTo(id).
+                        andEnableEqualTo(1).example().orderBy(YxxProductCommentLabel.Column.sort.desc())
+        );
+        result.setCommentLabelList(commentLabelList);
         return result;
     }
 

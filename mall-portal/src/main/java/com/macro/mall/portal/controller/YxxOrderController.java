@@ -3,12 +3,16 @@ package com.macro.mall.portal.controller;
 import com.macro.mall.common.api.CommonPage;
 import com.macro.mall.common.api.CommonResult;
 import com.macro.mall.domain.YxxOrderDetail;
+import com.macro.mall.domain.YxxOrderInfo;
 import com.macro.mall.model.YxxOrder;
+import com.macro.mall.portal.domain.YxxOrderComment;
 import com.macro.mall.portal.domain.YxxOrderParam;
 import com.macro.mall.portal.service.impl.YxxMpOrderService;
+import com.macro.mall.service.YxxOrderCommonService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -22,18 +26,20 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/order")
 public class YxxOrderController {
     private final YxxMpOrderService yxxMpOrderService;
+    private final YxxOrderCommonService orderCommonService;
 
-    public YxxOrderController(YxxMpOrderService yxxMpOrderService) {
+    public YxxOrderController(YxxMpOrderService yxxMpOrderService, YxxOrderCommonService orderCommonService) {
         this.yxxMpOrderService = yxxMpOrderService;
+        this.orderCommonService = orderCommonService;
     }
 
     @ApiOperation("查询 - 分页获取用户订单列表")
-    @ApiImplicitParam(name = "status", value = "1-待确认，2-进行中，3-待评价;默认全部", paramType = "query", dataType = "int")
+    @ApiImplicitParam(name = "status", value = "1-待确认，2-进行中，3-待评价，4-历史订单（取消、完成）;默认全部", paramType = "query", dataType = "int")
     @RequestMapping(value = "/list", method = RequestMethod.GET)
-    public CommonResult<CommonPage<YxxOrder>> queryList(@RequestParam(required = false) Integer status,
-                                                        @RequestParam(required = false, defaultValue = "1") Integer pageNum,
-                                                        @RequestParam(required = false, defaultValue = "5") Integer pageSize) {
-        CommonPage<YxxOrder> orderPage = yxxMpOrderService.pageQuery(status, pageNum, pageSize);
+    public CommonResult<CommonPage<YxxOrderInfo>> queryList(@RequestParam(required = false) Integer status,
+                                                            @RequestParam(required = false, defaultValue = "1") Integer pageNum,
+                                                            @RequestParam(required = false, defaultValue = "5") Integer pageSize) {
+        CommonPage<YxxOrderInfo> orderPage = yxxMpOrderService.pageQueryInfo(status, pageNum, pageSize);
         return CommonResult.success(orderPage);
     }
 
@@ -49,13 +55,13 @@ public class YxxOrderController {
         // 状态变更记录
         // 报价单
         // 维修工单
-        YxxOrderDetail orderDetail = yxxMpOrderService.detail(orderId);
+        YxxOrderDetail orderDetail = orderCommonService.detail(orderId);
         return CommonResult.success(orderDetail);
     }
 
     @ApiOperation("订单流程 - 创建新订单")
     @RequestMapping(value = "/create", method = RequestMethod.POST)
-    public CommonResult orderCreate(@RequestBody YxxOrderParam orderParam) {
+    public CommonResult orderCreate(@RequestBody @Validated YxxOrderParam orderParam) {
         YxxOrder result = yxxMpOrderService.generateOrder(orderParam);
         return CommonResult.success(result, "下单成功");
     }
@@ -115,5 +121,14 @@ public class YxxOrderController {
             return CommonResult.success(null);
         }
         return CommonResult.failed();
+    }
+
+    @ApiOperation("订单操作 - 评价订单")
+    @PostMapping("/comment/{orderId}")
+    public CommonResult commentOrder(@PathVariable Long orderId,
+                                     @RequestBody YxxOrderComment orderComment) {
+        yxxMpOrderService.commentOrder(orderId, orderComment);
+
+        return CommonResult.success(null);
     }
 }

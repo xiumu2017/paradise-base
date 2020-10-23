@@ -2,16 +2,15 @@ package com.macro.mall.model;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * 垚修修订单表
@@ -111,6 +110,9 @@ public class YxxOrder implements Serializable {
     @ApiModelProperty(value="区域ID")
     private Long regionId;
 
+    @ApiModelProperty(value="订单类型（1-系统派单2-抢单3-人工指派4-区域分派）")
+    private Integer orderType;
+
     private static final long serialVersionUID = 1L;
 
     public enum Column {
@@ -142,7 +144,8 @@ public class YxxOrder implements Serializable {
         createTime("create_time", "createTime", "TIMESTAMP", false),
         updateTime("update_time", "updateTime", "TIMESTAMP", false),
         zoneId("zone_id", "zoneId", "BIGINT", false),
-        regionId("region_id", "regionId", "BIGINT", false);
+        regionId("region_id", "regionId", "BIGINT", false),
+        orderType("order_type", "orderType", "INTEGER", false);
 
         private static final String BEGINNING_DELIMITER = "`";
 

@@ -2,9 +2,8 @@ package com.macro.mall.mapper;
 
 import com.macro.mall.example.YxxOrderExample;
 import com.macro.mall.model.YxxOrder;
-import org.apache.ibatis.annotations.Param;
-
 import java.util.List;
+import org.apache.ibatis.annotations.Param;
 
 public interface YxxOrderMapper {
     long countByExample(YxxOrderExample example);
@@ -36,4 +35,8 @@ public interface YxxOrderMapper {
     int updateByPrimaryKeySelective(@Param("record") YxxOrder record, @Param("selective") YxxOrder.Column ... selective);
 
     int updateByPrimaryKey(YxxOrder record);
+
+    int batchInsert(@Param("list") List<YxxOrder> list);
+
+    int batchInsertSelective(@Param("list") List<YxxOrder> list, @Param("selective") YxxOrder.Column ... selective);
 }

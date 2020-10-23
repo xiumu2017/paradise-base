@@ -1,7 +1,6 @@
 package com.macro.mall.example;
 
 import com.macro.mall.model.YxxOrder;
-
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
@@ -18,25 +17,20 @@ public class YxxOrderExample {
         oredCriteria = new ArrayList<Criteria>();
     }
 
-    public static Criteria newAndCreateCriteria() {
-        YxxOrderExample example = new YxxOrderExample();
-        return example.createCriteria();
+    public void setOrderByClause(String orderByClause) {
+        this.orderByClause = orderByClause;
     }
 
     public String getOrderByClause() {
         return orderByClause;
     }
 
-    public void setOrderByClause(String orderByClause) {
-        this.orderByClause = orderByClause;
+    public void setDistinct(boolean distinct) {
+        this.distinct = distinct;
     }
 
     public boolean isDistinct() {
         return distinct;
-    }
-
-    public void setDistinct(boolean distinct) {
-        this.distinct = distinct;
     }
 
     public List<Criteria> getOredCriteria() {
@@ -89,6 +83,11 @@ public class YxxOrderExample {
         distinct = false;
     }
 
+    public static Criteria newAndCreateCriteria() {
+        YxxOrderExample example = new YxxOrderExample();
+        return example.createCriteria();
+    }
+
     public YxxOrderExample when(boolean condition, IExampleWhen then) {
         if (condition) {
             then.example(this);
@@ -103,14 +102,6 @@ public class YxxOrderExample {
             otherwise.example(this);
         }
         return this;
-    }
-
-    public interface ICriteriaWhen {
-        void criteria(Criteria criteria);
-    }
-
-    public interface IExampleWhen {
-        void example(com.macro.mall.example.YxxOrderExample example);
     }
 
     protected abstract static class GeneratedCriteria {
@@ -2863,6 +2854,96 @@ public class YxxOrderExample {
             addCriterion("region_id not between", value1, value2, "regionId");
             return (Criteria) this;
         }
+
+        public Criteria andOrderTypeIsNull() {
+            addCriterion("order_type is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andOrderTypeIsNotNull() {
+            addCriterion("order_type is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andOrderTypeEqualTo(Integer value) {
+            addCriterion("order_type =", value, "orderType");
+            return (Criteria) this;
+        }
+
+        public Criteria andOrderTypeEqualToColumn(YxxOrder.Column column) {
+            addCriterion(new StringBuilder("order_type = ").append(column.getEscapedColumnName()).toString());
+            return (Criteria) this;
+        }
+
+        public Criteria andOrderTypeNotEqualTo(Integer value) {
+            addCriterion("order_type <>", value, "orderType");
+            return (Criteria) this;
+        }
+
+        public Criteria andOrderTypeNotEqualToColumn(YxxOrder.Column column) {
+            addCriterion(new StringBuilder("order_type <> ").append(column.getEscapedColumnName()).toString());
+            return (Criteria) this;
+        }
+
+        public Criteria andOrderTypeGreaterThan(Integer value) {
+            addCriterion("order_type >", value, "orderType");
+            return (Criteria) this;
+        }
+
+        public Criteria andOrderTypeGreaterThanColumn(YxxOrder.Column column) {
+            addCriterion(new StringBuilder("order_type > ").append(column.getEscapedColumnName()).toString());
+            return (Criteria) this;
+        }
+
+        public Criteria andOrderTypeGreaterThanOrEqualTo(Integer value) {
+            addCriterion("order_type >=", value, "orderType");
+            return (Criteria) this;
+        }
+
+        public Criteria andOrderTypeGreaterThanOrEqualToColumn(YxxOrder.Column column) {
+            addCriterion(new StringBuilder("order_type >= ").append(column.getEscapedColumnName()).toString());
+            return (Criteria) this;
+        }
+
+        public Criteria andOrderTypeLessThan(Integer value) {
+            addCriterion("order_type <", value, "orderType");
+            return (Criteria) this;
+        }
+
+        public Criteria andOrderTypeLessThanColumn(YxxOrder.Column column) {
+            addCriterion(new StringBuilder("order_type < ").append(column.getEscapedColumnName()).toString());
+            return (Criteria) this;
+        }
+
+        public Criteria andOrderTypeLessThanOrEqualTo(Integer value) {
+            addCriterion("order_type <=", value, "orderType");
+            return (Criteria) this;
+        }
+
+        public Criteria andOrderTypeLessThanOrEqualToColumn(YxxOrder.Column column) {
+            addCriterion(new StringBuilder("order_type <= ").append(column.getEscapedColumnName()).toString());
+            return (Criteria) this;
+        }
+
+        public Criteria andOrderTypeIn(List<Integer> values) {
+            addCriterion("order_type in", values, "orderType");
+            return (Criteria) this;
+        }
+
+        public Criteria andOrderTypeNotIn(List<Integer> values) {
+            addCriterion("order_type not in", values, "orderType");
+            return (Criteria) this;
+        }
+
+        public Criteria andOrderTypeBetween(Integer value1, Integer value2) {
+            addCriterion("order_type between", value1, value2, "orderType");
+            return (Criteria) this;
+        }
+
+        public Criteria andOrderTypeNotBetween(Integer value1, Integer value2) {
+            addCriterion("order_type not between", value1, value2, "orderType");
+            return (Criteria) this;
+        }
     }
 
     public static class Criteria extends GeneratedCriteria {
@@ -2924,6 +3005,38 @@ public class YxxOrderExample {
 
         private String typeHandler;
 
+        public String getCondition() {
+            return condition;
+        }
+
+        public Object getValue() {
+            return value;
+        }
+
+        public Object getSecondValue() {
+            return secondValue;
+        }
+
+        public boolean isNoValue() {
+            return noValue;
+        }
+
+        public boolean isSingleValue() {
+            return singleValue;
+        }
+
+        public boolean isBetweenValue() {
+            return betweenValue;
+        }
+
+        public boolean isListValue() {
+            return listValue;
+        }
+
+        public String getTypeHandler() {
+            return typeHandler;
+        }
+
         protected Criterion(String condition) {
             super();
             this.condition = condition;
@@ -2959,37 +3072,13 @@ public class YxxOrderExample {
         protected Criterion(String condition, Object value, Object secondValue) {
             this(condition, value, secondValue, null);
         }
+    }
 
-        public String getCondition() {
-            return condition;
-        }
+    public interface ICriteriaWhen {
+        void criteria(Criteria criteria);
+    }
 
-        public Object getValue() {
-            return value;
-        }
-
-        public Object getSecondValue() {
-            return secondValue;
-        }
-
-        public boolean isNoValue() {
-            return noValue;
-        }
-
-        public boolean isSingleValue() {
-            return singleValue;
-        }
-
-        public boolean isBetweenValue() {
-            return betweenValue;
-        }
-
-        public boolean isListValue() {
-            return listValue;
-        }
-
-        public String getTypeHandler() {
-            return typeHandler;
-        }
+    public interface IExampleWhen {
+        void example(com.macro.mall.example.YxxOrderExample example);
     }
 }

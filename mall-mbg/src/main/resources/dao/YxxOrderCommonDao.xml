@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.macro.mall.dao.YxxOrderCommonDao">
+    <resultMap id="yxxOrderInfo" type="com.macro.mall.domain.YxxOrderInfo"
+               extends="com.macro.mall.mapper.YxxOrderMapper.BaseResultMap">
+        <result column="productName" property="productName" jdbcType="VARCHAR"/>
+        <result column="skuName" property="skuName" jdbcType="VARCHAR"/>
+        <result column="workerName" property="workerName" jdbcType="VARCHAR"/>
+        <result column="region_name" property="region" jdbcType="VARCHAR"/>
+    </resultMap>
+    <select id="getList" resultMap="com.macro.mall.mapper.YxxOrderMapper.BaseResultMap">
+        SELECT *
+        FROM
+        yxx_order
+        WHERE
+        1 = 1
+        <if test="queryParam.regionId != null">
+            and region_id = #{queryParam.regionId,jdbcType=BIGINT}
+        </if>
+        <if test="queryParam.zoneId != null">
+            and zone_id = #{queryParam.zoneId,jdbcType=BIGINT}
+        </if>
+        <if test="queryParam.productId != null">
+            and product_id = #{queryParam.productId,jdbcType=BIGINT}
+        </if>
+        <if test="queryParam.isTransfer != null">
+            and is_transfer = #{queryParam.isTransfer,jdbcType=INTEGER}
+        </if>
+        <if test="queryParam.orderSn!=null and queryParam.orderSn!=''">
+            AND order_sn = #{queryParam.orderSn}
+        </if>
+        <if test="queryParam.status!=null">
+            AND order_status = #{queryParam.status}
+        </if>
+        <if test="queryParam.createTime!=null and queryParam.createTime!=''">
+            AND create_time LIKE concat(#{queryParam.createTime},'%')
+        </if>
+    </select>
+
+    <select id="queryList" resultMap="yxxOrderInfo">
+        select o.*,
+        p.name as productName,
+        pps.sku_name as skuName,
+        yw.real_name as workerName,
+        yr.region_name as region_name
+        from yxx_order o
+        left join pms_product p on o.product_id = p.id
+        left join pms_product_sku pps on o.sku_id = pps.id
+        left join yxx_worker yw on o.worker_id = yw.id
+        left join yxx_region yr on o.region_id = yr.region_id
+        where o.member_id = #{memberId}
+        and o.order_status in
+        <foreach collection="array" separator="," item="status" open="(" close=")">
+            #{status}
+        </foreach>
+        order by o.create_time desc
+    </select>
+
+    <select id="queryInfoById" resultMap="yxxOrderInfo">
+        select o.*,
+               p.name         as productName,
+               pps.sku_name   as skuName,
+               yw.real_name   as workerName,
+               yr.region_name as region_name
+        from yxx_order o
+                     left join pms_product p on o.product_id = p.id
+                     left join pms_product_sku pps on o.sku_id = pps.id
+                     left join yxx_worker yw on o.worker_id = yw.id
+                     left join yxx_region yr on o.region_id = yr.region_id
+        where o.id = #{id,jdbcType=BIGINT}
+    </select>
+
+    <select id="queryListByOrderQuery" resultMap="yxxOrderInfo" parameterType="com.macro.mall.domain.OrderQuery">
+        select o.*,
+        p.name as productName,
+        pps.sku_name as skuName,
+        yw.real_name as workerName,
+        yr.region_name as region_name
+        from yxx_order o
+        left join pms_product p on o.product_id = p.id
+        left join pms_product_sku pps on o.sku_id = pps.id
+        left join yxx_worker yw on o.worker_id = yw.id
+        left join yxx_region yr on o.region_id = yr.region_id
+        where 1=1
+        <if test="query.orderSn != null and query.orderSn != ''">
+            and o.order_sn like concat('%',#{query.orderSn,jdbcType=VARCHAR},'%')
+        </if>
+        <if test="query.memberId != null">
+            and o.member_id = #{query.memberId,jdbcType=BIGINT}
+        </if>
+        <if test="query.telNo != null and query.telNo != ''">
+            and o.tel_no like concat('%',#{query.telNo,jdbcType=VARCHAR},'%')
+        </if>
+        <if test="query.memberName != null and query.memberName != ''">
+            and o.member_name like concat('%',#{query.memberName,jdbcType=VARCHAR},'%')
+        </if>
+        <if test="query.productId != null">
+            and o.product_id = #{query.productId,jdbcType=BIGINT}
+        </if>
+        <if test="query.orderStatus != null">
+            and o.order_status = #{query.orderStatus,jdbcType=INTEGER}
+        </if>
+        <if test="query.workerId != null">
+            and o.worker_id = #{query.workerId,jdbcType=BIGINT}
+        </if>
+        <if test="query.isBargain != null">
+            and o.is_bargain = #{query.isBargain,jdbcType=BIGINT}
+        </if>
+        <if test="query.isTransfer != null">
+            and o.is_transfer = #{query.isTransfer,jdbcType=BIGINT}
+        </if>
+        <if test="query.zoneId != null">
+            and o.zone_id = #{query.zoneId,jdbcType=BIGINT}
+        </if>
+        <if test="query.regionId != null">
+            and o.region_id = #{query.regionId,jdbcType=BIGINT}
+        </if>
+
+        <if test="query.orderType != null">
+            and o.order_type = #{query.orderType,jdbcType=INTEGER}
+        </if>
+        <if test="query.startTime != null">
+            and o.create_time <![CDATA[>=]]> #{query.startTime,jdbcType=TIMESTAMP}
+        </if>
+        <if test="query.endTime != null">
+            and o.create_time <![CDATA[<=]]> #{query.endTime,jdbcType=TIMESTAMP}
+        </if>
+        <if test="query.array != null and query.array.length > 0">
+            and o.order_status in
+            <foreach collection="query.array" separator="," item="status" open="(" close=")">
+                #{status}
+            </foreach>
+        </if>
+        order by o.create_time desc
+    </select>
+</mapper>

@@ -22,9 +22,6 @@ spring:
 logging:
   level:
     root: info
-    com.macro.mall: debug
+    com.macro.mall: info
   file:
     path: /mnt/logs/admin
-
-logstash:
-  host: localhost

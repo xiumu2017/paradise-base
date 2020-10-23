@@ -697,7 +697,7 @@ INSERT INTO `pms_brand` VALUES ('58', 'NIKE', 'N', '0', '1', '1', '33', '100', '
 -- ----------------------------
 -- Table structure for pms_comment
 -- ----------------------------
-DROP TABLE IF EXISTS `pms_comment`;
+DROP TABLE IF EXISTS yxx_product_comment;
 CREATE TABLE `pms_comment` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `product_id` bigint(20) DEFAULT NULL,

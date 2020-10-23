@@ -104,11 +104,12 @@ public class YxxSystemConfigController {
         return CommonResult.failed();
     }
 
-    @ApiOperation("根据区域ID查询公共费用列表")
-    @GetMapping("/cost/list/{regionId}")
-    public CommonResult<List<YxxHomeCost>> costList(@PathVariable Long regionId) {
+    @ApiOperation("查询公共费用列表")
+    @GetMapping("/cost/list")
+    public CommonResult<List<YxxHomeCost>> costList(@RequestParam(required = false) Long regionId) {
         YxxHomeCostExample example = new YxxHomeCostExample();
-        example.createCriteria().andRegionIdEqualTo(regionId);
+        example.createCriteria().when(regionId != null,
+                criteria -> criteria.andRegionIdEqualTo(regionId));
         example.setOrderByClause("sort");
         List<YxxHomeCost> list = costMapper.selectByExample(example);
         return CommonResult.success(list);

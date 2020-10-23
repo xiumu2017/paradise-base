@@ -5,6 +5,7 @@ import com.macro.mall.model.YxxOrderItem;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import javax.validation.constraints.NotNull;
 import java.util.Date;
 import java.util.List;
 
@@ -17,9 +18,10 @@ import java.util.List;
 @Data
 public class YxxOrderParam {
     @ApiModelProperty("维修地址ID")
+    @NotNull(message = "维修地址ID不能为空")
     private Long addressId;
 
-    @ApiModelProperty("维修地址")
+    @ApiModelProperty(value = "维修地址", hidden = true)
     private String address;
 
     @ApiModelProperty("维修地址坐标-经纬度")

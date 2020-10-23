@@ -1,5 +1,6 @@
 package com.macro.mall.common.service.impl;
 
+import com.macro.mall.common.constant.OrderType;
 import com.macro.mall.common.service.RedisService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -17,7 +18,7 @@ import static com.macro.mall.common.constant.RedisKeyConstant.*;
 @Component
 public class DistributorService {
 
-    private static final int MAX_COUNTER = 7;
+    public static final int MAX_COUNTER = 7;
     private final RedisService redisService;
 
     public DistributorService(RedisService redisService) {
@@ -33,14 +34,16 @@ public class DistributorService {
      *
      * @param orderId 订单信息
      */
-    public void addToQueue(Long orderId) {
+    public OrderType addToQueue(Long orderId) {
         this.counterIncr();
         int c = getCounterValue();
         if (c == MAX_COUNTER) {
             // 进入抢单队列
             redisService.lPush(ORDER_RUSH_QUEUE, orderId);
+            return OrderType.SYSTEM_RUSH;
         } else {
             redisService.lPush(ORDER_QUEUE, orderId);
+            return OrderType.SYSTEM_DISTRIBUTE;
         }
     }
 

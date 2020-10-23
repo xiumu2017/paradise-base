@@ -1,9 +1,9 @@
 package com.macro.mall.service.impl;
 
 import com.github.pagehelper.PageHelper;
+import com.macro.mall.common.constant.OrderType;
 import com.macro.mall.common.service.impl.DistributorService;
 import com.macro.mall.dao.YxxOrderDao;
-import com.macro.mall.domain.YxxOrderDetail;
 import com.macro.mall.dto.YxxOrderQueryParam;
 import com.macro.mall.enums.OrderStatus;
 import com.macro.mall.example.YxxOrderExample;
@@ -51,10 +51,6 @@ public class YxxOrderService {
         return orderMapper.deleteByExample(example);
     }
 
-    public YxxOrderDetail detail(Long id) {
-        return new YxxOrderDetail();
-    }
-
 
     /**
      * 查询维修工ID列表
@@ -82,7 +78,6 @@ public class YxxOrderService {
             if (!workerIds.isEmpty()) {
                 distributorService.initWorkerQueue(orderId, workerIds);
                 // 派发订单
-                // 超时计时
                 YxxOrder order = orderMapper.selectByPrimaryKey(orderId);
                 // 先判断订单状态
                 if (order.getOrderStatus() != OrderStatus.DISTRIBUTING.val()) {
@@ -96,15 +91,14 @@ public class YxxOrderService {
                         orderMapper.updateByPrimaryKeySelective(order, YxxOrder.Column.workerId, YxxOrder.Column.orderStatus);
                         // 添加到超时等待队列 并设置超时
                         distributorService.addToWaitQueue(orderId, workerId, 30 * 60);
-                    } else {
-                        // 没有可用的维修工处理
-                        log.info("没有可用的维修工处理...");
                     }
                 }
             } else {
                 // 没有可用的维修工处理
-                log.info("没有可用的维修工处理...");
+                log.info("没有可用的维修工处理...改为手动指派单：{}", orderId);
+                this.updateOrderToManual(orderId);
             }
+            // 递归处理
             distribute();
         }
     }
@@ -129,7 +123,20 @@ public class YxxOrderService {
         } else {
             // 没有可用的维修工处理
             log.info("没有可用的维修工处理...");
+            this.updateOrderToManual(orderId);
         }
+    }
+
+    /**
+     * 更改订单类型为 人工处理
+     *
+     * @param orderId 订单ID
+     */
+    private void updateOrderToManual(Long orderId) {
+        // 从队列移除
+        distributorService.removeFromQueue(orderId);
+        YxxOrder order = YxxOrder.builder().id(orderId).orderType(OrderType.MANUAL_DISTRIBUTE.val()).updateTime(new Date()).build();
+        orderMapper.updateByPrimaryKeySelective(order, YxxOrder.Column.updateTime, YxxOrder.Column.orderType);
     }
 
     private void record(YxxOrder order, OrderStatus status, String remark) {
@@ -164,12 +171,14 @@ public class YxxOrderService {
             log.info(" push 到派单队列：{}", orderList);
             List<Long> ids = new ArrayList<>();
             orderList.forEach(order -> {
-                distributorService.addToQueue(order.getId());
+                OrderType orderType = distributorService.addToQueue(order.getId());
+                order.setOrderStatus(OrderStatus.DISTRIBUTING.val());
+                order.setUpdateTime(new Date());
+                order.setOrderType(orderType.val());
+                // 更新状态和订单类型
+                orderMapper.updateByPrimaryKeySelective(order, YxxOrder.Column.updateTime, YxxOrder.Column.orderStatus, YxxOrder.Column.orderType);
                 ids.add(order.getId());
             });
-            YxxOrderExample example = new YxxOrderExample().createCriteria().andIdIn(ids).example();
-            orderMapper.updateByExampleSelective(YxxOrder.builder().orderStatus(OrderStatus.DISTRIBUTING.val()).updateTime(new Date()).build(),
-                    example, YxxOrder.Column.orderStatus, YxxOrder.Column.updateTime);
             this.batchRecord(ids, OrderStatus.DISTRIBUTING, "批量更新订单状态为派单中");
         }
     }

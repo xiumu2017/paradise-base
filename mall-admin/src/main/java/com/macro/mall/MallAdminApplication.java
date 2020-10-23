@@ -11,7 +11,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
  * @date 2018/4/26
  */
 @EnableScheduling
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = "com.macro.mall")
 public class MallAdminApplication {
     public static void main(String[] args) {
         SpringApplication.run(MallAdminApplication.class, args);

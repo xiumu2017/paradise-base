@@ -1,16 +1,24 @@
 package com.macro.mall.app.controller;
 
+import com.macro.mall.app.service.impl.YxxAppOrderService;
 import com.macro.mall.common.api.CommonPage;
 import com.macro.mall.common.api.CommonResult;
+import com.macro.mall.domain.OrderQuery;
+import com.macro.mall.domain.YxxOrderDetail;
+import com.macro.mall.domain.YxxOrderInfo;
+import com.macro.mall.enums.OrderStatusUtil;
 import com.macro.mall.model.YxxOrder;
 import com.macro.mall.model.YxxRepairRecord;
-import com.macro.mall.app.service.impl.YxxAppOrderService;
+import com.macro.mall.service.YxxOrderCommonService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -24,25 +32,62 @@ import java.util.List;
 @RequestMapping("/order")
 public class YxxAppOrderController {
     private final YxxAppOrderService yxxAppOrderService;
+    private final YxxOrderCommonService orderCommonService;
 
-    public YxxAppOrderController(YxxAppOrderService yxxAppOrderService) {
+    public YxxAppOrderController(YxxAppOrderService yxxAppOrderService,
+                                 YxxOrderCommonService orderCommonService) {
         this.yxxAppOrderService = yxxAppOrderService;
+        this.orderCommonService = orderCommonService;
     }
 
     @ApiOperation("按状态分页获取用户订单列表")
-    @ApiImplicitParam(name = "status", value = "参见数据字典表", paramType = "query", dataType = "int")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "status", value = "订单状态：1-进行中 2-历史订单", paramType = "query", dataType = "int"),
+            @ApiImplicitParam(name = "orderType", value = "订单类型：1-专享 2-指派", paramType = "query", dataType = "int"),
+            @ApiImplicitParam(name = "isBargain", value = "是否询价：0-一口价 1-询价 ", paramType = "query", dataType = "int"),
+            @ApiImplicitParam(name = "year", value = "年", paramType = "query", dataType = "int"),
+            @ApiImplicitParam(name = "month", value = "月 ", paramType = "query", dataType = "int"),
+    })
     @RequestMapping(value = "/list", method = RequestMethod.GET)
-    public CommonResult<CommonPage<YxxOrder>> list(@RequestParam Integer status,
-                                                   @RequestParam(required = false, defaultValue = "1") Integer pageNum,
-                                                   @RequestParam(required = false, defaultValue = "5") Integer pageSize) {
-        CommonPage<YxxOrder> orderPage = yxxAppOrderService.page(status, pageNum, pageSize);
-        return CommonResult.success(orderPage);
+    public CommonResult<CommonPage<YxxOrderInfo>> list(@RequestParam(required = false) Integer status,
+                                                       @RequestParam(required = false) Integer orderType,
+                                                       @RequestParam(required = false) Integer isBargain,
+                                                       @RequestParam(required = false) Integer year,
+                                                       @RequestParam(required = false) Integer month,
+                                                       @RequestParam(required = false, defaultValue = "1") Integer pageNum,
+                                                       @RequestParam(required = false, defaultValue = "5") Integer pageSize) {
+        OrderQuery query = OrderQuery.builder().isBargain(isBargain).array(OrderStatusUtil.getStatusArray(status))
+                .startTime(getDate(year, month, 1)).endTime(getDate(year, month, 0))
+                .orderType(orderType).build();
+        CommonPage<YxxOrderInfo> orderInfoCommonPage = orderCommonService.pageQueryInfo(query, pageNum, pageSize);
+        // 进行中 历史订单
+        // 全部/专享/一口价/询价/指派 年月
+        return CommonResult.success(orderInfoCommonPage);
+    }
+
+    private Date getDate(Integer year, Integer month, int type) {
+        if (year == null || month == null) {
+            return null;
+        }
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.YEAR, year);
+        if (type == 1) {
+            calendar.set(Calendar.MONTH, month + 1);
+        } else {
+            calendar.set(Calendar.MONTH, month + 2);
+        }
+        calendar.set(Calendar.DAY_OF_MONTH, 1);
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+        return calendar.getTime();
     }
 
     @ApiOperation("根据ID获取订单详情")
     @RequestMapping(value = "/detail/{orderId}", method = RequestMethod.GET)
-    public CommonResult<YxxOrder> detail(@PathVariable Long orderId) {
-        YxxOrder orderDetail = yxxAppOrderService.detail(orderId);
+    public CommonResult<YxxOrderDetail> detail(@PathVariable Long orderId) {
+        YxxOrderDetail orderDetail = orderCommonService.detail(orderId);
         return CommonResult.success(orderDetail);
     }
 

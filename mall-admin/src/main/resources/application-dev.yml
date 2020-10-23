@@ -22,7 +22,4 @@ spring:
 logging:
   level:
     root: info
-    com.macro.mall: debug
-
-logstash:
-  host: localhost
+    com.macro.mall: info

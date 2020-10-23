@@ -3,6 +3,7 @@ package com.macro.mall.portal.domain;
 import com.macro.mall.model.PmsProduct;
 import com.macro.mall.model.PmsProductSku;
 import com.macro.mall.model.SmsCoupon;
+import com.macro.mall.model.YxxProductCommentLabel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
@@ -24,4 +25,9 @@ public class PmsProductDetail {
     private List<PmsProductSku> skuStockList;
     @ApiModelProperty("可用优惠券")
     private List<SmsCoupon> couponList;
+    /**
+     * 垚修修服务评价标签
+     */
+    @ApiModelProperty("垚修修服务评价标签")
+    private List<YxxProductCommentLabel> commentLabelList;
 }
