@@ -24,11 +24,11 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @Api(tags = "4.订单管理")
 @RequestMapping("/order")
-public class YxxOrderController {
+public class YxxMpOrderController {
     private final YxxMpOrderService yxxMpOrderService;
     private final YxxOrderCommonService orderCommonService;
 
-    public YxxOrderController(YxxMpOrderService yxxMpOrderService, YxxOrderCommonService orderCommonService) {
+    public YxxMpOrderController(YxxMpOrderService yxxMpOrderService, YxxOrderCommonService orderCommonService) {
         this.yxxMpOrderService = yxxMpOrderService;
         this.orderCommonService = orderCommonService;
     }
@@ -127,8 +127,10 @@ public class YxxOrderController {
     @PostMapping("/comment/{orderId}")
     public CommonResult commentOrder(@PathVariable Long orderId,
                                      @RequestBody YxxOrderComment orderComment) {
-        yxxMpOrderService.commentOrder(orderId, orderComment);
-
-        return CommonResult.success(null);
+        int x = yxxMpOrderService.commentOrder(orderId, orderComment);
+        if (x == 1) {
+            return CommonResult.success(x);
+        }
+        return CommonResult.failed();
     }
 }

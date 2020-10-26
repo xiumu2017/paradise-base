@@ -179,4 +179,11 @@
                      left join pms_product_sku pps on i.sku_id = pps.id
         where i.order_id = #{orderId,jdbcType=BIGINT}
     </select>
+
+    <update id="updateProductCommentLabel">
+        update yxx_product_comment_label
+        set count = count + 1
+        where product_id = #{productId,jdbcType=BIGINT}
+          and label = #{label,jdbcType=VARCHAR}
+    </update>
 </mapper>

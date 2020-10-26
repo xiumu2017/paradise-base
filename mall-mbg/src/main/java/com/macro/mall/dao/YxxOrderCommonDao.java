@@ -65,4 +65,13 @@ public interface YxxOrderCommonDao {
      * @return 子订单信息
      */
     List<OrderItemInfo> queryOrderItemList(@Param("orderId") Long orderId);
+
+    /**
+     * 更新服务品类评价标签数量
+     *
+     * @param productId 服务品类ID
+     * @param label     标签名称
+     * @return update res
+     */
+    int updateProductCommentLabel(@Param("productId") Long productId, @Param("label") String label);
 }

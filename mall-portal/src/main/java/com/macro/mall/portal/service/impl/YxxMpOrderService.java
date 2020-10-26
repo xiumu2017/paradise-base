@@ -8,12 +8,14 @@ import com.macro.mall.dao.YxxOrderCommonDao;
 import com.macro.mall.domain.YxxOrderInfo;
 import com.macro.mall.enums.OrderStatus;
 import com.macro.mall.example.YxxOrderExample;
+import com.macro.mall.example.YxxProductCommentLabelExample;
 import com.macro.mall.mapper.*;
 import com.macro.mall.model.*;
 import com.macro.mall.portal.domain.YxxOrderComment;
 import com.macro.mall.portal.domain.YxxOrderParam;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
@@ -45,12 +47,14 @@ public class YxxMpOrderService {
     private final PmsProductSkuMapper productSkuMapper;
     private final YxxMemberAddressMapper memberAddressMapper;
     private final YxxOrderCommonDao orderCommonDao;
+    private final YxxProductCommentMapper commentMapper;
+    private final YxxProductCommentLabelMapper commentLabelMapper;
 
     public YxxMpOrderService(RedisService redisService, YxxOrderMapper yxxOrderMapper,
                              YxxMemberService memberService, YxxOrderItemMapper orderItemMapper,
                              YxxOrderStatusRecordMapper orderStatusRecordMapper, DistributorService distributorService,
                              PmsProductMapper productMapper, PmsProductSkuMapper productSkuMapper,
-                             YxxMemberAddressMapper memberAddressMapper, YxxOrderCommonDao orderCommonDao) {
+                             YxxMemberAddressMapper memberAddressMapper, YxxOrderCommonDao orderCommonDao, YxxProductCommentMapper commentMapper, YxxProductCommentLabelMapper commentLabelMapper) {
         this.redisService = redisService;
         this.yxxOrderMapper = yxxOrderMapper;
         this.memberService = memberService;
@@ -61,6 +65,8 @@ public class YxxMpOrderService {
         this.productSkuMapper = productSkuMapper;
         this.memberAddressMapper = memberAddressMapper;
         this.orderCommonDao = orderCommonDao;
+        this.commentMapper = commentMapper;
+        this.commentLabelMapper = commentLabelMapper;
     }
 
 //            long count = yxxOrderMapper.countByExample(new YxxOrderExample().createCriteria()
@@ -173,14 +179,29 @@ public class YxxMpOrderService {
     }
 
     public int deleteOrder(Long orderId) {
-        return yxxOrderMapper.deleteByPrimaryKey(orderId);
+        // 删除已取消的订单 或者已完成的订单
+        YxxOrder order = yxxOrderMapper.selectByPrimaryKey(orderId);
+        int status = order.getOrderStatus();
+        if (status == FREE_CANCEL.val() || status == ARRIVED_CANCEL.val()) {
+            return yxxOrderMapper.deleteByPrimaryKey(orderId);
+        }
+        return 0;
     }
 
     public int confirmToVisit(Long orderId) {
-        return updateOrderStatus(orderId, WAITED_GET);
+        YxxOrder order = yxxOrderMapper.selectByPrimaryKey(orderId);
+        // 判断订单状态
+        if (order.getOrderStatus() == RECEIVED.val()) {
+            return updateOrderStatus(orderId, WAITED_GET, "用户确认同意上门");
+        }
+        return 0;
     }
 
     private int updateOrderStatus(Long orderId, OrderStatus status) {
+        return this.updateOrderStatus(orderId, status, "");
+    }
+
+    private int updateOrderStatus(Long orderId, OrderStatus status, String remark) {
         YxxOrder order = yxxOrderMapper.selectByPrimaryKey(orderId);
         if (order == null) {
             throw new RuntimeException("OrderId not Exist");
@@ -190,7 +211,7 @@ public class YxxMpOrderService {
                 YxxOrderStatusRecord.builder()
                         .orderId(orderId).originStatus(order.getOrderStatus())
                         .currentStatus(status.val()).createTime(new Date())
-                        .build()
+                        .remark(remark).build()
         );
 
         order = YxxOrder.builder().id(orderId).orderStatus(status.val()).build();
@@ -198,11 +219,19 @@ public class YxxMpOrderService {
     }
 
     public int confirmPrice(Long orderId) {
-        return updateOrderStatus(orderId, OFFER_CONFIRMED);
+        YxxOrder order = yxxOrderMapper.selectByPrimaryKey(orderId);
+        if (order.getOrderStatus() == OFFERED.val()) {
+            return updateOrderStatus(orderId, REPAIRING, "用户确认报价，开始维修");
+        }
+        return 0;
     }
 
     public int cancelOrderDisagree(Long orderId) {
-        return updateOrderStatus(orderId, ARRIVED_CANCEL);
+        YxxOrder order = yxxOrderMapper.selectByPrimaryKey(orderId);
+        if (order.getOrderStatus() == OFFERED.val()) {
+            return updateOrderStatus(orderId, ARRIVED_CANCEL);
+        }
+        return 0;
     }
 
     public CommonPage<YxxOrder> pageQuery(Integer status, Integer pageNum, Integer pageSize) {
@@ -248,19 +277,38 @@ public class YxxMpOrderService {
         return new Integer[0];
     }
 
-    // TODO
     public int commentOrder(Long orderId, YxxOrderComment orderComment) {
         YxxOrderInfo yxxOrderInfo = orderCommonDao.queryInfoById(orderId);
+        YxxMember member = memberService.getCurrentMember();
+        // 评论信息
         YxxProductComment productComment = YxxProductComment.builder()
                 .productId(yxxOrderInfo.getProductId())
                 .memberId(yxxOrderInfo.getMemberId())
                 .orderId(orderId)
                 .skuId(yxxOrderInfo.getSkuId())
                 .memberName(yxxOrderInfo.getMemberName())
-
+                .memberIcon(member.getIcon())
+                .content(orderComment.getContent())
+                .productName(yxxOrderInfo.getProductName())
+                .skuName(yxxOrderInfo.getSkuName())
+                .createTime(new Date())
+                .star(orderComment.getStar())
                 .build();
-
-
-        return 0;
+        commentMapper.insert(productComment);
+        // 评价标签
+        if (!StringUtils.isEmpty(orderComment.getLabels())) {
+            String[] labelArr = orderComment.getLabels().split(",");
+            for (String label : labelArr) {
+                YxxProductCommentLabel commentLabel = commentLabelMapper.selectOneByExample(new YxxProductCommentLabelExample()
+                        .createCriteria().andProductIdEqualTo(yxxOrderInfo.getProductId()).andLabelEqualTo(label).example());
+                if (commentLabel != null) {
+                    orderCommonDao.updateProductCommentLabel(yxxOrderInfo.getProductId(), label);
+                } else {
+                    commentLabel = YxxProductCommentLabel.builder().label(label).count(1).enable(1).productId(yxxOrderInfo.getProductId()).build();
+                    commentLabelMapper.insert(commentLabel);
+                }
+            }
+        }
+        return updateOrderStatus(orderId, COMPLETED, "用户已评价订单");
     }
 }
