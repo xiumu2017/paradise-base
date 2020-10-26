@@ -74,9 +74,9 @@ public class YxxAppOrderController {
         Calendar calendar = Calendar.getInstance();
         calendar.set(Calendar.YEAR, year);
         if (type == 1) {
-            calendar.set(Calendar.MONTH, month + 1);
+            calendar.set(Calendar.MONTH, month - 1);
         } else {
-            calendar.set(Calendar.MONTH, month + 2);
+            calendar.set(Calendar.MONTH, month);
         }
         calendar.set(Calendar.DAY_OF_MONTH, 1);
         calendar.set(Calendar.HOUR_OF_DAY, 0);
