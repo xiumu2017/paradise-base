@@ -8,6 +8,7 @@ import com.macro.mall.example.PmsProductCategoryExample;
 import com.macro.mall.example.PmsProductExample;
 import com.macro.mall.mapper.PmsProductCategoryMapper;
 import com.macro.mall.mapper.PmsProductMapper;
+import com.macro.mall.mapper.YxxRegionMapper;
 import com.macro.mall.model.PmsProduct;
 import com.macro.mall.model.PmsProductCategory;
 import com.macro.mall.service.PmsProductCategoryService;
@@ -29,6 +30,7 @@ public class PmsProductCategoryServiceImpl implements PmsProductCategoryService 
     private final PmsProductCategoryMapper productCategoryMapper;
     private final PmsProductMapper productMapper;
     private final PmsProductCategoryDao productCategoryDao;
+    private final YxxRegionMapper regionMapper;
 
     @Override
     public int create(PmsProductCategoryParam pmsProductCategoryParam) {
@@ -36,6 +38,9 @@ public class PmsProductCategoryServiceImpl implements PmsProductCategoryService 
         BeanUtils.copyProperties(pmsProductCategoryParam, productCategory);
         // level 赋值处理
         setCategoryLevel(productCategory);
+        if (productCategory.getRegionId() != null) {
+            productCategory.setRegionName(regionMapper.selectByPrimaryKey(productCategory.getRegionId()).getRegionName());
+        }
         return productCategoryMapper.insertSelective(productCategory);
     }
 
@@ -45,6 +50,9 @@ public class PmsProductCategoryServiceImpl implements PmsProductCategoryService 
         productCategory.setId(id);
         BeanUtils.copyProperties(pmsProductCategoryParam, productCategory);
         setCategoryLevel(productCategory);
+        if (productCategory.getRegionId() != null) {
+            productCategory.setRegionName(regionMapper.selectByPrimaryKey(productCategory.getRegionId()).getRegionName());
+        }
         //更新商品分类时要更新商品中的名称
         PmsProduct product = new PmsProduct();
         product.setProductCategoryName(productCategory.getName());
@@ -68,7 +76,7 @@ public class PmsProductCategoryServiceImpl implements PmsProductCategoryService 
     @Override
     public List<PmsProductCategoryWithChildrenItem> select4Page(Long parentId, Integer pageSize, Integer pageNum, String keywords, Long regionId) {
         PageHelper.startPage(pageNum, pageSize);
-        return productCategoryDao.select4Page(parentId, keywords,regionId);
+        return productCategoryDao.select4Page(parentId, keywords, regionId);
     }
 
     @Override

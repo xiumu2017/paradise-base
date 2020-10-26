@@ -24,9 +24,7 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -177,8 +175,15 @@ public class PmsProductServiceImpl implements PmsProductService {
     }
 
     @Override
-    public PmsProduct detail(Long id) {
-        return productMapper.selectByPrimaryKey(id);
+    public Map<String, Object> detail(Long id) {
+        Map<String, Object> map = new HashMap<>(2);
+        //获取商品信息
+        PmsProduct product = productMapper.selectByPrimaryKey(id);
+        //获取商品SKU库存信息
+        List<PmsProductSku> skuList = productSkuMapper.selectByExample(new PmsProductSkuExample().createCriteria().andProductIdEqualTo(id).example());
+        map.put("product", product);
+        map.put("skuList", skuList);
+        return map;
     }
 
     @Override

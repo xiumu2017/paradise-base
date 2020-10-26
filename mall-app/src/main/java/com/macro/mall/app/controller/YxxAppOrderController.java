@@ -140,7 +140,7 @@ public class YxxAppOrderController {
     }
 
 
-    @ApiOperation("订单流程 - 已联系")
+    @ApiOperation(value = "订单流程 - 已联系", hidden = true)
     @PostMapping(value = "/wait-get")
     public CommonResult waitGet(Long orderId) {
         int x = yxxAppOrderService.waitGet(orderId);
@@ -150,7 +150,7 @@ public class YxxAppOrderController {
         return CommonResult.failed();
     }
 
-    @ApiOperation("订单流程 - 已出发")
+    @ApiOperation("订单流程 - 出发")
     @PostMapping(value = "/set-off")
     public CommonResult setOff(Long orderId) {
         int x = yxxAppOrderService.setOff(orderId);

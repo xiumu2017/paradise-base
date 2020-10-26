@@ -26,5 +26,6 @@ public class PmsProductInfo extends PmsProduct {
     /**
      * 一级服务分类ID
      */
+    @ApiModelProperty("一级服务分类ID")
     private String parentCategoryId;
 }

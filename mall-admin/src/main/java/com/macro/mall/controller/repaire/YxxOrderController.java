@@ -42,4 +42,14 @@ public class YxxOrderController {
         return CommonResult.success(detail);
     }
 
+    @ApiOperation("手动指派订单")
+    @PostMapping("/distribute")
+    public CommonResult manualDistribute(@RequestParam Long workerId, @RequestParam Long orderId) {
+        int x = orderCommonService.distribute(orderId, workerId);
+        if (x == 1) {
+            return CommonResult.success(x);
+        }
+        return CommonResult.failed();
+    }
+
 }

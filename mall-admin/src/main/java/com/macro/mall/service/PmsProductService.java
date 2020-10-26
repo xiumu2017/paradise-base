@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 商品管理Service
@@ -84,5 +85,5 @@ public interface PmsProductService {
      * @param id 服务品类ID
      * @return {@link PmsProduct}
      */
-    PmsProduct detail(Long id);
+    Map<String, Object> detail(Long id);
 }

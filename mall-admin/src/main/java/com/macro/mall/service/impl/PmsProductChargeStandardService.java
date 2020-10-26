@@ -2,8 +2,11 @@ package com.macro.mall.service.impl;
 
 import com.github.pagehelper.PageHelper;
 import com.macro.mall.common.exception.Asserts;
+import com.macro.mall.example.PmsProductExample;
 import com.macro.mall.example.YxxProductChargeStandardExample;
+import com.macro.mall.mapper.PmsProductMapper;
 import com.macro.mall.mapper.YxxProductChargeStandardMapper;
+import com.macro.mall.model.PmsProduct;
 import com.macro.mall.model.YxxProductChargeStandard;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -17,9 +20,11 @@ import java.util.List;
 @Service
 public class PmsProductChargeStandardService {
     private final YxxProductChargeStandardMapper chargeStandardMapper;
+    private final PmsProductMapper productMapper;
 
-    public PmsProductChargeStandardService(YxxProductChargeStandardMapper chargeStandardMapper) {
+    public PmsProductChargeStandardService(YxxProductChargeStandardMapper chargeStandardMapper, PmsProductMapper productMapper) {
         this.chargeStandardMapper = chargeStandardMapper;
+        this.productMapper = productMapper;
     }
 
     public YxxProductChargeStandard create(YxxProductChargeStandard chargeStandard) {
@@ -32,9 +37,12 @@ public class PmsProductChargeStandardService {
         return chargeStandard;
     }
 
-    public YxxProductChargeStandard update(YxxProductChargeStandard chargeStandard) {
-        chargeStandardMapper.updateByPrimaryKeyWithBLOBs(chargeStandard);
-        return chargeStandard;
+    public int update(YxxProductChargeStandard chargeStandard) {
+        // 同步更新 服务品类
+        PmsProduct product = PmsProduct.builder().chargeStandardJson(chargeStandard.getContentJson()).updateTime(new Date()).build();
+        productMapper.updateByExampleSelective(product, new PmsProductExample().createCriteria().andChargeStandardIdEqualTo(chargeStandard.getId()).example(),
+                PmsProduct.Column.updateTime, PmsProduct.Column.chargeStandardJson);
+        return chargeStandardMapper.updateByPrimaryKeyWithBLOBs(chargeStandard);
     }
 
     /**

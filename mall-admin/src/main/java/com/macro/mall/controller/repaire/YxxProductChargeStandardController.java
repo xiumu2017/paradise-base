@@ -34,8 +34,12 @@ public class YxxProductChargeStandardController {
 
     @ApiOperation("更新收费标准")
     @PostMapping("/update")
-    public CommonResult<YxxProductChargeStandard> update(@RequestBody @Validated YxxProductChargeStandard chargeStandard) {
-        return CommonResult.success(chargeStandardService.update(chargeStandard));
+    public CommonResult update(@RequestBody @Validated YxxProductChargeStandard chargeStandard) {
+        int x = chargeStandardService.update(chargeStandard);
+        if (x == 1) {
+            return CommonResult.success(x);
+        }
+        return CommonResult.failed();
     }
 
     @ApiOperation("根据主键删除")

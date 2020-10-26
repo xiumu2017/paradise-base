@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -81,47 +82,50 @@ public class YxxMpOrderService {
      */
     public YxxOrder generateOrder(YxxOrderParam orderParam) {
         boolean hasItem = orderParam.getItemList() != null && !orderParam.getItemList().isEmpty();
+        if (!hasItem) {
+            YxxOrderItem item = YxxOrderItem.builder().amount(1).productId(orderParam.getProductId())
+                    .skuId(orderParam.getSkuId()).build();
+            orderParam.setItemList(Collections.singletonList(item));
+        }
         YxxMember member = memberService.getCurrentMember();
         YxxMemberAddress address = memberAddressMapper.selectByPrimaryKey(orderParam.getAddressId());
         PmsProduct product = productMapper.selectByPrimaryKey(orderParam.getProductId());
         // 保存订单信息
         YxxOrder order = orderParam.toOrder();
-        order.setAddress(address.getDetailAddress());
+        order.setAddress(address.getRepairAddress());
+        order.setDetailAddress(address.getDetailAddress());
         order.setMemberName(address.getName());
         order.setTelNo(address.getPhoneNumber());
+        order.setLocation(address.getLocation());
+        order.setMemberSex(address.getSex());
         order.setIsBargain(product.getIsBargain());
         order.setOrderSn(generateOrderSn(order));
         order.setMemberId(member.getId());
-        order.setMemberName(member.getRealName());
         order.setOrderStatus(CREATED.val());
         order.setCreateTime(new Date());
         order.setUpdateTime(new Date());
+        order.setRegionId(member.getRegionId());
         // 一口价订单价格计算
-        this.dealBargainOrderPrice(order, hasItem, orderParam);
+        this.dealBargainOrderPrice(order, orderParam);
         yxxOrderMapper.insertSelective(order);
         if (order.getId() != null) {
             // 保存子订单信息
-            if (hasItem) {
-                orderParam.getItemList().forEach(yxxOrderItem -> yxxOrderItem.setOrderId(order.getId()));
-                orderItemMapper.batchInsert(orderParam.getItemList());
-            }
+            orderParam.getItemList().forEach(yxxOrderItem -> yxxOrderItem.setOrderId(order.getId()));
+            orderItemMapper.batchInsert(orderParam.getItemList());
         }
         return order;
     }
 
-    private void dealBargainOrderPrice(YxxOrder order, boolean hasItem, YxxOrderParam orderParam) {
+    private void dealBargainOrderPrice(YxxOrder order, YxxOrderParam orderParam) {
+        // 非询价单，计算价格
         if (order.getIsBargain() == 0) {
-            if (hasItem) {
-                BigDecimal price = BigDecimal.ZERO;
-                for (YxxOrderItem yxxOrderItem : orderParam.getItemList()) {
-                    PmsProductSku sku = productSkuMapper.selectByPrimaryKey(yxxOrderItem.getSkuId());
-                    price = price.add(sku.getPrice().multiply(new BigDecimal(yxxOrderItem.getAmount())));
-                }
-                order.setOfferPrice(price);
-            } else {
-                PmsProductSku sku = productSkuMapper.selectByPrimaryKey(orderParam.getSkuId());
-                order.setOfferPrice(sku.getPrice());
+            BigDecimal price = BigDecimal.ZERO;
+            for (YxxOrderItem yxxOrderItem : orderParam.getItemList()) {
+                PmsProductSku sku = productSkuMapper.selectByPrimaryKey(yxxOrderItem.getSkuId());
+                yxxOrderItem.setPrice(sku.getPrice());
+                price = price.add(sku.getPrice().multiply(new BigDecimal(yxxOrderItem.getAmount())));
             }
+            order.setOfferPrice(price);
         }
     }
 

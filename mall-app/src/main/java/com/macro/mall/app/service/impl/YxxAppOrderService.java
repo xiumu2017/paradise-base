@@ -14,6 +14,7 @@ import com.macro.mall.model.YxxOrder;
 import com.macro.mall.model.YxxOrderStatusRecord;
 import com.macro.mall.model.YxxRepairRecord;
 import com.macro.mall.model.YxxWorker;
+import com.macro.mall.service.YxxOrderCommonService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,7 +29,6 @@ import java.util.List;
 @Service
 public class YxxAppOrderService {
 
-    private final RedisService redisService;
     @Value("${redis.key.orderId}")
     private String REDIS_KEY_ORDER_ID;
     @Value("${redis.database}")
@@ -39,16 +39,18 @@ public class YxxAppOrderService {
     private final YxxOrderStatusRecordMapper orderStatusRecordMapper;
     private final YxxRepairRecordMapper repairRecordMapper;
     private final DistributorService distributorService;
+    private final YxxOrderCommonService orderCommonService;
 
-    public YxxAppOrderService(RedisService redisService, YxxOrderMapper yxxOrderMapper,
+    public YxxAppOrderService(YxxOrderMapper yxxOrderMapper,
                               YxxWorkerService workerService, YxxOrderStatusRecordMapper orderStatusRecordMapper,
-                              YxxRepairRecordMapper repairRecordMapper, DistributorService distributorService) {
-        this.redisService = redisService;
+                              YxxRepairRecordMapper repairRecordMapper, DistributorService distributorService,
+                              YxxOrderCommonService orderCommonService) {
         this.yxxOrderMapper = yxxOrderMapper;
         this.workerService = workerService;
         this.orderStatusRecordMapper = orderStatusRecordMapper;
         this.repairRecordMapper = repairRecordMapper;
         this.distributorService = distributorService;
+        this.orderCommonService = orderCommonService;
     }
 
     public Integer paySuccess(Long orderId) {
@@ -141,6 +143,11 @@ public class YxxAppOrderService {
         if (order.getOrderStatus() != OrderStatus.DISTRIBUTED.val()) {
             return 0;
         }
+        // 判断维修工每日抢单数量是否超限
+        boolean result = orderCommonService.check(order, worker);
+        if (!result) {
+            return 0;
+        }
         distributorService.removeFromWaitQueue(orderId);
         // 保存状态变更记录
         insertStatusRecord(orderId, order.getOrderStatus(), OrderStatus.RECEIVED);
@@ -163,7 +170,11 @@ public class YxxAppOrderService {
         if (order.getOrderStatus() != OrderStatus.DISTRIBUTING.val()) {
             return 0;
         }
-        // TODO 判断维修工每日抢单数量是否超限
+        // 判断维修工每日抢单数量是否超限
+        boolean result = orderCommonService.check(order, worker);
+        if (!result) {
+            return 0;
+        }
         // 保存状态变更记录
         insertStatusRecord(orderId, order.getOrderStatus(), OrderStatus.RECEIVED);
         // 更新订单状态
@@ -180,6 +191,7 @@ public class YxxAppOrderService {
     }
 
     public int setOff(Long orderId) {
+        // 判断订单状态
         return updateOrderStatus(orderId, OrderStatus.SET_OFF);
     }
 

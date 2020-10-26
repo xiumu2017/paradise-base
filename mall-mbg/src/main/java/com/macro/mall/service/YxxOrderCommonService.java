@@ -2,6 +2,7 @@ package com.macro.mall.service;
 
 import com.github.pagehelper.PageHelper;
 import com.macro.mall.common.api.CommonPage;
+import com.macro.mall.common.constant.OrderType;
 import com.macro.mall.common.service.impl.DistributorService;
 import com.macro.mall.dao.YxxOrderCommonDao;
 import com.macro.mall.domain.OrderQuery;
@@ -11,16 +12,13 @@ import com.macro.mall.domain.YxxOrderStatusRecordInfo;
 import com.macro.mall.enums.OrderStatusUtil;
 import com.macro.mall.example.YxxOrderStatusRecordExample;
 import com.macro.mall.example.YxxRepairRecordExample;
-import com.macro.mall.mapper.YxxMemberMapper;
-import com.macro.mall.mapper.YxxOrderStatusRecordMapper;
-import com.macro.mall.mapper.YxxRepairRecordMapper;
-import com.macro.mall.mapper.YxxWorkerMapper;
-import com.macro.mall.model.YxxOrderStatusRecord;
-import com.macro.mall.model.YxxWorker;
+import com.macro.mall.mapper.*;
+import com.macro.mall.model.*;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import static com.macro.mall.enums.OrderStatus.*;
@@ -38,6 +36,38 @@ public class YxxOrderCommonService {
     private final DistributorService distributorService;
     private final YxxOrderCommonDao orderCommonDao;
     private final YxxWorkerMapper workerMapper;
+    private final YxxOrderMapper orderMapper;
+    private final YxxWorkerLevelMapper workerLevelMapper;
+    private final YxxWorkerOrderCountMapper workerOrderCountMapper;
+
+    private YxxWorkerOrderCount countByWorkerId(Long workerId) {
+        return workerOrderCountMapper.selectByPrimaryKey(workerId);
+    }
+
+    private YxxWorkerLevel getLevel(Integer levelId) {
+        return workerLevelMapper.selectByPrimaryKey(levelId);
+    }
+
+    public boolean check(YxxOrder order, Long workerId) {
+        return this.check(order, workerMapper.selectByPrimaryKey(workerId));
+    }
+
+    public boolean check(YxxOrder order, YxxWorker worker) {
+        YxxWorkerLevel workerLevel = this.getLevel(worker.getLevelId());
+        YxxWorkerOrderCount count = this.countByWorkerId(worker.getId());
+        // 判断订单类型
+        if (order.getOrderType() == OrderType.SYSTEM_DISTRIBUTE.val()) {
+            // 系统分配订单
+            return workerLevel.getOrderDistributeAmount() >= count.getDistributeAmount() + 1;
+        }
+        if (order.getOrderType() == OrderType.SYSTEM_RUSH.val()) {
+            return workerLevel.getOrderRushAmount() >= count.getRushAmount() + 1;
+        }
+        if (order.getOrderType() == OrderType.MANUAL_DISTRIBUTE.val()) {
+            return workerLevel.getOrderAssignAmount() >= count.getAssignAmount() + 1;
+        }
+        return true;
+    }
 
     public YxxOrderDetail detail(Long orderId) {
         YxxOrderDetail detail = new YxxOrderDetail();
@@ -139,5 +169,29 @@ public class YxxOrderCommonService {
         List<YxxOrderInfo> orderInfoList = orderCommonDao.queryRushOrders(ids, DISTRIBUTED.val());
         this.dealStatusDesc(orderInfoList);
         return orderInfoList;
+    }
+
+    /**
+     * 手动指派订单
+     *
+     * @param orderId  订单ID
+     * @param workerId 维修工ID
+     */
+    public int distribute(Long orderId, Long workerId) {
+        // 判断维修工每日抢单数量是否超限
+        boolean result = check(orderMapper.selectByPrimaryKey(orderId), workerId);
+        if (!result) {
+            return 0;
+        }
+        // 判断数量
+        orderStatusRecordMapper.insert(YxxOrderStatusRecord.builder()
+                .createTime(new Date()).remark("管理员手动指派订单").orderId(orderId)
+                .originStatus(DISTRIBUTING.val()).currentStatus(RECEIVED.val())
+                .build());
+        // 更新订单状态
+        return orderMapper.updateByPrimaryKeySelective(YxxOrder.builder()
+                .id(orderId).updateTime(new Date()).orderStatus(RECEIVED.val()).workerId(workerId)
+                .build());
+
     }
 }

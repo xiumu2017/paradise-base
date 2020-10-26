@@ -1104,6 +1104,106 @@ public class YxxMemberAddressExample {
             return (Criteria) this;
         }
 
+        public Criteria andRepairAddressIsNull() {
+            addCriterion("repair_address is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andRepairAddressIsNotNull() {
+            addCriterion("repair_address is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andRepairAddressEqualTo(String value) {
+            addCriterion("repair_address =", value, "repairAddress");
+            return (Criteria) this;
+        }
+
+        public Criteria andRepairAddressEqualToColumn(YxxMemberAddress.Column column) {
+            addCriterion(new StringBuilder("repair_address = ").append(column.getEscapedColumnName()).toString());
+            return (Criteria) this;
+        }
+
+        public Criteria andRepairAddressNotEqualTo(String value) {
+            addCriterion("repair_address <>", value, "repairAddress");
+            return (Criteria) this;
+        }
+
+        public Criteria andRepairAddressNotEqualToColumn(YxxMemberAddress.Column column) {
+            addCriterion(new StringBuilder("repair_address <> ").append(column.getEscapedColumnName()).toString());
+            return (Criteria) this;
+        }
+
+        public Criteria andRepairAddressGreaterThan(String value) {
+            addCriterion("repair_address >", value, "repairAddress");
+            return (Criteria) this;
+        }
+
+        public Criteria andRepairAddressGreaterThanColumn(YxxMemberAddress.Column column) {
+            addCriterion(new StringBuilder("repair_address > ").append(column.getEscapedColumnName()).toString());
+            return (Criteria) this;
+        }
+
+        public Criteria andRepairAddressGreaterThanOrEqualTo(String value) {
+            addCriterion("repair_address >=", value, "repairAddress");
+            return (Criteria) this;
+        }
+
+        public Criteria andRepairAddressGreaterThanOrEqualToColumn(YxxMemberAddress.Column column) {
+            addCriterion(new StringBuilder("repair_address >= ").append(column.getEscapedColumnName()).toString());
+            return (Criteria) this;
+        }
+
+        public Criteria andRepairAddressLessThan(String value) {
+            addCriterion("repair_address <", value, "repairAddress");
+            return (Criteria) this;
+        }
+
+        public Criteria andRepairAddressLessThanColumn(YxxMemberAddress.Column column) {
+            addCriterion(new StringBuilder("repair_address < ").append(column.getEscapedColumnName()).toString());
+            return (Criteria) this;
+        }
+
+        public Criteria andRepairAddressLessThanOrEqualTo(String value) {
+            addCriterion("repair_address <=", value, "repairAddress");
+            return (Criteria) this;
+        }
+
+        public Criteria andRepairAddressLessThanOrEqualToColumn(YxxMemberAddress.Column column) {
+            addCriterion(new StringBuilder("repair_address <= ").append(column.getEscapedColumnName()).toString());
+            return (Criteria) this;
+        }
+
+        public Criteria andRepairAddressLike(String value) {
+            addCriterion("repair_address like", value, "repairAddress");
+            return (Criteria) this;
+        }
+
+        public Criteria andRepairAddressNotLike(String value) {
+            addCriterion("repair_address not like", value, "repairAddress");
+            return (Criteria) this;
+        }
+
+        public Criteria andRepairAddressIn(List<String> values) {
+            addCriterion("repair_address in", values, "repairAddress");
+            return (Criteria) this;
+        }
+
+        public Criteria andRepairAddressNotIn(List<String> values) {
+            addCriterion("repair_address not in", values, "repairAddress");
+            return (Criteria) this;
+        }
+
+        public Criteria andRepairAddressBetween(String value1, String value2) {
+            addCriterion("repair_address between", value1, value2, "repairAddress");
+            return (Criteria) this;
+        }
+
+        public Criteria andRepairAddressNotBetween(String value1, String value2) {
+            addCriterion("repair_address not between", value1, value2, "repairAddress");
+            return (Criteria) this;
+        }
+
         public Criteria andDetailAddressIsNull() {
             addCriterion("detail_address is null");
             return (Criteria) this;

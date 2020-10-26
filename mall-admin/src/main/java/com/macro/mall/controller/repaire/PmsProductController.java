@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 商品管理Controller
@@ -63,7 +64,7 @@ public class PmsProductController {
 
     @ApiOperation("查询服务品类详情")
     @GetMapping(value = "/detail/{id}")
-    public CommonResult<PmsProduct> detail(@PathVariable Long id) {
+    public CommonResult<Map<String, Object>> detail(@PathVariable Long id) {
         return CommonResult.success(productService.detail(id));
     }
 

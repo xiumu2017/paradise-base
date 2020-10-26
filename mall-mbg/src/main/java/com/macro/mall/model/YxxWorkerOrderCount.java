@@ -5,7 +5,6 @@ import io.swagger.annotations.ApiModelProperty;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -21,70 +20,26 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class YxxMemberAddress implements Serializable {
-    @ApiModelProperty(value="")
-    private Long id;
+public class YxxWorkerOrderCount implements Serializable {
+    @ApiModelProperty(value="维修工ID")
+    private Long workerId;
 
-    @ApiModelProperty(value="用户ID")
-    private Long memberId;
+    @ApiModelProperty(value="手动指派数量")
+    private Integer assignAmount;
 
-    @ApiModelProperty(value="收货人名称")
-    private String name;
+    @ApiModelProperty(value="系统分派数量")
+    private Integer distributeAmount;
 
-    @ApiModelProperty(value="性别：1男0女")
-    private Integer sex;
-
-    @ApiModelProperty(value="")
-    private String phoneNumber;
-
-    @ApiModelProperty(value="是否为默认")
-    private Integer defaultStatus;
-
-    @ApiModelProperty(value="邮政编码")
-    private String postCode;
-
-    @ApiModelProperty(value="省份/直辖市")
-    private String province;
-
-    @ApiModelProperty(value="城市")
-    private String city;
-
-    @ApiModelProperty(value="区")
-    private String region;
-
-    @ApiModelProperty(value="维修地址")
-    private String repairAddress;
-
-    @ApiModelProperty(value="详细地址(街道)")
-    private String detailAddress;
-
-    @ApiModelProperty(value="坐标")
-    private String location;
-
-    @ApiModelProperty(value="")
-    private Date createTime;
-
-    @ApiModelProperty(value="更新时间")
-    private Date updateTime;
+    @ApiModelProperty(value="抢单数量")
+    private Integer rushAmount;
 
     private static final long serialVersionUID = 1L;
 
     public enum Column {
-        id("id", "id", "BIGINT", false),
-        memberId("member_id", "memberId", "BIGINT", false),
-        name("name", "name", "VARCHAR", true),
-        sex("sex", "sex", "INTEGER", false),
-        phoneNumber("phone_number", "phoneNumber", "VARCHAR", false),
-        defaultStatus("default_status", "defaultStatus", "INTEGER", false),
-        postCode("post_code", "postCode", "VARCHAR", false),
-        province("province", "province", "VARCHAR", false),
-        city("city", "city", "VARCHAR", false),
-        region("region", "region", "VARCHAR", false),
-        repairAddress("repair_address", "repairAddress", "VARCHAR", false),
-        detailAddress("detail_address", "detailAddress", "VARCHAR", false),
-        location("location", "location", "VARCHAR", true),
-        createTime("create_time", "createTime", "TIMESTAMP", false),
-        updateTime("update_time", "updateTime", "TIMESTAMP", false);
+        workerId("worker_id", "workerId", "BIGINT", false),
+        assignAmount("assign_amount", "assignAmount", "INTEGER", false),
+        distributeAmount("distribute_amount", "distributeAmount", "INTEGER", false),
+        rushAmount("rush_amount", "rushAmount", "INTEGER", false);
 
         private static final String BEGINNING_DELIMITER = "`";
 

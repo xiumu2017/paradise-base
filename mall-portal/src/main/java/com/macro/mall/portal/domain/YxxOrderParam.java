@@ -21,12 +21,6 @@ public class YxxOrderParam {
     @NotNull(message = "维修地址ID不能为空")
     private Long addressId;
 
-    @ApiModelProperty(value = "维修地址", hidden = true)
-    private String address;
-
-    @ApiModelProperty("维修地址坐标-经纬度")
-    private String location;
-
     @ApiModelProperty("优惠券ID")
     private Long couponId;
 
@@ -34,6 +28,7 @@ public class YxxOrderParam {
     private String telephone;
 
     @ApiModelProperty("服务品类ID")
+    @NotNull
     private Long productId;
 
     @ApiModelProperty("服务品类规格ID")
@@ -51,9 +46,8 @@ public class YxxOrderParam {
     @ApiModelProperty("照片（多张英文逗号分隔）")
     private String pics;
 
-    @ApiModelProperty("性别：1男0女")
-    private Integer sex;
-
+    @ApiModelProperty("详细地址")
+    private String detailAddress;
     /**
      * 子订单信息
      */
@@ -62,7 +56,6 @@ public class YxxOrderParam {
 
     public YxxOrder toOrder() {
         YxxOrder order = new YxxOrder();
-        order.setAddress(address);
         order.setCouponId(couponId);
         order.setPhotos(pics);
         order.setProductId(productId);
@@ -71,8 +64,7 @@ public class YxxOrderParam {
         order.setVisitTimeStart(new Date(visitTimeStart));
         order.setVisitTimeEnd(new Date(visitTimeEnd));
         order.setRemark(remark);
-        order.setMemberSex(sex);
-        order.setLocation(location);
+        order.setDetailAddress(detailAddress);
         return order;
     }
 

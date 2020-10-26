@@ -3,7 +3,9 @@ package com.macro.mall.service.impl;
 import com.github.pagehelper.PageHelper;
 import com.macro.mall.common.constant.OrderType;
 import com.macro.mall.common.service.impl.DistributorService;
+import com.macro.mall.common.utils.DistanceUtil;
 import com.macro.mall.dao.YxxOrderDao;
+import com.macro.mall.domain.WorkerDistance;
 import com.macro.mall.dto.YxxOrderQueryParam;
 import com.macro.mall.enums.OrderStatus;
 import com.macro.mall.example.YxxOrderExample;
@@ -14,6 +16,7 @@ import com.macro.mall.mapper.YxxWorkerMapper;
 import com.macro.mall.model.YxxOrder;
 import com.macro.mall.model.YxxOrderStatusRecord;
 import com.macro.mall.model.YxxWorker;
+import com.macro.mall.service.YxxOrderCommonService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -39,6 +42,7 @@ public class YxxOrderService {
     private final YxxOrderDao yxxOrderDao;
     private final YxxWorkerMapper workerMapper;
     private final DistributorService distributorService;
+    private final YxxOrderCommonService orderCommonService;
 
     public List<YxxOrder> list(YxxOrderQueryParam queryParam, Integer pageSize, Integer pageNum) {
         PageHelper.startPage(pageNum, pageSize);
@@ -61,15 +65,26 @@ public class YxxOrderService {
     private List<Long> getSortedWorkerIds(Long orderId) {
         // TODO 根据订单品类 关联擅长 查询 符合条件的全部维修工 - 已排序
         YxxOrder order = orderMapper.selectByPrimaryKey(orderId);
+        List<WorkerDistance> list = new ArrayList<>();
         // 查询核心会员
         List<YxxWorker> workers = workerMapper.selectByExample(new YxxWorkerExample()
                 .createCriteria().andStatusEqualTo(1).andLevelIdEqualTo(3)
                 .example());
+        workers.forEach(worker -> list.add(new WorkerDistance(worker.getId(), worker.getLocation(),
+                DistanceUtil.getDistance(worker.getLocation(), order.getLocation()))));
+        // 排序
+        list.sort(WorkerDistance::compareTo);
         // 查询精英会员
         List<YxxWorker> workers2 = workerMapper.selectByExample(new YxxWorkerExample()
                 .createCriteria().andStatusEqualTo(1).andLevelIdEqualTo(2)
                 .example());
-        return workers.stream().map(YxxWorker::getId).collect(Collectors.toList());
+        List<WorkerDistance> list2 = new ArrayList<>();
+        workers2.forEach(worker -> list2.add(new WorkerDistance(worker.getId(), worker.getLocation(),
+                DistanceUtil.getDistance(worker.getLocation(), order.getLocation()))));
+        list2.sort(WorkerDistance::compareTo);
+        // 合并
+        list.addAll(list2);
+        return list.stream().map(WorkerDistance::getId).collect(Collectors.toList());
     }
 
     /**
@@ -88,15 +103,7 @@ public class YxxOrderService {
                 if (order.getOrderStatus() != OrderStatus.DISTRIBUTING.val()) {
                     distributorService.removeFromQueue(orderId);
                 } else {
-                    Long workerId = distributorService.popWorkerId(orderId);
-                    if (workerId != null) {
-                        record(order, OrderStatus.DISTRIBUTED, "已派单-待接单");
-                        order.setWorkerId(workerId);
-                        order.setOrderStatus(OrderStatus.DISTRIBUTED.val());
-                        orderMapper.updateByPrimaryKeySelective(order, YxxOrder.Column.workerId, YxxOrder.Column.orderStatus);
-                        // 添加到超时等待队列 并设置超时
-                        distributorService.addToWaitQueue(orderId, workerId, 30 * 60);
-                    }
+                    distributeToWorker(order);
                 }
             } else {
                 // 没有可用的维修工处理
@@ -106,6 +113,23 @@ public class YxxOrderService {
             // 递归处理
             distribute();
         }
+    }
+
+    private void distributeToWorker(YxxOrder order) {
+        Long workerId = distributorService.popWorkerId(order.getId());
+        if (workerId != null) {
+            boolean checkResult = orderCommonService.check(order, workerId);
+            if (!checkResult) {
+                distributeToWorker(order);
+            }
+            record(order, OrderStatus.DISTRIBUTED, "已派单-待接单");
+            order.setWorkerId(workerId);
+            order.setOrderStatus(OrderStatus.DISTRIBUTED.val());
+            orderMapper.updateByPrimaryKeySelective(order, YxxOrder.Column.workerId, YxxOrder.Column.orderStatus);
+            // 添加到超时等待队列 并设置超时
+            distributorService.addToWaitQueue(order.getId(), workerId, 10 * 60);
+        }
+
     }
 
     /**
@@ -120,10 +144,7 @@ public class YxxOrderService {
             if (order.getOrderStatus() != OrderStatus.DISTRIBUTING.val()) {
                 distributorService.removeFromQueue(orderId);
             } else {
-                record(order, OrderStatus.DISTRIBUTED, "已派单-待接单");
-                order.setWorkerId(workerId);
-                order.setOrderStatus(OrderStatus.DISTRIBUTED.val());
-                orderMapper.updateByPrimaryKeySelective(order, YxxOrder.Column.workerId, YxxOrder.Column.orderStatus);
+                distributeToWorker(order);
             }
         } else {
             // 没有可用的维修工处理
