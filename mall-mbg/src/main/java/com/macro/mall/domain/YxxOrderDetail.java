@@ -1,8 +1,8 @@
 package com.macro.mall.domain;
 
-import com.macro.mall.model.YxxOrderItem;
-import com.macro.mall.model.YxxOrderStatusRecord;
+import com.macro.mall.model.YxxMember;
 import com.macro.mall.model.YxxRepairRecord;
+import com.macro.mall.model.YxxWorker;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -24,7 +24,7 @@ public class YxxOrderDetail {
      * 子订单信息
      */
     @ApiModelProperty("子订单信息")
-    private List<YxxOrderItem> itemList;
+    private List<OrderItemInfo> itemList;
     /**
      * 维修工单
      */
@@ -34,5 +34,12 @@ public class YxxOrderDetail {
      * 订单状态变更列表
      */
     @ApiModelProperty("订单状态变更列表")
-    private List<YxxOrderStatusRecord> orderStatusRecordList;
+    private List<YxxOrderStatusRecordInfo> orderStatusRecordList;
+
+    @ApiModelProperty("维修工信息")
+    private YxxWorker worker;
+
+    @ApiModelProperty("用户信息")
+    private YxxMember member;
+
 }

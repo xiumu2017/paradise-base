@@ -5,7 +5,7 @@ import com.macro.mall.common.api.CommonResult;
 import com.macro.mall.model.PmsProduct;
 import com.macro.mall.portal.domain.PmsProductCategoryNode;
 import com.macro.mall.portal.domain.PmsProductDetail;
-import com.macro.mall.portal.domain.PmsProductInfo;
+import com.macro.mall.domain.PmsProductInfo;
 import com.macro.mall.portal.service.PmsPortalProductService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -49,8 +49,8 @@ public class PmsPortalProductController {
 
     @ApiOperation("以树形结构获取所有服务分类")
     @RequestMapping(value = "/categoryTreeList", method = RequestMethod.GET)
-    public CommonResult<List<PmsProductCategoryNode>> categoryTreeList() {
-        List<PmsProductCategoryNode> list = portalProductService.categoryTreeList();
+    public CommonResult<List<PmsProductCategoryNode>> categoryTreeList(@RequestParam(required = false) Long regionId) {
+        List<PmsProductCategoryNode> list = portalProductService.categoryTreeList(regionId);
         return CommonResult.success(list);
     }
 

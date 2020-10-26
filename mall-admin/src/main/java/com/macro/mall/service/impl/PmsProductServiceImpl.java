@@ -2,16 +2,20 @@ package com.macro.mall.service.impl;
 
 import cn.hutool.core.collection.CollUtil;
 import com.github.pagehelper.PageHelper;
+import com.macro.mall.dao.PmsProductDao;
 import com.macro.mall.dao.PmsProductVertifyRecordDao;
+import com.macro.mall.domain.PmsProductInfo;
 import com.macro.mall.dto.PmsProductParam;
 import com.macro.mall.dto.PmsProductQueryParam;
 import com.macro.mall.example.PmsProductExample;
 import com.macro.mall.example.PmsProductSkuExample;
 import com.macro.mall.mapper.PmsProductMapper;
 import com.macro.mall.mapper.PmsProductSkuMapper;
+import com.macro.mall.mapper.YxxProductChargeStandardMapper;
 import com.macro.mall.model.PmsProduct;
 import com.macro.mall.model.PmsProductSku;
 import com.macro.mall.model.PmsProductVertifyRecord;
+import com.macro.mall.model.YxxProductChargeStandard;
 import com.macro.mall.service.PmsProductService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -38,11 +42,21 @@ public class PmsProductServiceImpl implements PmsProductService {
     private final PmsProductMapper productMapper;
     private final PmsProductVertifyRecordDao productVertifyRecordDao;
     private final PmsProductSkuMapper productSkuMapper;
+    private final PmsProductDao productDao;
+    private final YxxProductChargeStandardMapper standardMapper;
 
     @Override
     public int create(PmsProductParam productParam) {
         //创建商品
         productParam.setId(null);
+        if (productParam.getChargeStandardId() != null) {
+            YxxProductChargeStandard standard = standardMapper.selectByPrimaryKey(productParam.getChargeStandardId());
+            if (standard != null) {
+                productParam.setChargeStandardJson(standard.getContentJson());
+            }
+        }
+        productParam.setCreateTime(new Date());
+        productParam.setUpdateTime(new Date());
         productMapper.insertSelective(productParam);
         //根据促销类型设置价格：会员价格、阶梯价格、满减价格
         Long productId = productParam.getId();
@@ -84,6 +98,13 @@ public class PmsProductServiceImpl implements PmsProductService {
         int count;
         //更新商品信息
         productParam.setId(id);
+        productParam.setUpdateTime(new Date());
+        if (productParam.getChargeStandardId() != null) {
+            YxxProductChargeStandard standard = standardMapper.selectByPrimaryKey(productParam.getChargeStandardId());
+            if (standard != null) {
+                productParam.setChargeStandardJson(standard.getContentJson());
+            }
+        }
         productMapper.updateByPrimaryKeySelective(productParam);
         //修改sku库存信息
         handleUpdateSkuStockList(id, productParam);
@@ -147,6 +168,17 @@ public class PmsProductServiceImpl implements PmsProductService {
             criteria.andProductCategoryIdEqualTo(productQueryParam.getProductCategoryId());
         }
         return productMapper.selectByExample(productExample);
+    }
+
+    @Override
+    public List<PmsProductInfo> page(PmsProductQueryParam param, Integer pageSize, Integer pageNum) {
+        PageHelper.startPage(pageNum, pageSize);
+        return productDao.getPmsProductInfoList(param);
+    }
+
+    @Override
+    public PmsProduct detail(Long id) {
+        return productMapper.selectByPrimaryKey(id);
     }
 
     @Override

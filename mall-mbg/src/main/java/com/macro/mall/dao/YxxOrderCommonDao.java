@@ -1,5 +1,6 @@
 package com.macro.mall.dao;
 
+import com.macro.mall.domain.OrderItemInfo;
 import com.macro.mall.domain.OrderQuery;
 import com.macro.mall.domain.YxxOrderInfo;
 import org.apache.ibatis.annotations.Param;
@@ -38,4 +39,30 @@ public interface YxxOrderCommonDao {
      * @return 订单信息
      */
     YxxOrderInfo queryInfoById(@Param("id") Long id);
+
+    /**
+     * 维修工查询订单
+     *
+     * @param workerId 维修工ID
+     * @param status   订单状态
+     * @return 订单列表
+     */
+    List<YxxOrderInfo> queryInfoByWorkerId(@Param("workerId") Long workerId, @Param("status") Integer status);
+
+    /**
+     * 维修工查询抢单订单
+     *
+     * @param ids    id列表
+     * @param status 状态
+     * @return 订单列表
+     */
+    List<YxxOrderInfo> queryRushOrders(@Param("ids") List<Long> ids, @Param("status") Integer status);
+
+    /**
+     * 查询子订单信息
+     *
+     * @param orderId 订单ID
+     * @return 子订单信息
+     */
+    List<OrderItemInfo> queryOrderItemList(@Param("orderId") Long orderId);
 }

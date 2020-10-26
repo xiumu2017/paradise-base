@@ -1,13 +1,12 @@
 package com.macro.mall.app.controller;
 
-import com.macro.mall.common.api.CommonResult;
 import com.macro.mall.app.domain.PmsProductNode;
 import com.macro.mall.app.service.PmsPortalProductService;
+import com.macro.mall.common.api.CommonResult;
+import com.macro.mall.model.PmsProduct;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -30,9 +29,21 @@ public class YxxAppProductController {
 
     @ApiOperation("以树形结构获取所有服务品类")
     @RequestMapping(value = "/categoryTreeList", method = RequestMethod.GET)
-    public CommonResult<List<PmsProductNode>> categoryTreeList() {
-        List<PmsProductNode> list = portalProductService.categoryTreeList();
+    public CommonResult<List<PmsProductNode>> categoryTreeList(@RequestParam(required = false) Long regionId) {
+        List<PmsProductNode> list = portalProductService.categoryTreeList(regionId);
         return CommonResult.success(list);
+    }
+
+    @ApiOperation("查询服务品类详情")
+    @GetMapping("/info/{id}")
+    public CommonResult<PmsProduct> productInfo(@PathVariable Long id) {
+        return CommonResult.success(portalProductService.productInfo(id));
+    }
+
+    @ApiOperation("查询全部服务品类信息")
+    @GetMapping("/all")
+    public CommonResult<List<PmsProduct>> all(@RequestParam(required = false) Long regionId) {
+        return CommonResult.success(portalProductService.productInfoList(regionId));
     }
 
 }

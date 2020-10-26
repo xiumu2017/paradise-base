@@ -2944,6 +2944,106 @@ public class YxxOrderExample {
             addCriterion("order_type not between", value1, value2, "orderType");
             return (Criteria) this;
         }
+
+        public Criteria andPriceJsonIsNull() {
+            addCriterion("price_json is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andPriceJsonIsNotNull() {
+            addCriterion("price_json is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andPriceJsonEqualTo(String value) {
+            addCriterion("price_json =", value, "priceJson");
+            return (Criteria) this;
+        }
+
+        public Criteria andPriceJsonEqualToColumn(YxxOrder.Column column) {
+            addCriterion(new StringBuilder("price_json = ").append(column.getEscapedColumnName()).toString());
+            return (Criteria) this;
+        }
+
+        public Criteria andPriceJsonNotEqualTo(String value) {
+            addCriterion("price_json <>", value, "priceJson");
+            return (Criteria) this;
+        }
+
+        public Criteria andPriceJsonNotEqualToColumn(YxxOrder.Column column) {
+            addCriterion(new StringBuilder("price_json <> ").append(column.getEscapedColumnName()).toString());
+            return (Criteria) this;
+        }
+
+        public Criteria andPriceJsonGreaterThan(String value) {
+            addCriterion("price_json >", value, "priceJson");
+            return (Criteria) this;
+        }
+
+        public Criteria andPriceJsonGreaterThanColumn(YxxOrder.Column column) {
+            addCriterion(new StringBuilder("price_json > ").append(column.getEscapedColumnName()).toString());
+            return (Criteria) this;
+        }
+
+        public Criteria andPriceJsonGreaterThanOrEqualTo(String value) {
+            addCriterion("price_json >=", value, "priceJson");
+            return (Criteria) this;
+        }
+
+        public Criteria andPriceJsonGreaterThanOrEqualToColumn(YxxOrder.Column column) {
+            addCriterion(new StringBuilder("price_json >= ").append(column.getEscapedColumnName()).toString());
+            return (Criteria) this;
+        }
+
+        public Criteria andPriceJsonLessThan(String value) {
+            addCriterion("price_json <", value, "priceJson");
+            return (Criteria) this;
+        }
+
+        public Criteria andPriceJsonLessThanColumn(YxxOrder.Column column) {
+            addCriterion(new StringBuilder("price_json < ").append(column.getEscapedColumnName()).toString());
+            return (Criteria) this;
+        }
+
+        public Criteria andPriceJsonLessThanOrEqualTo(String value) {
+            addCriterion("price_json <=", value, "priceJson");
+            return (Criteria) this;
+        }
+
+        public Criteria andPriceJsonLessThanOrEqualToColumn(YxxOrder.Column column) {
+            addCriterion(new StringBuilder("price_json <= ").append(column.getEscapedColumnName()).toString());
+            return (Criteria) this;
+        }
+
+        public Criteria andPriceJsonLike(String value) {
+            addCriterion("price_json like", value, "priceJson");
+            return (Criteria) this;
+        }
+
+        public Criteria andPriceJsonNotLike(String value) {
+            addCriterion("price_json not like", value, "priceJson");
+            return (Criteria) this;
+        }
+
+        public Criteria andPriceJsonIn(List<String> values) {
+            addCriterion("price_json in", values, "priceJson");
+            return (Criteria) this;
+        }
+
+        public Criteria andPriceJsonNotIn(List<String> values) {
+            addCriterion("price_json not in", values, "priceJson");
+            return (Criteria) this;
+        }
+
+        public Criteria andPriceJsonBetween(String value1, String value2) {
+            addCriterion("price_json between", value1, value2, "priceJson");
+            return (Criteria) this;
+        }
+
+        public Criteria andPriceJsonNotBetween(String value1, String value2) {
+            addCriterion("price_json not between", value1, value2, "priceJson");
+            return (Criteria) this;
+        }
     }
 
     public static class Criteria extends GeneratedCriteria {

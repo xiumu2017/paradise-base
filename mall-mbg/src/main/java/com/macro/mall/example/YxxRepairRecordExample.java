@@ -1,7 +1,6 @@
 package com.macro.mall.example;
 
 import com.macro.mall.model.YxxRepairRecord;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -811,6 +810,106 @@ public class YxxRepairRecordExample {
 
         public Criteria andAfterPhotosDetailNotBetween(String value1, String value2) {
             addCriterion("after_photos_detail not between", value1, value2, "afterPhotosDetail");
+            return (Criteria) this;
+        }
+
+        public Criteria andPartsPhotosIsNull() {
+            addCriterion("parts_photos is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andPartsPhotosIsNotNull() {
+            addCriterion("parts_photos is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andPartsPhotosEqualTo(String value) {
+            addCriterion("parts_photos =", value, "partsPhotos");
+            return (Criteria) this;
+        }
+
+        public Criteria andPartsPhotosEqualToColumn(YxxRepairRecord.Column column) {
+            addCriterion(new StringBuilder("parts_photos = ").append(column.getEscapedColumnName()).toString());
+            return (Criteria) this;
+        }
+
+        public Criteria andPartsPhotosNotEqualTo(String value) {
+            addCriterion("parts_photos <>", value, "partsPhotos");
+            return (Criteria) this;
+        }
+
+        public Criteria andPartsPhotosNotEqualToColumn(YxxRepairRecord.Column column) {
+            addCriterion(new StringBuilder("parts_photos <> ").append(column.getEscapedColumnName()).toString());
+            return (Criteria) this;
+        }
+
+        public Criteria andPartsPhotosGreaterThan(String value) {
+            addCriterion("parts_photos >", value, "partsPhotos");
+            return (Criteria) this;
+        }
+
+        public Criteria andPartsPhotosGreaterThanColumn(YxxRepairRecord.Column column) {
+            addCriterion(new StringBuilder("parts_photos > ").append(column.getEscapedColumnName()).toString());
+            return (Criteria) this;
+        }
+
+        public Criteria andPartsPhotosGreaterThanOrEqualTo(String value) {
+            addCriterion("parts_photos >=", value, "partsPhotos");
+            return (Criteria) this;
+        }
+
+        public Criteria andPartsPhotosGreaterThanOrEqualToColumn(YxxRepairRecord.Column column) {
+            addCriterion(new StringBuilder("parts_photos >= ").append(column.getEscapedColumnName()).toString());
+            return (Criteria) this;
+        }
+
+        public Criteria andPartsPhotosLessThan(String value) {
+            addCriterion("parts_photos <", value, "partsPhotos");
+            return (Criteria) this;
+        }
+
+        public Criteria andPartsPhotosLessThanColumn(YxxRepairRecord.Column column) {
+            addCriterion(new StringBuilder("parts_photos < ").append(column.getEscapedColumnName()).toString());
+            return (Criteria) this;
+        }
+
+        public Criteria andPartsPhotosLessThanOrEqualTo(String value) {
+            addCriterion("parts_photos <=", value, "partsPhotos");
+            return (Criteria) this;
+        }
+
+        public Criteria andPartsPhotosLessThanOrEqualToColumn(YxxRepairRecord.Column column) {
+            addCriterion(new StringBuilder("parts_photos <= ").append(column.getEscapedColumnName()).toString());
+            return (Criteria) this;
+        }
+
+        public Criteria andPartsPhotosLike(String value) {
+            addCriterion("parts_photos like", value, "partsPhotos");
+            return (Criteria) this;
+        }
+
+        public Criteria andPartsPhotosNotLike(String value) {
+            addCriterion("parts_photos not like", value, "partsPhotos");
+            return (Criteria) this;
+        }
+
+        public Criteria andPartsPhotosIn(List<String> values) {
+            addCriterion("parts_photos in", values, "partsPhotos");
+            return (Criteria) this;
+        }
+
+        public Criteria andPartsPhotosNotIn(List<String> values) {
+            addCriterion("parts_photos not in", values, "partsPhotos");
+            return (Criteria) this;
+        }
+
+        public Criteria andPartsPhotosBetween(String value1, String value2) {
+            addCriterion("parts_photos between", value1, value2, "partsPhotos");
+            return (Criteria) this;
+        }
+
+        public Criteria andPartsPhotosNotBetween(String value1, String value2) {
+            addCriterion("parts_photos not between", value1, value2, "partsPhotos");
             return (Criteria) this;
         }
 

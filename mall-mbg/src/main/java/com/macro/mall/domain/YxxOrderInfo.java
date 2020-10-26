@@ -31,4 +31,10 @@ public class YxxOrderInfo extends YxxOrder {
 
     @ApiModelProperty("区域")
     private String region;
+
+    /**
+     * 订单状态-中文描述
+     */
+    @ApiModelProperty("订单状态名称")
+    private String orderStatusName;
 }

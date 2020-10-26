@@ -72,6 +72,7 @@ public class YxxOrderParam {
         order.setVisitTimeEnd(new Date(visitTimeEnd));
         order.setRemark(remark);
         order.setMemberSex(sex);
+        order.setLocation(location);
         return order;
     }
 

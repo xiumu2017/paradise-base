@@ -185,7 +185,7 @@ public class YxxMpOrderService {
         orderStatusRecordMapper.insert(
                 YxxOrderStatusRecord.builder()
                         .orderId(orderId).originStatus(order.getOrderStatus())
-                        .currentStatus(status.val())
+                        .currentStatus(status.val()).createTime(new Date())
                         .build()
         );
 

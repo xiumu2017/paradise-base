@@ -39,9 +39,10 @@ public interface PmsProductCategoryService {
      * @param parentId 父级分类ID
      * @param pageSize pageSize
      * @param pageNum  pageNum
+     * @param regionId
      * @return {@link PmsProductCategory}
      */
-    List<PmsProductCategory> getList(Long parentId, Integer pageSize, Integer pageNum);
+    List<PmsProductCategory> getList(Long parentId, Integer pageSize, Integer pageNum, Long regionId);
 
     /**
      * 删除商品分类 （物理删除）
@@ -81,7 +82,8 @@ public interface PmsProductCategoryService {
      * @param pageSize pageSize
      * @param pageNum  pageNum
      * @param keywords 名称
+     * @param regionId 地域ID
      * @return 分页查询结果
      */
-    List<PmsProductCategoryWithChildrenItem> select4Page(Long parentId, Integer pageSize, Integer pageNum, String keywords);
+    List<PmsProductCategoryWithChildrenItem> select4Page(Long parentId, Integer pageSize, Integer pageNum, String keywords, Long regionId);
 }

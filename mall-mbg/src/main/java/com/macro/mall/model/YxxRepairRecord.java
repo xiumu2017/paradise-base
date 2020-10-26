@@ -2,14 +2,13 @@ package com.macro.mall.model;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Arrays;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Arrays;
 
 /**
  * 垚修修维修记录表
@@ -43,6 +42,9 @@ public class YxxRepairRecord implements Serializable {
     @ApiModelProperty(value="维修后故障点图片")
     private String afterPhotosDetail;
 
+    @ApiModelProperty(value="零件照片")
+    private String partsPhotos;
+
     @ApiModelProperty(value="维修情况备注")
     private String remark;
 
@@ -56,6 +58,7 @@ public class YxxRepairRecord implements Serializable {
         beforePhotosDetail("before_photos_detail", "beforePhotosDetail", "VARCHAR", false),
         afterPhotos("after_photos", "afterPhotos", "VARCHAR", false),
         afterPhotosDetail("after_photos_detail", "afterPhotosDetail", "VARCHAR", false),
+        partsPhotos("parts_photos", "partsPhotos", "VARCHAR", false),
         remark("remark", "remark", "VARCHAR", false);
 
         private static final String BEGINNING_DELIMITER = "`";

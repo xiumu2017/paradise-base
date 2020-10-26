@@ -12,31 +12,19 @@ spring:
       stat-view-servlet: #访问监控网页的登录用户名和密码
         login-username: druid
         login-password: druid
-  data:
-    mongodb:
-      host: localhost
-      port: 27017
-      database: mall-port
+
   redis:
     host: 192.168.199.37 # Redis服务器地址
     database: 0 # Redis数据库索引（默认为0）
     port: 6379 # Redis服务器连接端口
     password: test123 # Redis服务器连接密码（默认为空）
     timeout: 300ms # 连接超时时间（毫秒）
-  rabbitmq:
-    host: localhost
-    port: 5672
-    virtual-host: /mall
-    username: mall
-    password: mall
 
 logging:
   level:
     root: info
-    com.macro.mall: debug
+    com.macro.mall: info
   file:
     path: /mnt/logs/mp
 
-logstash:
-  host: localhost
 

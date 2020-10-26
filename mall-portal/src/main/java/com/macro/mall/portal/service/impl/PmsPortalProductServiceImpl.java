@@ -16,7 +16,7 @@ import com.macro.mall.model.YxxProductCommentLabel;
 import com.macro.mall.portal.dao.PortalProductDao;
 import com.macro.mall.portal.domain.PmsProductCategoryNode;
 import com.macro.mall.portal.domain.PmsProductDetail;
-import com.macro.mall.portal.domain.PmsProductInfo;
+import com.macro.mall.domain.PmsProductInfo;
 import com.macro.mall.portal.service.PmsPortalProductService;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.BeanUtils;
@@ -56,8 +56,11 @@ public class PmsPortalProductServiceImpl implements PmsPortalProductService {
     }
 
     @Override
-    public List<PmsProductCategoryNode> categoryTreeList() {
+    public List<PmsProductCategoryNode> categoryTreeList(Long regionId) {
         PmsProductCategoryExample example = new PmsProductCategoryExample();
+        if (regionId != null) {
+            example.createCriteria().andRegionIdEqualTo(regionId);
+        }
         List<PmsProductCategory> allList = productCategoryMapper.selectByExample(example);
         return allList.stream()
                 .filter(item -> item.getParentId().equals(0L))

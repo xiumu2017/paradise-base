@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.macro.mall.dao.PmsProductDao">
+    <resultMap id="PmsProductInfo" type="com.macro.mall.domain.PmsProductInfo"
+               extends="com.macro.mall.mapper.PmsProductMapper.BaseResultMap">
+        <result property="parentCategoryName" column="parent_category_name" jdbcType="VARCHAR"/>
+        <result property="parentCategoryId" column="parent_category_id" jdbcType="BIGINT"/>
+        <result property="categoryName" column="category_name" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <select id="getPmsProductInfoList" resultMap="PmsProductInfo">
+        select p.id,
+        p.product_category_id,
+        p.name,
+        p.pic,
+        p.product_sn,
+        p.recommend_status,
+        p.sort,
+        p.sub_title,
+        p.description,
+        p.keywords,
+        p.album_pics,
+        p.detail_title,
+        p.detail_desc,
+        p.product_category_name,
+        p.region_id,
+        p.region,
+        p.is_bargain,
+        p.charge_standard_id,
+        p.create_time,
+        p.update_time,
+        ppc.name category_name,
+        ppc2.id parent_category_id,
+        ppc2.name parent_category_name
+        from pms_product p
+        left join pms_product_category ppc on p.product_category_id = ppc.id
+        left join pms_product_category ppc2 on ppc.parent_id = ppc2.id
+        where p.delete_status <![CDATA[ <> 1]]>
+        <if test="productCategoryId != null">
+            and p.product_category_id = #{productCategoryId,jdbcType=BIGINT}
+        </if>
+        <if test="regionId != null">
+            and p.region_id = #{regionId,jdbcType=BIGINT}
+        </if>
+        <if test="keyword != null">
+            and p.name like concat('%',#{keyword,jdbcType=VARCHAR},'%')
+        </if>
+        <if test="productSn != null">
+            and p.product_sn like concat('%',#{productSn,jdbcType=VARCHAR},'%')
+        </if>
+        order by p.sort desc
+    </select>
+</mapper>

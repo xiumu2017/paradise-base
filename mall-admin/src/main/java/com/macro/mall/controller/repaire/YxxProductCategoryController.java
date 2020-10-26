@@ -57,9 +57,10 @@ public class YxxProductCategoryController {
     @ApiOperation(value = "根据父级ID-分页查询服务分类", hidden = true)
     @RequestMapping(value = "/list/{parentId}", method = RequestMethod.GET)
     public CommonResult<CommonPage<PmsProductCategory>> getList(@PathVariable Long parentId,
+                                                                @RequestParam(required = false) Long regionId,
                                                                 @RequestParam(value = "pageSize", defaultValue = "5") Integer pageSize,
                                                                 @RequestParam(value = "pageNum", defaultValue = "1") Integer pageNum) {
-        List<PmsProductCategory> productCategoryList = productCategoryService.getList(parentId, pageSize, pageNum);
+        List<PmsProductCategory> productCategoryList = productCategoryService.getList(parentId, pageSize, pageNum,regionId);
         return CommonResult.success(CommonPage.restPage(productCategoryList));
     }
 
@@ -67,9 +68,10 @@ public class YxxProductCategoryController {
     @RequestMapping(value = "/page", method = RequestMethod.GET)
     public CommonResult<CommonPage<PmsProductCategoryWithChildrenItem>> page(@RequestParam(required = false) Long parentId,
                                                                              @RequestParam(required = false) String keywords,
+                                                                             @RequestParam(required = false) Long regionId,
                                                                              @RequestParam(value = "pageSize", defaultValue = "5") Integer pageSize,
                                                                              @RequestParam(value = "pageNum", defaultValue = "1") Integer pageNum) {
-        List<PmsProductCategoryWithChildrenItem> productCategoryList = productCategoryService.select4Page(parentId, pageSize, pageNum, keywords);
+        List<PmsProductCategoryWithChildrenItem> productCategoryList = productCategoryService.select4Page(parentId, pageSize, pageNum, keywords,regionId);
         return CommonResult.success(CommonPage.restPage(productCategoryList));
     }
 

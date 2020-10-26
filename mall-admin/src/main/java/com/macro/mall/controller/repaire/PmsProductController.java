@@ -2,9 +2,9 @@ package com.macro.mall.controller.repaire;
 
 import com.macro.mall.common.api.CommonPage;
 import com.macro.mall.common.api.CommonResult;
+import com.macro.mall.domain.PmsProductInfo;
 import com.macro.mall.dto.PmsProductParam;
 import com.macro.mall.dto.PmsProductQueryParam;
-import com.macro.mall.dto.PmsProductResult;
 import com.macro.mall.model.PmsProduct;
 import com.macro.mall.service.PmsProductService;
 import io.swagger.annotations.Api;
@@ -54,11 +54,17 @@ public class PmsProductController {
 
     @ApiOperation("分页查询服务品类")
     @RequestMapping(value = "/list", method = RequestMethod.GET)
-    public CommonResult<CommonPage<PmsProduct>> getList(PmsProductQueryParam productQueryParam,
-                                                        @RequestParam(value = "pageSize", defaultValue = "5") Integer pageSize,
-                                                        @RequestParam(value = "pageNum", defaultValue = "1") Integer pageNum) {
-        List<PmsProduct> productList = productService.list(productQueryParam, pageSize, pageNum);
+    public CommonResult<CommonPage<PmsProductInfo>> getList(PmsProductQueryParam productQueryParam,
+                                                            @RequestParam(value = "pageSize", defaultValue = "5") Integer pageSize,
+                                                            @RequestParam(value = "pageNum", defaultValue = "1") Integer pageNum) {
+        List<PmsProductInfo> productList = productService.page(productQueryParam, pageSize, pageNum);
         return CommonResult.success(CommonPage.restPage(productList));
+    }
+
+    @ApiOperation("查询服务品类详情")
+    @GetMapping(value = "/detail/{id}")
+    public CommonResult<PmsProduct> detail(@PathVariable Long id) {
+        return CommonResult.success(productService.detail(id));
     }
 
     @ApiIgnore

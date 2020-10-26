@@ -3,7 +3,7 @@ package com.macro.mall.portal.service;
 import com.macro.mall.model.PmsProduct;
 import com.macro.mall.portal.domain.PmsProductCategoryNode;
 import com.macro.mall.portal.domain.PmsProductDetail;
-import com.macro.mall.portal.domain.PmsProductInfo;
+import com.macro.mall.domain.PmsProductInfo;
 
 import java.util.List;
 
@@ -29,9 +29,10 @@ public interface PmsPortalProductService {
     /**
      * 以树形结构获取所有商品分类
      *
+     * @param regionId 区域ID
      * @return 分类树形节点
      */
-    List<PmsProductCategoryNode> categoryTreeList();
+    List<PmsProductCategoryNode> categoryTreeList(Long regionId);
 
     /**
      * 获取前台商品详情

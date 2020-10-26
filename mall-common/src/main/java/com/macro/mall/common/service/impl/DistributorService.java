@@ -1,10 +1,12 @@
 package com.macro.mall.common.service.impl;
 
 import com.macro.mall.common.constant.OrderType;
+import com.macro.mall.common.constant.RedisKeyConstant;
 import com.macro.mall.common.service.RedisService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.macro.mall.common.constant.RedisKeyConstant.*;
@@ -166,5 +168,21 @@ public class DistributorService {
      */
     public void rushSuccess(Long orderId) {
         redisService.lRemove(ORDER_RUSH_QUEUE, 1, orderId);
+    }
+
+    /**
+     * 查询抢单队列中的订单ID
+     *
+     * @return 订单ID
+     */
+    public List<Long> getRushOrderIds() {
+        // redis 查询rush订单列表
+        List<Object> objectList = redisService.lRange(RedisKeyConstant.ORDER_RUSH_QUEUE, 0, -1);
+        if (objectList.isEmpty()) {
+            return new ArrayList<>();
+        }
+        List<Long> ids = new ArrayList<>();
+        objectList.forEach(o -> ids.add(Long.parseLong(String.valueOf(o))));
+        return ids;
     }
 }

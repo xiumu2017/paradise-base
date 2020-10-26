@@ -1,4 +1,4 @@
-package com.macro.mall.portal.domain;
+package com.macro.mall.domain;
 
 import com.macro.mall.model.PmsProduct;
 import io.swagger.annotations.ApiModel;
@@ -23,4 +23,8 @@ public class PmsProductInfo extends PmsProduct {
      */
     @ApiModelProperty("一级服务分类名称")
     private String parentCategoryName;
+    /**
+     * 一级服务分类ID
+     */
+    private String parentCategoryId;
 }

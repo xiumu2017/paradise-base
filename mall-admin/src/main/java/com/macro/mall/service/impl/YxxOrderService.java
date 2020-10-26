@@ -61,9 +61,14 @@ public class YxxOrderService {
     private List<Long> getSortedWorkerIds(Long orderId) {
         // TODO 根据订单品类 关联擅长 查询 符合条件的全部维修工 - 已排序
         YxxOrder order = orderMapper.selectByPrimaryKey(orderId);
+        // 查询核心会员
         List<YxxWorker> workers = workerMapper.selectByExample(new YxxWorkerExample()
-                .createCriteria().andStatusEqualTo(1)
-                .example().orderBy(YxxWorker.Column.levelId.desc()));
+                .createCriteria().andStatusEqualTo(1).andLevelIdEqualTo(3)
+                .example());
+        // 查询精英会员
+        List<YxxWorker> workers2 = workerMapper.selectByExample(new YxxWorkerExample()
+                .createCriteria().andStatusEqualTo(1).andLevelIdEqualTo(2)
+                .example());
         return workers.stream().map(YxxWorker::getId).collect(Collectors.toList());
     }
 

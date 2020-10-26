@@ -1,14 +1,15 @@
 package com.macro.mall.app.controller;
 
 import com.macro.mall.app.service.impl.YxxAppOrderService;
+import com.macro.mall.app.service.impl.YxxWorkerService;
 import com.macro.mall.common.api.CommonPage;
 import com.macro.mall.common.api.CommonResult;
 import com.macro.mall.domain.OrderQuery;
 import com.macro.mall.domain.YxxOrderDetail;
 import com.macro.mall.domain.YxxOrderInfo;
 import com.macro.mall.enums.OrderStatusUtil;
-import com.macro.mall.model.YxxOrder;
 import com.macro.mall.model.YxxRepairRecord;
+import com.macro.mall.model.YxxWorker;
 import com.macro.mall.service.YxxOrderCommonService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -16,7 +17,6 @@ import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.*;
 
-import java.math.BigDecimal;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -33,14 +33,16 @@ import java.util.List;
 public class YxxAppOrderController {
     private final YxxAppOrderService yxxAppOrderService;
     private final YxxOrderCommonService orderCommonService;
+    private final YxxWorkerService workerService;
 
     public YxxAppOrderController(YxxAppOrderService yxxAppOrderService,
-                                 YxxOrderCommonService orderCommonService) {
+                                 YxxOrderCommonService orderCommonService, YxxWorkerService workerService) {
         this.yxxAppOrderService = yxxAppOrderService;
         this.orderCommonService = orderCommonService;
+        this.workerService = workerService;
     }
 
-    @ApiOperation("按状态分页获取用户订单列表")
+    @ApiOperation("查询 - 分页获取订单列表")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "status", value = "订单状态：1-进行中 2-历史订单", paramType = "query", dataType = "int"),
             @ApiImplicitParam(name = "orderType", value = "订单类型：1-专享 2-指派", paramType = "query", dataType = "int"),
@@ -84,24 +86,26 @@ public class YxxAppOrderController {
         return calendar.getTime();
     }
 
-    @ApiOperation("根据ID获取订单详情")
+    @ApiOperation("查询 - 获取订单详情")
     @RequestMapping(value = "/detail/{orderId}", method = RequestMethod.GET)
     public CommonResult<YxxOrderDetail> detail(@PathVariable Long orderId) {
         YxxOrderDetail orderDetail = orderCommonService.detail(orderId);
         return CommonResult.success(orderDetail);
     }
 
-    @ApiOperation("查询系统分派订单")
+    @ApiOperation("查询 - 系统分派订单")
     @GetMapping("/distribute/list")
-    public CommonResult queryDistributeOrder() {
-        return CommonResult.success(yxxAppOrderService.queryDistributeOrder());
+    public CommonResult<List<YxxOrderInfo>> queryDistributeOrder() {
+        YxxWorker worker = workerService.getCurrentWorker();
+        return CommonResult.success(orderCommonService.queryDistributeOrder(worker));
     }
 
-    @ApiOperation("分页查询抢单大厅订单列表")
+    @ApiOperation("查询 - 分页查询抢单大厅订单")
     @GetMapping("/rush/list")
-    public CommonResult<CommonPage<YxxOrder>> queryRushOrder(@RequestParam(required = false, defaultValue = "1") Integer pageNum,
-                                                             @RequestParam(required = false, defaultValue = "5") Integer pageSize) {
-        List<YxxOrder> orderList = yxxAppOrderService.queryRushOrder(pageNum, pageSize);
+    public CommonResult<CommonPage<YxxOrderInfo>> queryRushOrder(@RequestParam(required = false, defaultValue = "1") Integer pageNum,
+                                                                 @RequestParam(required = false, defaultValue = "5") Integer pageSize) {
+
+        List<YxxOrderInfo> orderList = orderCommonService.queryRushOrders(pageNum, pageSize);
         return CommonResult.success(CommonPage.restPage(orderList));
     }
 
@@ -166,10 +170,10 @@ public class YxxAppOrderController {
         return CommonResult.failed();
     }
 
-    @ApiOperation("订单流程 - 提交报价 | 报价信息")
+    @ApiOperation("订单流程 - 提交报价")
     @PostMapping(value = "/price")
-    public CommonResult price(Long orderId, BigDecimal price, String json) {
-        int x = yxxAppOrderService.confirmPrice(orderId);
+    public CommonResult price(Long orderId, String price, String json) {
+        int x = yxxAppOrderService.confirmPrice(orderId, price, json);
         if (x == 1) {
             return CommonResult.success(null);
         }
@@ -224,7 +228,7 @@ public class YxxAppOrderController {
 
     @ApiOperation("订单流程 - 订单暂缓")
     @PostMapping(value = "/pause")
-    public CommonResult pause(@RequestParam Long orderId) {
+    public CommonResult pause(@RequestParam Long orderId, String reason) {
         Integer count = yxxAppOrderService.pause(orderId);
         return CommonResult.success(count);
     }

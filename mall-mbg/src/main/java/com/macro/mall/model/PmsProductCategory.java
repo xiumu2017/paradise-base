@@ -11,11 +11,11 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * 产品分类
+ * 
  *
  * @author Paradise
  */
-@ApiModel(value="产品分类")
+@ApiModel(value="")
 @Data
 @Builder
 @AllArgsConstructor
@@ -33,12 +33,6 @@ public class PmsProductCategory implements Serializable {
     @ApiModelProperty(value="分类级别：0->1级；1->2级")
     private Integer level;
 
-    @ApiModelProperty(value="")
-    private Integer productCount;
-
-    @ApiModelProperty(value="")
-    private String productUnit;
-
     @ApiModelProperty(value="是否显示在导航栏：0->不显示；1->显示")
     private Integer navStatus;
 
@@ -54,6 +48,12 @@ public class PmsProductCategory implements Serializable {
     @ApiModelProperty(value="")
     private String keywords;
 
+    @ApiModelProperty(value="地域ID")
+    private Long regionId;
+
+    @ApiModelProperty(value="地域名称")
+    private String regionName;
+
     @ApiModelProperty(value="描述")
     private String description;
 
@@ -64,13 +64,13 @@ public class PmsProductCategory implements Serializable {
         parentId("parent_id", "parentId", "BIGINT", false),
         name("name", "name", "VARCHAR", true),
         level("level", "level", "INTEGER", true),
-        productCount("product_count", "productCount", "INTEGER", false),
-        productUnit("product_unit", "productUnit", "VARCHAR", false),
         navStatus("nav_status", "navStatus", "INTEGER", false),
         showStatus("show_status", "showStatus", "INTEGER", false),
         sort("sort", "sort", "INTEGER", false),
         icon("icon", "icon", "VARCHAR", false),
         keywords("keywords", "keywords", "VARCHAR", false),
+        regionId("region_id", "regionId", "BIGINT", false),
+        regionName("region_name", "regionName", "VARCHAR", false),
         description("description", "description", "LONGVARCHAR", false);
 
         private static final String BEGINNING_DELIMITER = "`";

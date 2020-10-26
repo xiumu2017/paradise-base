@@ -33,7 +33,6 @@ public class PmsProductCategoryServiceImpl implements PmsProductCategoryService 
     @Override
     public int create(PmsProductCategoryParam pmsProductCategoryParam) {
         PmsProductCategory productCategory = new PmsProductCategory();
-        productCategory.setProductCount(0);
         BeanUtils.copyProperties(pmsProductCategoryParam, productCategory);
         // level 赋值处理
         setCategoryLevel(productCategory);
@@ -56,18 +55,20 @@ public class PmsProductCategoryServiceImpl implements PmsProductCategoryService 
     }
 
     @Override
-    public List<PmsProductCategory> getList(Long parentId, Integer pageSize, Integer pageNum) {
+    public List<PmsProductCategory> getList(Long parentId, Integer pageSize, Integer pageNum, Long regionId) {
         PageHelper.startPage(pageNum, pageSize);
         PmsProductCategoryExample example = new PmsProductCategoryExample();
-        example.setOrderByClause("sort desc");
-        example.createCriteria().andParentIdEqualTo(parentId);
+        PmsProductCategoryExample.Criteria criteria = example.createCriteria();
+        example.setOrderByClause(PmsProductCategory.Column.sort.desc());
+        criteria.andParentIdEqualTo(parentId);
+        criteria.when(regionId != null, criteria1 -> criteria1.andRegionIdEqualTo(regionId));
         return productCategoryMapper.selectByExample(example);
     }
 
     @Override
-    public List<PmsProductCategoryWithChildrenItem> select4Page(Long parentId, Integer pageSize, Integer pageNum, String keywords) {
+    public List<PmsProductCategoryWithChildrenItem> select4Page(Long parentId, Integer pageSize, Integer pageNum, String keywords, Long regionId) {
         PageHelper.startPage(pageNum, pageSize);
-        return productCategoryDao.select4Page(parentId, keywords);
+        return productCategoryDao.select4Page(parentId, keywords,regionId);
     }
 
     @Override

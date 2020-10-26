@@ -32,6 +32,7 @@
     <result column="zone_id" jdbcType="BIGINT" property="zoneId" />
     <result column="region_id" jdbcType="BIGINT" property="regionId" />
     <result column="order_type" jdbcType="INTEGER" property="orderType" />
+    <result column="price_json" jdbcType="VARCHAR" property="priceJson" />
   </resultMap>
   <sql id="Example_Where_Clause">
     <where>
@@ -96,7 +97,7 @@
     worker_id, `location`, address, detail_address, visit_time_start, visit_time_end, 
     remark, photos, coupon_id, is_bargain, is_transfer, cancel_reason, pause_reason, 
     offer_price, discount_price, pay_price, create_time, update_time, zone_id, region_id, 
-    order_type
+    order_type, price_json
   </sql>
   <select id="selectByExample" parameterType="com.macro.mall.example.YxxOrderExample" resultMap="BaseResultMap">
     select
@@ -179,7 +180,8 @@
       is_transfer, cancel_reason, pause_reason, 
       offer_price, discount_price, pay_price, 
       create_time, update_time, zone_id, 
-      region_id, order_type)
+      region_id, order_type, price_json
+      )
     values (#{orderSn,jdbcType=VARCHAR}, #{memberId,jdbcType=BIGINT}, #{telNo,jdbcType=VARCHAR}, 
       #{memberName,jdbcType=VARCHAR}, #{memberSex,jdbcType=INTEGER}, #{productId,jdbcType=BIGINT}, 
       #{skuId,jdbcType=BIGINT}, #{orderStatus,jdbcType=INTEGER}, #{workerId,jdbcType=BIGINT}, 
@@ -189,7 +191,8 @@
       #{isTransfer,jdbcType=INTEGER}, #{cancelReason,jdbcType=VARCHAR}, #{pauseReason,jdbcType=VARCHAR}, 
       #{offerPrice,jdbcType=DECIMAL}, #{discountPrice,jdbcType=DECIMAL}, #{payPrice,jdbcType=DECIMAL}, 
       #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, #{zoneId,jdbcType=BIGINT}, 
-      #{regionId,jdbcType=BIGINT}, #{orderType,jdbcType=INTEGER})
+      #{regionId,jdbcType=BIGINT}, #{orderType,jdbcType=INTEGER}, #{priceJson,jdbcType=VARCHAR}
+      )
   </insert>
   <insert id="insertSelective" parameterType="map">
     <selectKey keyProperty="record.id" order="AFTER" resultType="java.lang.Long">
@@ -291,6 +294,9 @@
           <if test="record.orderType != null">
             order_type,
           </if>
+          <if test="record.priceJson != null">
+            price_json,
+          </if>
         </trim>
         <trim prefix="(" suffix=")" suffixOverrides="," />
       </otherwise>
@@ -390,6 +396,9 @@
           </if>
           <if test="record.orderType != null">
             #{record.orderType,jdbcType=INTEGER},
+          </if>
+          <if test="record.priceJson != null">
+            #{record.priceJson,jdbcType=VARCHAR},
           </if>
         </trim>
       </otherwise>
@@ -502,6 +511,9 @@
           <if test="record.orderType != null">
             order_type = #{record.orderType,jdbcType=INTEGER},
           </if>
+          <if test="record.priceJson != null">
+            price_json = #{record.priceJson,jdbcType=VARCHAR},
+          </if>
         </trim>
       </otherwise>
     </choose>
@@ -540,7 +552,8 @@
       update_time = #{record.updateTime,jdbcType=TIMESTAMP},
       zone_id = #{record.zoneId,jdbcType=BIGINT},
       region_id = #{record.regionId,jdbcType=BIGINT},
-      order_type = #{record.orderType,jdbcType=INTEGER}
+      order_type = #{record.orderType,jdbcType=INTEGER},
+      price_json = #{record.priceJson,jdbcType=VARCHAR}
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
@@ -643,6 +656,9 @@
           <if test="record.orderType != null">
             order_type = #{record.orderType,jdbcType=INTEGER},
           </if>
+          <if test="record.priceJson != null">
+            price_json = #{record.priceJson,jdbcType=VARCHAR},
+          </if>
         </trim>
       </otherwise>
     </choose>
@@ -678,7 +694,8 @@
       update_time = #{updateTime,jdbcType=TIMESTAMP},
       zone_id = #{zoneId,jdbcType=BIGINT},
       region_id = #{regionId,jdbcType=BIGINT},
-      order_type = #{orderType,jdbcType=INTEGER}
+      order_type = #{orderType,jdbcType=INTEGER},
+      price_json = #{priceJson,jdbcType=VARCHAR}
     where id = #{id,jdbcType=BIGINT}
   </update>
   <select id="selectOneByExample" parameterType="com.macro.mall.example.YxxOrderExample" resultMap="BaseResultMap">
@@ -720,7 +737,7 @@
       worker_id, `location`, address, detail_address, visit_time_start, visit_time_end, 
       remark, photos, coupon_id, is_bargain, is_transfer, cancel_reason, pause_reason, 
       offer_price, discount_price, pay_price, create_time, update_time, zone_id, region_id, 
-      order_type)
+      order_type, price_json)
     values
     <foreach collection="list" item="item" separator=",">
       (#{item.orderSn,jdbcType=VARCHAR}, #{item.memberId,jdbcType=BIGINT}, #{item.telNo,jdbcType=VARCHAR}, 
@@ -732,8 +749,8 @@
         #{item.isBargain,jdbcType=INTEGER}, #{item.isTransfer,jdbcType=INTEGER}, #{item.cancelReason,jdbcType=VARCHAR}, 
         #{item.pauseReason,jdbcType=VARCHAR}, #{item.offerPrice,jdbcType=DECIMAL}, #{item.discountPrice,jdbcType=DECIMAL}, 
         #{item.payPrice,jdbcType=DECIMAL}, #{item.createTime,jdbcType=TIMESTAMP}, #{item.updateTime,jdbcType=TIMESTAMP}, 
-        #{item.zoneId,jdbcType=BIGINT}, #{item.regionId,jdbcType=BIGINT}, #{item.orderType,jdbcType=INTEGER}
-        )
+        #{item.zoneId,jdbcType=BIGINT}, #{item.regionId,jdbcType=BIGINT}, #{item.orderType,jdbcType=INTEGER}, 
+        #{item.priceJson,jdbcType=VARCHAR})
     </foreach>
   </insert>
   <insert id="batchInsertSelective" keyColumn="id" keyProperty="list.id" parameterType="map" useGeneratedKeys="true">
@@ -832,6 +849,9 @@
         </if>
         <if test="'order_type'.toString() == column.value">
           #{item.orderType,jdbcType=INTEGER}
+        </if>
+        <if test="'price_json'.toString() == column.value">
+          #{item.priceJson,jdbcType=VARCHAR}
         </if>
       </foreach>
       )

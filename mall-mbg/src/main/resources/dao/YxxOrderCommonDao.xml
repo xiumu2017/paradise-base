@@ -8,6 +8,10 @@
         <result column="workerName" property="workerName" jdbcType="VARCHAR"/>
         <result column="region_name" property="region" jdbcType="VARCHAR"/>
     </resultMap>
+    <resultMap id="yxxOrderItemInfo" type="com.macro.mall.domain.OrderItemInfo"
+               extends="com.macro.mall.mapper.YxxOrderItemMapper.BaseResultMap">
+        <result column="sku_name" property="skuName" jdbcType="VARCHAR"/>
+    </resultMap>
     <select id="getList" resultMap="com.macro.mall.mapper.YxxOrderMapper.BaseResultMap">
         SELECT *
         FROM
@@ -49,10 +53,12 @@
         left join yxx_worker yw on o.worker_id = yw.id
         left join yxx_region yr on o.region_id = yr.region_id
         where o.member_id = #{memberId}
-        and o.order_status in
-        <foreach collection="array" separator="," item="status" open="(" close=")">
-            #{status}
-        </foreach>
+        <if test="array != null and array.length > 0">
+            and o.order_status in
+            <foreach collection="array" separator="," item="status" open="(" close=")">
+                #{status}
+            </foreach>
+        </if>
         order by o.create_time desc
     </select>
 
@@ -132,5 +138,45 @@
             </foreach>
         </if>
         order by o.create_time desc
+    </select>
+
+    <select id="queryInfoByWorkerId" resultMap="yxxOrderInfo">
+        select o.*,
+               p.name         as productName,
+               pps.sku_name   as skuName,
+               yw.real_name   as workerName,
+               yr.region_name as region_name
+        from yxx_order o
+                     left join pms_product p on o.product_id = p.id
+                     left join pms_product_sku pps on o.sku_id = pps.id
+                     left join yxx_worker yw on o.worker_id = yw.id
+                     left join yxx_region yr on o.region_id = yr.region_id
+        where o.worker_id = #{workerId,jdbcType=BIGINT}
+          and o.order_status = #{status,jdbcType=INTEGER}
+    </select>
+
+    <select id="queryRushOrders" resultMap="yxxOrderInfo">
+        select o.*,
+        p.name as productName,
+        pps.sku_name as skuName,
+        yw.real_name as workerName,
+        yr.region_name as region_name
+        from yxx_order o
+        left join pms_product p on o.product_id = p.id
+        left join pms_product_sku pps on o.sku_id = pps.id
+        left join yxx_worker yw on o.worker_id = yw.id
+        left join yxx_region yr on o.region_id = yr.region_id
+        where o.order_status = #{status,jdbcType=INTEGER}
+        and o.id in
+        <foreach collection="ids" open="(" close=")" separator="," item="id">
+            #{id}
+        </foreach>
+    </select>
+
+    <select id="queryOrderItemList" resultMap="yxxOrderItemInfo">
+        select i.id, i.order_id, i.product_id, i.sku_id, i.amount, i.price, pps.sku_name
+        from yxx_order_item i
+                     left join pms_product_sku pps on i.sku_id = pps.id
+        where i.order_id = #{orderId,jdbcType=BIGINT}
     </select>
 </mapper>

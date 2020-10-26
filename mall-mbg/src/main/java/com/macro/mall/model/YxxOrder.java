@@ -113,6 +113,9 @@ public class YxxOrder implements Serializable {
     @ApiModelProperty(value="订单类型（1-系统派单2-抢单3-人工指派4-区域分派）")
     private Integer orderType;
 
+    @ApiModelProperty(value="报价单")
+    private String priceJson;
+
     private static final long serialVersionUID = 1L;
 
     public enum Column {
@@ -145,7 +148,8 @@ public class YxxOrder implements Serializable {
         updateTime("update_time", "updateTime", "TIMESTAMP", false),
         zoneId("zone_id", "zoneId", "BIGINT", false),
         regionId("region_id", "regionId", "BIGINT", false),
-        orderType("order_type", "orderType", "INTEGER", false);
+        orderType("order_type", "orderType", "INTEGER", false),
+        priceJson("price_json", "priceJson", "VARCHAR", false);
 
         private static final String BEGINNING_DELIMITER = "`";
 

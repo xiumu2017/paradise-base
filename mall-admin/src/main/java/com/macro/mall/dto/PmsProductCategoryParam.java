@@ -43,4 +43,10 @@ public class PmsProductCategoryParam {
     @ApiModelProperty("描述")
     private String description;
 
+    /**
+     * 区域ID
+     */
+    @ApiModelProperty("区域ID")
+    private Long regionId;
+
 }

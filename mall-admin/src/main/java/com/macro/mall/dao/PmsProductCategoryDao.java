@@ -22,9 +22,10 @@ public interface PmsProductCategoryDao {
     /**
      * 分页查询
      *
-     * @param name     搜索条件 - 名称
      * @param parentId 父级品类ID
+     * @param name     搜索条件 - 名称
+     * @param regionId 区域ID
      * @return {@link PmsProductCategoryWithChildrenItem} 商品分类包含子分类
      */
-    List<PmsProductCategoryWithChildrenItem> select4Page(@Param("parentId") Long parentId, @Param("name") String name);
+    List<PmsProductCategoryWithChildrenItem> select4Page(@Param("parentId") Long parentId, @Param("name") String name, @Param("regionId") Long regionId);
 }

@@ -9,6 +9,7 @@
     <result column="before_photos_detail" jdbcType="VARCHAR" property="beforePhotosDetail" />
     <result column="after_photos" jdbcType="VARCHAR" property="afterPhotos" />
     <result column="after_photos_detail" jdbcType="VARCHAR" property="afterPhotosDetail" />
+    <result column="parts_photos" jdbcType="VARCHAR" property="partsPhotos" />
     <result column="remark" jdbcType="VARCHAR" property="remark" />
   </resultMap>
   <sql id="Example_Where_Clause">
@@ -71,7 +72,7 @@
   </sql>
   <sql id="Base_Column_List">
     id, order_id, worker_id, before_photos, before_photos_detail, after_photos, after_photos_detail, 
-    remark
+    parts_photos, remark
   </sql>
   <select id="selectByExample" parameterType="com.macro.mall.example.YxxRepairRecordExample" resultMap="BaseResultMap">
     select
@@ -147,10 +148,10 @@
     </selectKey>
     insert into yxx_repair_record (order_id, worker_id, before_photos, 
       before_photos_detail, after_photos, after_photos_detail, 
-      remark)
+      parts_photos, remark)
     values (#{orderId,jdbcType=BIGINT}, #{workerId,jdbcType=BIGINT}, #{beforePhotos,jdbcType=VARCHAR}, 
       #{beforePhotosDetail,jdbcType=VARCHAR}, #{afterPhotos,jdbcType=VARCHAR}, #{afterPhotosDetail,jdbcType=VARCHAR}, 
-      #{remark,jdbcType=VARCHAR})
+      #{partsPhotos,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="map">
     <selectKey keyProperty="record.id" order="AFTER" resultType="java.lang.Long">
@@ -182,6 +183,9 @@
           </if>
           <if test="record.afterPhotosDetail != null">
             after_photos_detail,
+          </if>
+          <if test="record.partsPhotos != null">
+            parts_photos,
           </if>
           <if test="record.remark != null">
             remark,
@@ -216,6 +220,9 @@
           </if>
           <if test="record.afterPhotosDetail != null">
             #{record.afterPhotosDetail,jdbcType=VARCHAR},
+          </if>
+          <if test="record.partsPhotos != null">
+            #{record.partsPhotos,jdbcType=VARCHAR},
           </if>
           <if test="record.remark != null">
             #{record.remark,jdbcType=VARCHAR},
@@ -262,6 +269,9 @@
           <if test="record.afterPhotosDetail != null">
             after_photos_detail = #{record.afterPhotosDetail,jdbcType=VARCHAR},
           </if>
+          <if test="record.partsPhotos != null">
+            parts_photos = #{record.partsPhotos,jdbcType=VARCHAR},
+          </if>
           <if test="record.remark != null">
             remark = #{record.remark,jdbcType=VARCHAR},
           </if>
@@ -281,6 +291,7 @@
       before_photos_detail = #{record.beforePhotosDetail,jdbcType=VARCHAR},
       after_photos = #{record.afterPhotos,jdbcType=VARCHAR},
       after_photos_detail = #{record.afterPhotosDetail,jdbcType=VARCHAR},
+      parts_photos = #{record.partsPhotos,jdbcType=VARCHAR},
       remark = #{record.remark,jdbcType=VARCHAR}
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
@@ -315,6 +326,9 @@
           <if test="record.afterPhotosDetail != null">
             after_photos_detail = #{record.afterPhotosDetail,jdbcType=VARCHAR},
           </if>
+          <if test="record.partsPhotos != null">
+            parts_photos = #{record.partsPhotos,jdbcType=VARCHAR},
+          </if>
           <if test="record.remark != null">
             remark = #{record.remark,jdbcType=VARCHAR},
           </if>
@@ -331,6 +345,7 @@
       before_photos_detail = #{beforePhotosDetail,jdbcType=VARCHAR},
       after_photos = #{afterPhotos,jdbcType=VARCHAR},
       after_photos_detail = #{afterPhotosDetail,jdbcType=VARCHAR},
+      parts_photos = #{partsPhotos,jdbcType=VARCHAR},
       remark = #{remark,jdbcType=VARCHAR}
     where id = #{id,jdbcType=BIGINT}
   </update>
@@ -367,4 +382,54 @@
     </if>
     limit 1
   </select>
+  <insert id="batchInsert" keyColumn="id" keyProperty="id" parameterType="map" useGeneratedKeys="true">
+    insert into yxx_repair_record
+    (order_id, worker_id, before_photos, before_photos_detail, after_photos, after_photos_detail, 
+      parts_photos, remark)
+    values
+    <foreach collection="list" item="item" separator=",">
+      (#{item.orderId,jdbcType=BIGINT}, #{item.workerId,jdbcType=BIGINT}, #{item.beforePhotos,jdbcType=VARCHAR}, 
+        #{item.beforePhotosDetail,jdbcType=VARCHAR}, #{item.afterPhotos,jdbcType=VARCHAR}, 
+        #{item.afterPhotosDetail,jdbcType=VARCHAR}, #{item.partsPhotos,jdbcType=VARCHAR}, 
+        #{item.remark,jdbcType=VARCHAR})
+    </foreach>
+  </insert>
+  <insert id="batchInsertSelective" keyColumn="id" keyProperty="list.id" parameterType="map" useGeneratedKeys="true">
+    insert into yxx_repair_record (
+    <foreach collection="selective" item="column" separator=",">
+      ${column.escapedColumnName}
+    </foreach>
+    )
+    values
+    <foreach collection="list" item="item" separator=",">
+      (
+      <foreach collection="selective" item="column" separator=",">
+        <if test="'order_id'.toString() == column.value">
+          #{item.orderId,jdbcType=BIGINT}
+        </if>
+        <if test="'worker_id'.toString() == column.value">
+          #{item.workerId,jdbcType=BIGINT}
+        </if>
+        <if test="'before_photos'.toString() == column.value">
+          #{item.beforePhotos,jdbcType=VARCHAR}
+        </if>
+        <if test="'before_photos_detail'.toString() == column.value">
+          #{item.beforePhotosDetail,jdbcType=VARCHAR}
+        </if>
+        <if test="'after_photos'.toString() == column.value">
+          #{item.afterPhotos,jdbcType=VARCHAR}
+        </if>
+        <if test="'after_photos_detail'.toString() == column.value">
+          #{item.afterPhotosDetail,jdbcType=VARCHAR}
+        </if>
+        <if test="'parts_photos'.toString() == column.value">
+          #{item.partsPhotos,jdbcType=VARCHAR}
+        </if>
+        <if test="'remark'.toString() == column.value">
+          #{item.remark,jdbcType=VARCHAR}
+        </if>
+      </foreach>
+      )
+    </foreach>
+  </insert>
 </mapper>

@@ -2,7 +2,6 @@ package com.macro.mall.app.service.impl;
 
 import com.github.pagehelper.PageHelper;
 import com.macro.mall.common.api.CommonPage;
-import com.macro.mall.common.constant.RedisKeyConstant;
 import com.macro.mall.common.service.RedisService;
 import com.macro.mall.common.service.impl.DistributorService;
 import com.macro.mall.enums.OrderStatus;
@@ -19,7 +18,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -97,8 +96,20 @@ public class YxxAppOrderService {
                         .build());
     }
 
-    public int confirmPrice(Long orderId) {
-        return updateOrderStatus(orderId, OrderStatus.OFFER_CONFIRMED);
+    public int confirmPrice(Long orderId, String price, String json) {
+        // 保存报价信息 - 更新订单offerPrice
+        YxxOrder order = yxxOrderMapper.selectByPrimaryKey(orderId);
+        if (order == null) {
+            throw new RuntimeException("OrderId not Exist");
+        }
+        // 保存状态变更记录
+        insertStatusRecord(orderId, order.getOrderStatus(), OrderStatus.OFFERED);
+        // 更新订单状态
+        order = YxxOrder.builder().id(orderId).orderStatus(OrderStatus.OFFERED.val())
+                .offerPrice(new BigDecimal(price)).priceJson(json).updateTime(new Date())
+                .build();
+        return yxxOrderMapper.updateByPrimaryKeySelective(order, YxxOrder.Column.orderStatus,
+                YxxOrder.Column.offerPrice, YxxOrder.Column.priceJson, YxxOrder.Column.updateTime);
     }
 
     public int cancelOrderDisagree(Long orderId) {
@@ -173,6 +184,13 @@ public class YxxAppOrderService {
     }
 
     public int arrive(Long orderId) {
+        YxxOrder order = yxxOrderMapper.selectByPrimaryKey(orderId);
+        if (order != null) {
+            // 判断订单类型
+            if (order.getIsBargain() != 1) {
+                return updateOrderStatus(orderId, OrderStatus.OFFER_CONFIRMED);
+            }
+        }
         return updateOrderStatus(orderId, OrderStatus.ARRIVED);
     }
 
@@ -200,12 +218,7 @@ public class YxxAppOrderService {
      */
     public List<YxxOrder> queryRushOrder(Integer pageNum, Integer pageSize) {
         // redis 查询rush订单列表
-        List<Object> objectList = redisService.lRange(RedisKeyConstant.ORDER_RUSH_QUEUE, 0, -1);
-        if (objectList.isEmpty()) {
-            return new ArrayList<>();
-        }
-        List<Long> ids = new ArrayList<>();
-        objectList.forEach(o -> ids.add(Long.parseLong(String.valueOf(o))));
+        List<Long> ids = distributorService.getRushOrderIds();
         PageHelper.startPage(pageNum, pageSize);
         return yxxOrderMapper.selectByExample(new YxxOrderExample().createCriteria()
                 .andIdIn(ids).andWorkerIdIsNull().andOrderStatusEqualTo(OrderStatus.DISTRIBUTING.val())
@@ -233,6 +246,9 @@ public class YxxAppOrderService {
 
     public int refuse(Long orderId) {
         distributorService.refuse(orderId);
-        return 1;
+        // workerId 置为空
+        return yxxOrderMapper.updateByPrimaryKeySelective(
+                YxxOrder.builder().id(orderId).workerId(null).orderStatus(OrderStatus.DISTRIBUTING.val()).updateTime(new Date()).build(),
+                YxxOrder.Column.workerId, YxxOrder.Column.orderStatus, YxxOrder.Column.updateTime);
     }
 }

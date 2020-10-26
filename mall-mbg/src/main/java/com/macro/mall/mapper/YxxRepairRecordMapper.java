@@ -2,9 +2,8 @@ package com.macro.mall.mapper;
 
 import com.macro.mall.example.YxxRepairRecordExample;
 import com.macro.mall.model.YxxRepairRecord;
-import org.apache.ibatis.annotations.Param;
-
 import java.util.List;
+import org.apache.ibatis.annotations.Param;
 
 public interface YxxRepairRecordMapper {
     long countByExample(YxxRepairRecordExample example);
@@ -36,4 +35,8 @@ public interface YxxRepairRecordMapper {
     int updateByPrimaryKeySelective(@Param("record") YxxRepairRecord record, @Param("selective") YxxRepairRecord.Column ... selective);
 
     int updateByPrimaryKey(YxxRepairRecord record);
+
+    int batchInsert(@Param("list") List<YxxRepairRecord> list);
+
+    int batchInsertSelective(@Param("list") List<YxxRepairRecord> list, @Param("selective") YxxRepairRecord.Column ... selective);
 }

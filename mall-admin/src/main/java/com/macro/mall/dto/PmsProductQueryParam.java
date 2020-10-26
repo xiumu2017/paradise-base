@@ -1,5 +1,6 @@
 package com.macro.mall.dto;
 
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -10,6 +11,7 @@ import lombok.EqualsAndHashCode;
  * @author macro
  * @date 2018/4/27
  */
+@ApiModel("服务品类查询参数")
 @Data
 @EqualsAndHashCode(callSuper = false)
 public class PmsProductQueryParam {
@@ -19,6 +21,6 @@ public class PmsProductQueryParam {
     private String keyword;
     @ApiModelProperty("商品货号")
     private String productSn;
-    @ApiModelProperty("商品分类编号")
+    @ApiModelProperty("商品分类ID")
     private Long productCategoryId;
 }

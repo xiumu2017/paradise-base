@@ -1,8 +1,8 @@
 package com.macro.mall.service;
 
+import com.macro.mall.domain.PmsProductInfo;
 import com.macro.mall.dto.PmsProductParam;
 import com.macro.mall.dto.PmsProductQueryParam;
-import com.macro.mall.dto.PmsProductResult;
 import com.macro.mall.model.PmsProduct;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
@@ -18,7 +18,7 @@ public interface PmsProductService {
     /**
      * 创建商品
      */
-    @Transactional(isolation = Isolation.DEFAULT,propagation = Propagation.REQUIRED)
+    @Transactional(isolation = Isolation.DEFAULT, propagation = Propagation.REQUIRED)
     int create(PmsProductParam productParam);
 
     /**
@@ -34,9 +34,10 @@ public interface PmsProductService {
 
     /**
      * 批量修改审核状态
-     * @param ids 产品id
+     *
+     * @param ids          产品id
      * @param verifyStatus 审核状态
-     * @param detail 审核详情
+     * @param detail       审核详情
      */
     @Transactional
     int updateVerifyStatus(List<Long> ids, Integer verifyStatus, String detail);
@@ -65,4 +66,23 @@ public interface PmsProductService {
      * 根据商品名称或者货号模糊查询
      */
     List<PmsProduct> list(String keyword);
+
+
+    /**
+     * 分页查询
+     *
+     * @param param    查询参数
+     * @param pageSize 分页参数
+     * @param pageNum  分页参数
+     * @return {@link PmsProductInfo}
+     */
+    List<PmsProductInfo> page(PmsProductQueryParam param, Integer pageSize, Integer pageNum);
+
+    /**
+     * 详情
+     *
+     * @param id 服务品类ID
+     * @return {@link PmsProduct}
+     */
+    PmsProduct detail(Long id);
 }
