@@ -178,8 +178,17 @@ public class YxxOrderCommonService {
      * @param workerId 维修工ID
      */
     public int distribute(Long orderId, Long workerId) {
+        YxxOrder order = orderMapper.selectByPrimaryKey(orderId);
+        // 判断订单类型
+        if (order.getOrderType() != OrderType.MANUAL_DISTRIBUTE.val()) {
+            return 0;
+        }
+        // 判断订单状态
+        if (DISTRIBUTING.val() != order.getOrderStatus()) {
+            return 0;
+        }
         // 判断维修工每日抢单数量是否超限
-        boolean result = check(orderMapper.selectByPrimaryKey(orderId), workerId);
+        boolean result = check(order, workerId);
         if (!result) {
             return 0;
         }
