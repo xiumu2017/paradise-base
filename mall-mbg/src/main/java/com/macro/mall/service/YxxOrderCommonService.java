@@ -110,6 +110,7 @@ public class YxxOrderCommonService {
     public CommonPage<YxxOrderInfo> pageQueryInfo(OrderQuery query, Integer pageNum, Integer pageSize) {
         PageHelper.startPage(pageNum, pageSize);
         List<YxxOrderInfo> orderInfoList = orderCommonDao.queryListByOrderQuery(query);
+        this.dealStatusDesc(orderInfoList);
         return CommonPage.restPage(orderInfoList);
     }
 

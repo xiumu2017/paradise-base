@@ -1,5 +1,6 @@
 package com.macro.mall.app.controller;
 
+import com.macro.mall.app.domain.OrderPrice;
 import com.macro.mall.app.service.impl.YxxAppOrderService;
 import com.macro.mall.app.service.impl.YxxWorkerService;
 import com.macro.mall.common.api.CommonPage;
@@ -172,8 +173,8 @@ public class YxxAppOrderController {
 
     @ApiOperation("订单流程 - 提交报价")
     @PostMapping(value = "/price")
-    public CommonResult price(Long orderId, String price, String json) {
-        int x = yxxAppOrderService.confirmPrice(orderId, price, json);
+    public CommonResult price(@RequestBody OrderPrice orderPrice) {
+        int x = yxxAppOrderService.confirmPrice(orderPrice);
         if (x == 1) {
             return CommonResult.success(null);
         }

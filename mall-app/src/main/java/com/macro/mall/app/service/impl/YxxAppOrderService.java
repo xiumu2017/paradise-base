@@ -1,8 +1,8 @@
 package com.macro.mall.app.service.impl;
 
 import com.github.pagehelper.PageHelper;
+import com.macro.mall.app.domain.OrderPrice;
 import com.macro.mall.common.api.CommonPage;
-import com.macro.mall.common.service.RedisService;
 import com.macro.mall.common.service.impl.DistributorService;
 import com.macro.mall.enums.OrderStatus;
 import com.macro.mall.example.YxxOrderExample;
@@ -19,7 +19,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -98,17 +97,18 @@ public class YxxAppOrderService {
                         .build());
     }
 
-    public int confirmPrice(Long orderId, String price, String json) {
+    public int confirmPrice(OrderPrice orderPrice) {
         // 保存报价信息 - 更新订单offerPrice
-        YxxOrder order = yxxOrderMapper.selectByPrimaryKey(orderId);
+        YxxOrder order = yxxOrderMapper.selectByPrimaryKey(orderPrice.getOrderId());
         if (order == null) {
             throw new RuntimeException("OrderId not Exist");
         }
+        // 判断订单状态
         // 保存状态变更记录
-        insertStatusRecord(orderId, order.getOrderStatus(), OrderStatus.OFFERED);
+        insertStatusRecord(orderPrice.getOrderId(), order.getOrderStatus(), OrderStatus.OFFERED);
         // 更新订单状态
-        order = YxxOrder.builder().id(orderId).orderStatus(OrderStatus.OFFERED.val())
-                .offerPrice(new BigDecimal(price)).priceJson(json).updateTime(new Date())
+        order = YxxOrder.builder().id(orderPrice.getOrderId()).orderStatus(OrderStatus.OFFERED.val())
+                .offerPrice(orderPrice.getPrice()).priceJson(orderPrice.getPriceJson()).updateTime(new Date())
                 .build();
         return yxxOrderMapper.updateByPrimaryKeySelective(order, YxxOrder.Column.orderStatus,
                 YxxOrder.Column.offerPrice, YxxOrder.Column.priceJson, YxxOrder.Column.updateTime);
