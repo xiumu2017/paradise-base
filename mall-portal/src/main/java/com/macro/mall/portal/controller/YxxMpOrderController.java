@@ -68,7 +68,7 @@ public class YxxMpOrderController {
 
     @ApiOperation("订单流程 - 无需上门-取消订单")
     @RequestMapping(value = "/cancel", method = RequestMethod.POST)
-    public CommonResult orderCancel(Long orderId) {
+    public CommonResult orderCancel(@RequestParam Long orderId) {
         int x = yxxMpOrderService.cancelOrder(orderId);
         if (x == 1) {
             return CommonResult.success(null);
@@ -78,7 +78,7 @@ public class YxxMpOrderController {
 
     @ApiOperation("订单流程 - 同意上门-支付上门费")
     @RequestMapping(value = "/confirm", method = RequestMethod.POST)
-    public CommonResult orderConfirm(Long orderId) {
+    public CommonResult orderConfirm(@RequestParam Long orderId) {
         int x = yxxMpOrderService.confirmToVisit(orderId);
         if (x == 1) {
             return CommonResult.success(null);
@@ -88,7 +88,7 @@ public class YxxMpOrderController {
 
     @ApiOperation("订单流程 - 用户确认报价")
     @RequestMapping(value = "/price/confirm", method = RequestMethod.POST)
-    public CommonResult orderConfirmPrice(Long orderId) {
+    public CommonResult orderConfirmPrice(@RequestParam Long orderId) {
         int x = yxxMpOrderService.confirmPrice(orderId);
         if (x == 1) {
             return CommonResult.success(null);
@@ -98,7 +98,7 @@ public class YxxMpOrderController {
 
     @ApiOperation("订单流程 - 不同意报价-取消订单")
     @RequestMapping(value = "/disagree/cancel", method = RequestMethod.POST)
-    public CommonResult orderDisagree(Long orderId) {
+    public CommonResult orderDisagree(@RequestParam Long orderId) {
         int x = yxxMpOrderService.cancelOrderDisagree(orderId);
         if (x == 1) {
             return CommonResult.success(null);
@@ -115,7 +115,7 @@ public class YxxMpOrderController {
 
     @ApiOperation("订单操作 - 用户删除订单")
     @RequestMapping(value = "/deleteOrder", method = RequestMethod.POST)
-    public CommonResult deleteOrder(Long orderId) {
+    public CommonResult deleteOrder(@RequestParam Long orderId) {
         int x = yxxMpOrderService.deleteOrder(orderId);
         if (x == 1) {
             return CommonResult.success(null);
