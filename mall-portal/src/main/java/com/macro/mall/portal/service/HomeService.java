@@ -2,6 +2,7 @@ package com.macro.mall.portal.service;
 
 import com.macro.mall.model.PmsProductCategory;
 import com.macro.mall.model.YxxHomeBanner;
+import com.macro.mall.model.YxxProductCommentLabel;
 import com.macro.mall.model.YxxRegion;
 
 import java.util.List;
@@ -35,4 +36,11 @@ public interface HomeService {
      * @return {@link YxxRegion}
      */
     List<YxxRegion> getRegionList();
+
+    /**
+     * 查询label
+     *
+     * @return 预设评价列表
+     */
+    List<YxxProductCommentLabel> getLabelList();
 }

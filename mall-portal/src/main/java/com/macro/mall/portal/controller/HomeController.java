@@ -3,6 +3,7 @@ package com.macro.mall.portal.controller;
 import com.macro.mall.common.api.CommonResult;
 import com.macro.mall.model.PmsProductCategory;
 import com.macro.mall.model.YxxHomeBanner;
+import com.macro.mall.model.YxxProductCommentLabel;
 import com.macro.mall.model.YxxRegion;
 import com.macro.mall.portal.service.HomeService;
 import io.swagger.annotations.Api;
@@ -44,6 +45,12 @@ public class HomeController {
     @GetMapping("/region/list")
     public CommonResult<List<YxxRegion>> regionList() {
         return CommonResult.success(homeService.getRegionList());
+    }
+
+    @ApiOperation("获取预设评价标签列表")
+    @GetMapping("/comment-label/list")
+    public CommonResult<List<YxxProductCommentLabel>> labelList() {
+        return CommonResult.success(homeService.getLabelList());
     }
 
 }

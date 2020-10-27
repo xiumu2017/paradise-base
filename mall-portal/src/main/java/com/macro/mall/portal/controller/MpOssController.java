@@ -23,7 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 @Api(tags = "图片上传服务")
 @RestController
 @RequestMapping("/oss")
-public class MpController {
+public class MpOssController {
 
     @Value("${minio.endpoint}")
     private String endpoint;
@@ -38,7 +38,7 @@ public class MpController {
 
     private final MinIoService minIoService;
 
-    public MpController(MinIoService minIoService) {
+    public MpOssController(MinIoService minIoService) {
         this.minIoService = minIoService;
     }
 
