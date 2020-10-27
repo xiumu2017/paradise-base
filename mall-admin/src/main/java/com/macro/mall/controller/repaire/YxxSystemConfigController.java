@@ -4,14 +4,19 @@ import com.macro.mall.common.api.CommonResult;
 import com.macro.mall.example.YxxHomeBannerExample;
 import com.macro.mall.example.YxxHomeCostExample;
 import com.macro.mall.example.YxxHomeQaExample;
+import com.macro.mall.example.YxxProductCommentLabelExample;
 import com.macro.mall.mapper.YxxHomeBannerMapper;
 import com.macro.mall.mapper.YxxHomeCostMapper;
 import com.macro.mall.mapper.YxxHomeQaMapper;
+import com.macro.mall.mapper.YxxProductCommentLabelMapper;
 import com.macro.mall.model.YxxHomeBanner;
 import com.macro.mall.model.YxxHomeCost;
 import com.macro.mall.model.YxxHomeQa;
+import com.macro.mall.model.YxxProductCommentLabel;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import lombok.AllArgsConstructor;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,16 +27,68 @@ import java.util.List;
 @Api(tags = "8.1 系统管理-基本信息")
 @RestController
 @RequestMapping("/yxx/system-config")
+@AllArgsConstructor
 public class YxxSystemConfigController {
 
     private final YxxHomeBannerMapper yxxHomeBannerMapper;
     private final YxxHomeQaMapper yxxHomeQaMapper;
     private final YxxHomeCostMapper costMapper;
+    private final YxxProductCommentLabelMapper commentLabelMapper;
 
-    public YxxSystemConfigController(YxxHomeBannerMapper yxxHomeBannerMapper, YxxHomeQaMapper yxxHomeQaMapper, YxxHomeCostMapper costMapper) {
-        this.yxxHomeBannerMapper = yxxHomeBannerMapper;
-        this.yxxHomeQaMapper = yxxHomeQaMapper;
-        this.costMapper = costMapper;
+    @ApiOperation("预设评价标签 - 查询全部")
+    @GetMapping("/comment-label/list")
+    public CommonResult<List<YxxProductCommentLabel>> labelList() {
+        List<YxxProductCommentLabel> list = commentLabelMapper.selectByExample(new YxxProductCommentLabelExample()
+                .createCriteria().andProductIdIsNull().example().orderBy(YxxProductCommentLabel.Column.sort.desc()));
+        return CommonResult.success(list);
+    }
+
+    @ApiOperation("预设评价标签 - 创建")
+    @PostMapping("/comment-label/create")
+    public CommonResult labelCreate(@RequestBody YxxProductCommentLabel label) {
+        if (StringUtils.isEmpty(label.getLabel())) {
+            return CommonResult.failed("标签不能为空");
+        }
+        YxxProductCommentLabel commentLabel = commentLabelMapper.selectOneByExample(
+                new YxxProductCommentLabelExample().createCriteria().andLabelEqualTo(label.getLabel()).example());
+        if (commentLabel != null) {
+            return CommonResult.failed("标签已存在");
+        }
+        label.setProductId(null);
+        if (commentLabelMapper.insert(label) == 1) {
+            return CommonResult.success(label);
+        }
+        return CommonResult.failed();
+    }
+
+    @ApiOperation("预设评价标签 - 更新")
+    @PostMapping("/comment-label/update")
+    public CommonResult labelUpdate(@RequestBody YxxProductCommentLabel label) {
+        if (label.getId() == null) {
+            return CommonResult.failed("ID不能为空");
+        }
+        if (StringUtils.isEmpty(label.getLabel())) {
+            return CommonResult.failed("标签不能为空");
+        }
+        YxxProductCommentLabel commentLabel = commentLabelMapper.selectOneByExample(
+                new YxxProductCommentLabelExample().createCriteria().andLabelEqualTo(label.getLabel()).example());
+        if (commentLabel != null && !commentLabel.getId().equals(label.getId())) {
+            return CommonResult.failed("标签已存在");
+        }
+        label.setProductId(null);
+        if (commentLabelMapper.updateByPrimaryKeySelective(label) == 1) {
+            return CommonResult.success(label);
+        }
+        return CommonResult.failed();
+    }
+
+    @ApiOperation("预设评价标签 - 删除")
+    @DeleteMapping("/comment-label/del/{id}")
+    public CommonResult labelDel(@PathVariable Long id) {
+        if (commentLabelMapper.deleteByPrimaryKey(id) == 1) {
+            return CommonResult.success(null);
+        }
+        return CommonResult.failed();
     }
 
     @ApiOperation("根据区域ID查询首页轮播图列表")
