@@ -4,11 +4,20 @@
     <resultMap id="skilledProductInfo" type="com.macro.mall.app.domain.WorkerSkilledProductInfo"
                extends="com.macro.mall.mapper.YxxWorkerSkilledProductMapper.BaseResultMap">
         <result column="productName" property="productName" jdbcType="VARCHAR"/>
+        <result column="categoryName" property="categoryName" jdbcType="VARCHAR"/>
+        <result column="rootCategoryName" property="rootCategoryName" jdbcType="VARCHAR"/>
     </resultMap>
     <select id="list" resultMap="skilledProductInfo">
-        select ywsp.id, ywsp.worker_id, ywsp.product_id, p.name productName
+        select ywsp.id,
+               ywsp.worker_id,
+               ywsp.product_id,
+               p.name    productName,
+               ppc.name  categoryName,
+               ppc2.name rootCategoryName
         from yxx_worker_skilled_product ywsp
                      left join pms_product p on ywsp.product_id = p.id
+                     left join pms_product_category ppc on p.product_category_id = ppc.id
+                     left join pms_product_category ppc2 on ppc.parent_id = ppc2.id
         where ywsp.worker_id = #{workerId,jdbcType=BIGINT}
         order by ywsp.id
     </select>

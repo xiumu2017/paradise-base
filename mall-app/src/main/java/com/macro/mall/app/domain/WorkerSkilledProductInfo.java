@@ -18,4 +18,14 @@ public class WorkerSkilledProductInfo extends YxxWorkerSkilledProduct {
      */
     @ApiModelProperty("服务品类名称")
     private String productName;
+    /**
+     * 上级分类名称
+     */
+    @ApiModelProperty("上级分类名称")
+    private String categoryName;
+    /**
+     * 一级分类名称
+     */
+    @ApiModelProperty("一级分类名称")
+    private String rootCategoryName;
 }

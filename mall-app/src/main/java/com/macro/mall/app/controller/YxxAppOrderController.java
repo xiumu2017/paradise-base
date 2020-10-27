@@ -17,6 +17,7 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.*;
+import springfox.documentation.annotations.ApiIgnore;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -197,6 +198,7 @@ public class YxxAppOrderController {
         return CommonResult.success(yxxAppOrderService.repairRecordQuery(orderId));
     }
 
+    @ApiIgnore
     @ApiOperation("维修工单 - 更新")
     @PostMapping(value = "/repair-record/update")
     public CommonResult repairRecordUpdate(@RequestBody YxxRepairRecord repairRecord) {
@@ -207,6 +209,7 @@ public class YxxAppOrderController {
         return CommonResult.failed();
     }
 
+    @ApiIgnore
     @ApiOperation("维修工单 - 删除")
     @PostMapping(value = "/repair-record/delete")
     public CommonResult repairRecordDelete(Long id) {

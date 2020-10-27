@@ -9,6 +9,7 @@ import com.macro.mall.common.exception.Asserts;
 import com.macro.mall.common.utils.GeneratorUtil;
 import com.macro.mall.example.YxxWorkerCertificateExample;
 import com.macro.mall.example.YxxWorkerExample;
+import com.macro.mall.example.YxxWorkerSkilledProductExample;
 import com.macro.mall.mapper.YxxWorkerCertificateMapper;
 import com.macro.mall.mapper.YxxWorkerMapper;
 import com.macro.mall.mapper.YxxWorkerSkilledProductMapper;
@@ -32,10 +33,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 /**
  * @author Paradise
@@ -275,10 +273,13 @@ public class YxxWorkerService {
     }
 
     public int skilledProductConfig(List<Long> ids) {
-        // 去重  + 校验
         Long workerId = getCurrentWorker().getId();
+        // 删除原有的
+        skilledProductMapper.deleteByExample(new YxxWorkerSkilledProductExample().createCriteria().andWorkerIdEqualTo(workerId).example());
+        Set<Long> set = new HashSet<>(ids.size());
+        set.addAll(ids);
         List<YxxWorkerSkilledProduct> list = new ArrayList<>();
-        for (Long id : ids) {
+        for (Long id : set) {
             list.add(YxxWorkerSkilledProduct.builder().workerId(workerId).productId(id).build());
         }
         return skilledProductMapper.batchInsert(list);

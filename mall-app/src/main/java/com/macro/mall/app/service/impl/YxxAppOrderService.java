@@ -238,6 +238,9 @@ public class YxxAppOrderService {
     }
 
     public int repairRecordCreate(YxxRepairRecord repairRecord) {
+        // 删除原有工单
+        repairRecordMapper.deleteByExample(new YxxRepairRecordExample().createCriteria()
+                .andOrderIdEqualTo(repairRecord.getOrderId()).example());
         YxxWorker worker = workerService.getCurrentWorker();
         repairRecord.setWorkerId(worker.getId());
         return repairRecordMapper.insert(repairRecord);
